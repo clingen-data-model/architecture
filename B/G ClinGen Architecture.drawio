@@ -1,4 +1,4 @@
-<mxfile host="www.draw.io" modified="2019-11-11T21:01:42.293Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Safari/605.1.15" etag="ozSIiw65nzxY1o8vmN3t" version="12.2.3" type="github" pages="3">
+<mxfile host="www.draw.io" modified="2019-11-11T21:11:25.972Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Safari/605.1.15" etag="vZ7A2Rj9xhdpDBxADy-s" version="12.2.3" type="github" pages="3">
   <diagram id="S-StJFoFpKq4Z-z_DmzN" name="current">
     <mxGraphModel dx="1426" dy="819" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
       <root>
@@ -129,6 +129,9 @@
         </mxCell>
         <mxCell id="OvhSR2caMaj9LtxyOtDU-55" value="Present stakeholder maintained information about ClinGen" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1240" y="155" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="Shi8RIUD1mExUHfzRMp3-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontColor=#CCCCCC;" edge="1" parent="1" source="OvhSR2caMaj9LtxyOtDU-56" target="OvhSR2caMaj9LtxyOtDU-44">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <mxCell id="OvhSR2caMaj9LtxyOtDU-56" value="Read and persist external data&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="780" y="440" width="120" height="60" as="geometry"/>
