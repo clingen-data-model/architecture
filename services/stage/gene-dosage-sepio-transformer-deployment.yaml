@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: gene-dosage-sepio-transformer
-        image: gcr.io/clingen-dev/gene-dosage-sepio-transformer:v1
+        image: gcr.io/clingen-stage/gene-dosage-sepio-transformer:v2
         resources:
           requests:
             cpu: 100m
