@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genegraph
+  labels:
+    app: genegraph
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: genegraph
+  template:
+    metadata:
+      labels:
+        app: genegraph
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-local-ssd: "true"
+      volumes:
+        - name: genegraph-vol
+          hostPath:
+            path: "/mnt/disks/ssd0"
+      containers:
+        - image: gcr.io/clingen-dev/genegraph:v3
+          imagePullPolicy: Always
+          name: genegraph  
+          env:
+            - name: CG_SEARCH_DATA_VOL
+              value: "/data/"
+            - name: DATA_EXCHANGE_HOST
+              value: "exchange.clinicalgenome.org:9093"
+            - name: SERVEUR_GROUP
+              value: "serveur_dev"
+            - name: SERVEUR_KEY_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: serveur-key-pass
+                  key: password
+            - name: SERVEUR_KEYSTORE
+              value: "/keys/dev.serveur.keystore.jks"
+            - name: SERVEUR_TRUSTSTORE
+              value: "/keys/serveur.truststore.jks"
+            - name: CG_SEARCH_TOPICS
+              value: gene-dosage-stage
+            - name: KAFKA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-credentials
+                  key: user
+            - name: KAFKA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-credentials
+                  key: password
+            - name: DX_STAGE_JAAS
+              value: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$(KAFKA_USER)\" password=\"$(KAFKA_PASSWORD)\";"
+          ports:
+            - containerPort: 8888
+              name: genegraph
+          volumeMounts:
+            - name: genegraph-vol
+              mountPath: /data/
+
