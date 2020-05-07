@@ -31,7 +31,7 @@ spec:
               name: gene-dosage-jira-credentials
               key: password
         - name: JIRA_READER_HOST
-          value: "https://ncbijira.ncbi.nlm.nih.gov/rest/api/2/search"
+          value: "https://dci.clinicalgenome.org/rest/api/2/search"
         - name: JIRA_READER_PROJECT
           value: ISCA
         - name: JIRA_READER_TYPES
