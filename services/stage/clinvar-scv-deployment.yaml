@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clinvar-scv
+  labels:
+    app: clinvar-scv
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: clinvar-scv
+  template:
+    metadata:
+      labels:
+        app: clinvar-scv
+    spec:
+      containers:
+        - image: gcr.io/clingen-stage/clinvar-scv:v4
+          imagePullPolicy: Always
+          name: clinvar-scv  
+          env:
+            - name: KAFKA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: clinvar-scv-kafka-user
+                  key: user
+            - name: KAFKA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: clinvar-scv-kafka-password
+                  key: password

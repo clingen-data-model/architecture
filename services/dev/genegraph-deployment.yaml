@@ -21,16 +21,14 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-dev/genegraph:v4
+        - image: gcr.io/clingen-dev/genegraph:v18
           imagePullPolicy: Always
           name: genegraph  
           env:
-            - name: CG_SEARCH_DATA_VOL
+            - name: GENEGRAPH_DATA_PATH
               value: "/data/"
-            - name: DATA_EXCHANGE_HOST
-              value: "exchange.clinicalgenome.org:9093"
-            - name: SERVEUR_GROUP
-              value: "serveur_dev"
+            - name: GENEGRAPH_DATA_VERSION
+              value: "2020-06-08T1603"
             - name: SERVEUR_KEY_PASS
               valueFrom:
                 secretKeyRef:
@@ -41,7 +39,7 @@ spec:
             - name: SERVEUR_TRUSTSTORE
               value: "/keys/serveur.truststore.jks"
             - name: CG_SEARCH_TOPICS
-              value: gene-dosage-stage
+              value: "gene-dosage-stage;actionability;gci-legacy"
             - name: KAFKA_USER
               valueFrom:
                 secretKeyRef:
@@ -54,6 +52,8 @@ spec:
                   key: password
             - name: DX_STAGE_JAAS
               value: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$(KAFKA_USER)\" password=\"$(KAFKA_PASSWORD)\";"
+            - name: GENEGRAPH_BUCKET
+              value: genegraph-dev
           ports:
             - containerPort: 8888
               name: genegraph
