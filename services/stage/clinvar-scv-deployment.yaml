@@ -15,7 +15,7 @@ spec:
         app: clinvar-scv
     spec:
       containers:
-        - image: gcr.io/clingen-stage/clinvar-scv:v4
+        - image: gcr.io/clingen-stage/clinvar-scv:v5
           imagePullPolicy: Always
           name: clinvar-scv  
           env:
