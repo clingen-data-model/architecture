@@ -21,26 +21,26 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-stage/genegraph:v17
+        - image: gcr.io/clingen-stage/genegraph:fb536f9ab851d3cdf6c030582f26073e1b5d0d95
           name: genegraph
           env:
-            - name: CG_SEARCH_DATA_VOL
+            - name: GENEGRAPH_DATA_VOL
               value: "/data/"
-            - name: DATA_EXCHANGE_HOST
-              value: "exchange.clinicalgenome.org:9093"
-            - name: SERVEUR_GROUP
-              value: "serveur_dev"
+            - name: GENEGRAPH_DATA_VERSION
+              value: "2020-07-01T2112"
             - name: SERVEUR_KEY_PASS
               valueFrom:
                 secretKeyRef:
                   name: serveur-key-pass
                   key: password
-            - name: SERVEUR_KEYSTORE
-              value: "/keys/dev.serveur.keystore.jks"
-            - name: SERVEUR_TRUSTSTORE
-              value: "/keys/serveur.truststore.jks"
             - name: CG_SEARCH_TOPICS
               value: "actionability;gci-legacy;gene-dosage-stage"
+            - name: GENEGRAPH_MODE
+              value: "production"
+            - name: GENEGRAPH_BUCKET
+              value: "genegraph-stage"
+            - name: GENEGRAPH_GQL_CACHE
+              value: "true"
             - name: DX_STAGE_JAAS
               valueFrom:
                 secretKeyRef:
