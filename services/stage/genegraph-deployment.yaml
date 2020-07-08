@@ -21,13 +21,14 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-stage/genegraph:fb536f9ab851d3cdf6c030582f26073e1b5d0d95
+        - image:
+            gcr.io/clingen-stage/genegraph:aea73981e499bdbee5263b647026fb77b98d9b6f
           name: genegraph
           env:
-            - name: GENEGRAPH_DATA_VOL
+            - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2020-07-01T2112"
+              value: "2020-07-02T1824"
             - name: SERVEUR_KEY_PASS
               valueFrom:
                 secretKeyRef:
@@ -52,7 +53,3 @@ spec:
           volumeMounts:
             - name: genegraph-vol
               mountPath: /data/
-
-              
-  
-
