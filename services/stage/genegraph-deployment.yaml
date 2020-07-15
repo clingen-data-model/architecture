@@ -22,7 +22,7 @@ spec:
             path: "/mnt/disks/ssd0"
       containers:
         - image:
-            gcr.io/clingen-stage/genegraph:aea73981e499bdbee5263b647026fb77b98d9b6f
+            gcr.io/clingen-stage/genegraph:88574f861d611c9dbd4a41beb7a8d3c44e60b23d
           name: genegraph
           env:
             - name: GENEGRAPH_DATA_PATH
@@ -40,8 +40,8 @@ spec:
               value: "production"
             - name: GENEGRAPH_BUCKET
               value: "genegraph-stage"
-            - name: GENEGRAPH_GQL_CACHE
-              value: "true"
+            # - name: GENEGRAPH_GQL_CACHE
+            #   value: "true"
             - name: DX_STAGE_JAAS
               valueFrom:
                 secretKeyRef:
