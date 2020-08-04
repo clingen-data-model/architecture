@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clingen-kb
+  labels:
+    app: clingen-kb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clingen-kb
+  template:
+    metadata:
+      labels:
+        app: clingen-kb
+    spec:
+      containers:
+        - image:
+            gcr.io/clingen-stage/clingen-knowledge:v1
+          name: clingen-kb
+          env:
+            - name: NEO4J_URL
+              valueFrom:
+                secretKeyRef:
+                  name: neo4j-url
+                  key: url
+          ports:
+            - containerPort: 80
+              name: clingen-kb

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: neo4j
+spec:
+  selector:
+    matchLabels:
+      app: neo4j
+  serviceName: "neo4j"
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: neo4j
+    spec:
+      containers:
+      - name: neo4j
+        image: neo4j:3.4
+        ports:
+        - containerPort: 7474
+          name: neo4j-http
+        - containerPort: 7687
+          name: neo4j-bolt
+        volumeMounts:
+        - name: neo4j-pvc
+          mountPath: "/data"
+  volumeClaimTemplates:
+  - metadata:
+      name: neo4j-pvc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 30Gi
