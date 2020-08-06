@@ -22,7 +22,7 @@ spec:
             path: "/mnt/disks/ssd0"
       containers:
         - image:
-            gcr.io/clingen-stage/genegraph:a4fc34259530766e55f97000df928c36f5a80b31
+            gcr.io/clingen-stage/genegraph:0bccf44048fb4d50ddb75842b42ee2fbfc32b829
           name: genegraph
           resources:
             requests:
