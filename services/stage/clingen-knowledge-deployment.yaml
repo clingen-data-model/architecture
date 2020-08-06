@@ -16,8 +16,13 @@ spec:
     spec:
       containers:
         - image:
-            gcr.io/clingen-stage/clingen-knowledge:v1
+            gcr.io/clingen-stage/clingen-knowledge:v5
           name: clingen-kb
+          resources:
+            limits:
+              memory: 2Gi
+            requests:
+              memory: 1Gi
           env:
             - name: NEO4J_URL
               valueFrom:

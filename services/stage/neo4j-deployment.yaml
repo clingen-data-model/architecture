@@ -18,6 +18,19 @@ spec:
       containers:
       - name: neo4j
         image: neo4j:3.4
+        resources:
+          requests:
+            memory: 6Gi
+            cpu: 500m
+          limits:
+            memory: 10Gi
+        env:
+          - name: NEO4J_dbms_memory_heap_initial__size
+            value: 3500m
+          - name: NEO4J_dbms_memory_heap_max__size
+            value: 3500m
+          - name: NEO4J_dbms_memory_pagecache_size
+            value: 2000m
         ports:
         - containerPort: 7474
           name: neo4j-http
@@ -30,7 +43,12 @@ spec:
   - metadata:
       name: neo4j-pvc
     spec:
+      storageClassName: faster
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
           storage: 30Gi
+
+# dbms.memory.heap.initial_size=3500m
+# dbms.memory.heap.max_size=3500m
+# dbms.memory.pagecache.size=2000m

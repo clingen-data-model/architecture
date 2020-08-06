@@ -24,6 +24,12 @@ spec:
         - image:
             gcr.io/clingen-stage/genegraph:a4fc34259530766e55f97000df928c36f5a80b31
           name: genegraph
+          resources:
+            requests:
+              memory: 10Gi
+              cpu: 1000m
+            limits:
+              memory: 13Gi
           env:
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
