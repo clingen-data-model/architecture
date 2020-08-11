@@ -46,8 +46,8 @@ spec:
               value: "production"
             - name: GENEGRAPH_BUCKET
               value: "genegraph-stage"
-            - name: GENEGRAPH_GQL_CACHE
-              value: "true"
+            # - name: GENEGRAPH_GQL_CACHE
+            #   value: "true"
             - name: DX_STAGE_JAAS
               valueFrom:
                 secretKeyRef:

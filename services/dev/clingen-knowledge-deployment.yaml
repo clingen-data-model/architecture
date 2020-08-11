@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - image:
-            gcr.io/clingen-stage/clingen-knowledge:v11
+            gcr.io/clingen-dev/clingen-knowledge:v11
+          imagePullPolicy: Always
           name: clingen-kb
           resources:
             limits:
