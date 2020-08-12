@@ -22,14 +22,14 @@ spec:
             path: "/mnt/disks/ssd0"
       containers:
         - image:
-            gcr.io/clingen-stage/genegraph:0bccf44048fb4d50ddb75842b42ee2fbfc32b829
+            gcr.io/clingen-stage/genegraph:a58745e30bdc33d25fea228ddaef1f4cfec43588
           name: genegraph
           resources:
             requests:
-              memory: 10Gi
+              memory: 6Gi
               cpu: 1000m
             limits:
-              memory: 13Gi
+              memory: 10Gi
           env:
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
@@ -46,8 +46,8 @@ spec:
               value: "production"
             - name: GENEGRAPH_BUCKET
               value: "genegraph-stage"
-            # - name: GENEGRAPH_GQL_CACHE
-            #   value: "true"
+            - name: GENEGRAPH_GQL_CACHE
+              value: "true"
             - name: DX_STAGE_JAAS
               valueFrom:
                 secretKeyRef:

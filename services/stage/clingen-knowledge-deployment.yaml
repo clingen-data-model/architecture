@@ -20,9 +20,9 @@ spec:
           name: clingen-kb
           resources:
             limits:
-              memory: 8Gi
-            requests:
               memory: 6Gi
+            requests:
+              memory: 4Gi
               cpu: 1000m
           env:
             - name: NEO4J_URL
