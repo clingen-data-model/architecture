@@ -34,7 +34,7 @@ spec:
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2020-07-02T1824"
+              value: "2020-08-06T2248"
             - name: SERVEUR_KEY_PASS
               valueFrom:
                 secretKeyRef:
@@ -47,6 +47,10 @@ spec:
             - name: GENEGRAPH_BUCKET
               value: "genegraph-stage"
             - name: GENEGRAPH_GQL_CACHE
+              value: "true"
+            - name: GENEGRAPH_VALIDATE_EVENTS
+              value: "true"
+            - name: GENEGRAPH_RESPONSE_CACHE
               value: "true"
             - name: DX_STAGE_JAAS
               valueFrom:
