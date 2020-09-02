@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: serveur
-        image: gcr.io/clingen-stage/serveur:v4
+        image: gcr.io/clingen-stage/serveur:v5
         resources:
           requests:
             cpu: 100m
