@@ -1,14 +1,10 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: genegraph
+  name: genegraph-migration
   labels:
     app: genegraph
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: genegraph
   template:
     metadata:
       labels:
@@ -28,7 +24,7 @@ spec:
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2020-09-11T1554"
+              value: "2020-08-06T2248"
             - name: SERVEUR_KEY_PASS
               valueFrom:
                 secretKeyRef:
@@ -57,3 +53,5 @@ spec:
           volumeMounts:
             - name: genegraph-vol
               mountPath: /data/
+          command: ["java", "-jar", "/app/app.jar", "migration"]
+      restartPolicy: "OnFailure"
