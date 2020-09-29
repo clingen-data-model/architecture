@@ -22,7 +22,7 @@ spec:
             path: "/mnt/disks/ssd0"
       containers:
         - image:
-            gcr.io/clingen-stage/genegraph:4996bb2d5603c66c7e9f41fd195f80f24bcb2d31
+            gcr.io/clingen-stage/genegraph:a8487a642dd490846dfad329390fb4a832ef4f43
           name: genegraph
           resources:
             requests:
@@ -34,7 +34,7 @@ spec:
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2020-09-11T1554"
+              value: "2020-09-25T1802"
             - name: SERVEUR_KEY_PASS
               valueFrom:
                 secretKeyRef:
