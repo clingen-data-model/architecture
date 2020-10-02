@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: serveur
+spec:
+  selector:
+    matchLabels:
+      app: serveur
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: serveur
+    spec:
+      containers:
+      - name: serveur
+        image: gcr.io/clingen-dx/serveur:v6
+        resources:
+          requests:
+            cpu: 100m
+            memory: 500Mi
+        env:
+        - name: SERVEUR_KEY_PASS
+          valueFrom:
+            secretKeyRef:
+              name: serveur-key
+              key: password
+        - name: SERVEUR_TRUST_PASS
+          valueFrom:
+            secretKeyRef:
+              name: serveur-key
+              key: password
+        - name: DATA_EXCHANGE_HOST
+          value: "exchange.clinicalgenome.org:9093"
+        - name: NEO4J_SERVER_PATH
+          value: "bolt://neo4j-service"
+        - name: NEO4J_USER
+          valueFrom:
+            secretKeyRef:
+              name: neo4j-credentials
+              key: user
+        - name: NEO4J_PASS
+          valueFrom:
+            secretKeyRef:
+              name: neo4j-credentials
+              key: password
+        - name: SERVEUR_KEYSTORE
+          value: "keys/serveur-prod-gcp.keystore.jks"
+        - name: SERVEUR_GROUP
+          value: serveur_prod_gcp
+        - name: SERVEUR_KAFKA_TOPICS
+          value: "actionability;gene_dosage;gene_validity"
+
