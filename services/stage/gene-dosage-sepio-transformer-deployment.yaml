@@ -14,12 +14,14 @@ spec:
     spec:
       containers:
       - name: gene-dosage-sepio-transformer
-        image: gcr.io/clingen-stage/gene-dosage-sepio-transformer:v2
+        image: gcr.io/clingen-stage/gene-dosage-sepio-transformer:v3
         resources:
           requests:
             cpu: 100m
             memory: 500Mi
         env:
+        - name: KAFKA_APPLICATION_ID
+          value: "gene-dosage-sepio-transformer"
         - name: KAFKA_HOST
           value: "pkc-4yyd6.us-east1.gcp.confluent.cloud:9092"
         - name: KAFKA_USER
