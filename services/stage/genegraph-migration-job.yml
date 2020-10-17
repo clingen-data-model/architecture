@@ -5,10 +5,6 @@ metadata:
   labels:
     app: genegraph
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: genegraph
   template:
     metadata:
       labels:
@@ -21,14 +17,8 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-stage/genegraph:42d9281f799f0e266306cd73c9b85597eb6f3f1d
+        - image: gcr.io/clingen-stage/genegraph:f28839d0ab4a65e3a9a77fee3bc9c163338a7f8b
           name: genegraph
-          resources:
-            requests:
-              memory: 6Gi
-              cpu: 1000m
-            limits:
-              memory: 10Gi
           env:
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
