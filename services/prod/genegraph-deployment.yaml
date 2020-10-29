@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genegraph
+  labels:
+    app: genegraph
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: genegraph
+  template:
+    metadata:
+      labels:
+        app: genegraph
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-local-ssd: "true"
+      volumes:
+        - name: genegraph-vol
+          hostPath:
+            path: "/mnt/disks/ssd0"
+      containers:
+        - image: gcr.io/clingen-dx/genegraph:ef0736ab745c979dce65d2edbab491f7220a9f31
+          name: genegraph
+          resources:
+            requests:
+              memory: 6Gi
+              cpu: 1000m
+            limits:
+              memory: 10Gi
+          env:
+            - name: GENEGRAPH_DATA_PATH
+              value: "/data/"
+            - name: GENEGRAPH_DATA_VERSION
+              value: "2020-10-19T2349"
+            - name: SERVEUR_KEY_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: serveur-key-pass
+                  key: password
+            - name: CG_SEARCH_TOPICS
+              value: "actionability;gci-legacy;gene-dosage-stage"
+            - name: GENEGRAPH_MODE
+              value: "production"
+            - name: GENEGRAPH_BUCKET
+              value: "genegraph-prod"
+            - name: GENEGRAPH_GQL_CACHE
+              value: "true"
+            - name: GENEGRAPH_VALIDATE_EVENTS
+              value: "true"
+            - name: GENEGRAPH_RESPONSE_CACHE
+              value: "true"
+            - name: DX_STAGE_JAAS
+              valueFrom:
+                secretKeyRef:
+                  name: dx-stage-jaas
+                  key: password
+          ports:
+            - containerPort: 8888
+              name: genegraph
+          volumeMounts:
+            - name: genegraph-vol
+              mountPath: /data/
