@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: genegraph-service
+  name: genegraph
 spec:
   ports:
     - port: 80
       targetPort: 8888
       protocol: TCP
+  type: LoadBalancer
   selector:
     app: genegraph
   
