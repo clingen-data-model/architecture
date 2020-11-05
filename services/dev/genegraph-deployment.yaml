@@ -29,11 +29,6 @@ spec:
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
               value: "2020-09-11T1554"
-            - name: SERVEUR_KEY_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: serveur-key-pass
-                  key: password
             - name: CG_SEARCH_TOPICS
               value: "gene-dosage-stage;actionability;gci-legacy"
             - name: GENEGRAPH_MODE

@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: genegraph-migration
+  name: genegraph-migration-stage
   labels:
     app: genegraph
 spec:
@@ -25,11 +25,6 @@ spec:
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
               value: "2020-08-06T2248"
-            - name: SERVEUR_KEY_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: serveur-key-pass
-                  key: password
             - name: CG_SEARCH_TOPICS
               value: "gene-dosage-stage;actionability;gci-legacy"
             - name: GENEGRAPH_MODE

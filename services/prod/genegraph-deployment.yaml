@@ -21,7 +21,7 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-dx/genegraph:ef0736ab745c979dce65d2edbab491f7220a9f31
+        - image: gcr.io/clingen-dx/genegraph:4cb586f59b50d0480f34abcf214cc4a8802c1964
           name: genegraph
           resources:
             requests:
@@ -33,12 +33,7 @@ spec:
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2020-10-19T2349"
-            - name: SERVEUR_KEY_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: serveur-key-pass
-                  key: password
+              value: "2020-11-05T1652"
             - name: CG_SEARCH_TOPICS
               value: "actionability;gci-legacy;gene-dosage-stage"
             - name: GENEGRAPH_MODE
