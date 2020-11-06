@@ -33,7 +33,7 @@ spec:
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2020-11-05T1652"
+              value: "2020-11-05T1819"
             - name: CG_SEARCH_TOPICS
               value: "actionability;gci-legacy;gene-dosage-stage"
             - name: GENEGRAPH_MODE
