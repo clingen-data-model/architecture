@@ -6,6 +6,11 @@ metadata:
     app: genegraph
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
   selector:
     matchLabels:
       app: genegraph
@@ -14,6 +19,13 @@ spec:
       labels:
         app: genegraph
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app: genegraph
       nodeSelector:
         cloud.google.com/gke-local-ssd: "true"
       volumes:
@@ -21,7 +33,7 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-stage/genegraph:e9dadedd75e1de2779c24e67bb81daab44af367d
+        - image: gcr.io/clingen-stage/genegraph:52ece909f5f2ffd99f75e55049dab16719c7cb9b
           name: genegraph
           resources:
             requests:
@@ -30,10 +42,12 @@ spec:
             limits:
               memory: 10Gi
           env:
+            - name: GENEGRAPH_IMAGE_VERSION
+              value: " gcr.io/clingen-stage/genegraph:52ece909f5f2ffd99f75e55049dab16719c7cb9b"
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2020-11-16T1458"
+              value: "2020-11-19T1522"
             - name: CG_SEARCH_TOPICS
               value: "actionability;gci-legacy;gene-dosage-jira"
             - name: GENEGRAPH_MODE
@@ -53,7 +67,22 @@ spec:
                   key: password
           ports:
             - containerPort: 8888
-              name: genegraph
+              name: genegraph-port
           volumeMounts:
             - name: genegraph-vol
               mountPath: /data/
+          readinessProbe:
+            periodSeconds: 30
+            successThreshold: 1
+            httpGet:
+              path: /ready
+              port: genegraph-port
+          livenessProbe:
+            periodSeconds: 30
+            successThreshold: 1
+            httpGet:
+              path: /live
+              port: genegraph-port
+            
+
+              

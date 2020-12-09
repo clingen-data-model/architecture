@@ -1,0 +1,52 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: genegraph-migration-stage
+  labels:
+    app: genegraph-migration
+spec:
+  schedule: "30 16 * * 2"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          nodeSelector:
+            cloud.google.com/gke-local-ssd: "true"
+          volumes:
+          - name: genegraph-vol
+            hostPath:
+              path: "/mnt/disks/ssd0"
+          containers:
+            - name: genegraph
+               image: gcr.io/clingen-dev/genegraph:v28
+               imagePullPolicy: Always
+            env:
+              - name: GENEGRAPH_DATA_PATH
+                value: "/data/"
+              - name: GENEGRAPH_DATA_VERSION
+                value: "2020-08-06T2248"
+              - name: CG_SEARCH_TOPICS
+                value: "gene-dosage-jira;actionability;gci-legacy"
+              - name: GENEGRAPH_MODE
+                value: "production"
+              - name: GENEGRAPH_BUCKET
+                value: genegraph-dev
+              - name: GENEGRAPH_GQL_CACHE
+                value: "true"
+              - name: GENEGRAPH_VALIDATE_EVENTS
+                value: "true"
+              - name: GENEGRAPH_RESPONSE_CACHE
+                value: "true"
+              - name: DX_STAGE_JAAS
+                valueFrom:
+                  secretKeyRef:
+                    name: dx-stage-jaas
+                    key: password
+            ports:
+              - containerPort: 8888
+                name: genegraph
+            volumeMounts:
+              - name: genegraph-vol
+                mountPath: /data/
+            command: ["java", "-jar", "/app/app.jar", "migration"]
+        restartPolicy: "OnFailure"
