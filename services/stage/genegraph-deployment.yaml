@@ -33,7 +33,7 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-stage/genegraph:dd72a571d68e3debafc1abd24eac1d1cee1a6303
+        - image: gcr.io/clingen-stage/genegraph:507c1aedae501aeeb6554dcf812429c6c4b57916
           name: genegraph
           resources:
             requests:
@@ -43,11 +43,11 @@ spec:
               memory: 10Gi
           env:
             - name: GENEGRAPH_IMAGE_VERSION
-              value: " gcr.io/clingen-stage/genegraph:52ece909f5f2ffd99f75e55049dab16719c7cb9b"
+              value: "gcr.io/clingen-stage/genegraph:507c1aedae501aeeb6554dcf812429c6c4b57916"
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2020-12-15T0216"
+              value: "2020-12-17T1429"
             - name: CG_SEARCH_TOPICS
               value: "actionability;gci-legacy;gene-dosage-jira"
             - name: GENEGRAPH_MODE
@@ -56,8 +56,8 @@ spec:
               value: "genegraph-stage"
             - name: GENEGRAPH_GQL_CACHE
               value: "true"
-            - name: GENEGRAPH_VALIDATE_EVENTS
-              value: "true"
+            # - name: GENEGRAPH_VALIDATE_EVENTS
+            #   value: "true"
             - name: GENEGRAPH_RESPONSE_CACHE
               value: "true"
             - name: DX_STAGE_JAAS
