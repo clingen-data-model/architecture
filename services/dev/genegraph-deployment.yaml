@@ -5,7 +5,7 @@ metadata:
   labels:
     app: genegraph
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -33,16 +33,16 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-dev/genegraph:v29
+        - image: gcr.io/clingen-dev/genegraph:v39
           imagePullPolicy: Always
           name: genegraph
           env:
             - name: GENEGRAPH_IMAGE_VERSION
-              value: "gcr.io/clingen-dev/genegraph:v29"
+              value: "gcr.io/clingen-dev/genegraph:v39"
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2020-12-01T2216"
+              value: "2020-12-18T1947"
             - name: CG_SEARCH_TOPICS
               value: "gene-dosage-jira;actionability;gci-legacy"
             - name: GENEGRAPH_MODE
@@ -51,14 +51,14 @@ spec:
               value: genegraph-dev
             - name: GENEGRAPH_GQL_CACHE
               value: "true"
-            - name: GENEGRAPH_VALIDATE_EVENTS
-              value: "true"
+            # - name: GENEGRAPH_VALIDATE_EVENTS
+            #   value: "true"
             - name: GENEGRAPH_RESPONSE_CACHE
               value: "true"
             - name: DX_STAGE_JAAS
               valueFrom:
                 secretKeyRef:
-                  name: dx-stage-jaas
+                  name: dx-prod-jaas
                   key: password
           ports:
             - containerPort: 8888
