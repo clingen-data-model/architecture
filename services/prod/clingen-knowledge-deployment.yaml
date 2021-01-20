@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - image:
-            gcr.io/clingen-dx/clingen-knowledge:v16
+            gcr.io/clingen-dx/clingen-knowledge:v17
           name: clingen-kb
           volumeMounts:
             - mountPath: "/etc/nginx/ssl"
