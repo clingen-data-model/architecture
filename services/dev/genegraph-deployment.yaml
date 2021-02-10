@@ -33,16 +33,16 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-dev/genegraph:v54
+        - image: gcr.io/clingen-dev/genegraph:v57
           imagePullPolicy: Always
           name: genegraph
           env:
             - name: GENEGRAPH_IMAGE_VERSION
-              value: "gcr.io/clingen-dev/genegraph:v54"
+              value: "gcr.io/clingen-dev/genegraph:v57"
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2021-02-03T2256"
+              value: "2021-02-09T1847"
             - name: CG_SEARCH_TOPICS
               value: "gene-dosage-jira;actionability;gci-legacy"
             - name: GENEGRAPH_MODE
