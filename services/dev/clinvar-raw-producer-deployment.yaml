@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clinvar-raw-producer
+  labels:
+    app: clinvar-raw-producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clinvar-raw-producer
+  template:
+    metadata:
+      labels:
+        app: clinvar-raw-producer
+    spec:
+      containers:
+        - image: gcr.io/clingen-dev/clinvar-raw-producer:1.0
+          imagePullPolicy: Always
+          name: clinvar-raw-producer
+          env:
+            - name: KAFKA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: clinvar-raw-credentials
+                  key: user
+            - name: KAFKA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: clinvar-raw-credentials
+                  key: password
