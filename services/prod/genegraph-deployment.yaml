@@ -33,7 +33,7 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-dx/genegraph:release-1.2
+        - image: gcr.io/clingen-dx/genegraph:release-1.3
           name: genegraph
           resources:
             requests:
@@ -43,7 +43,7 @@ spec:
               memory: 10Gi
           env:
             - name: GENEGRAPH_IMAGE_VERSION
-              value: "gcr.io/clingen-dx/genegraph:release-1.2"
+              value: "gcr.io/clingen-dx/genegraph:release-1.3"
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION

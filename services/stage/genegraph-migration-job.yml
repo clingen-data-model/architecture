@@ -1,14 +1,14 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: genegraph-migration
+  name: genegraph-migration-stage
   labels:
-    app: genegraph
+    app: genegraph-migration-stage
 spec:
   template:
     metadata:
       labels:
-        app: genegraph
+        app: genegraph-migration-stage
     spec:
       nodeSelector:
         cloud.google.com/gke-local-ssd: "true"
@@ -17,24 +17,21 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-stage/genegraph:4cb586f59b50d0480f34abcf214cc4a8802c1964
+        - image: gcr.io/clingen-stage/genegraph:v63
+          imagePullPolicy: Always
           name: genegraph
           env:
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
-            - name: GENEGRAPH_DATA_VERSION
-              value: "2020-09-30T2041"
             - name: CG_SEARCH_TOPICS
-              value: "actionability;gci-legacy;gene-dosage-stage"
+              value: "gene-dosage-jira;actionability;gci-legacy"
             - name: GENEGRAPH_MODE
               value: "production"
             - name: GENEGRAPH_BUCKET
               value: "genegraph-stage"
             - name: GENEGRAPH_GQL_CACHE
               value: "true"
-            - name: GENEGRAPH_VALIDATE_EVENTS
-              value: "true"
-            - name: GENEGRAPH_RESPONSE_CACHE
+            - name: GENEGRAPH_DATABASE_BUILD_MODE
               value: "true"
             - name: DX_STAGE_JAAS
               valueFrom:
