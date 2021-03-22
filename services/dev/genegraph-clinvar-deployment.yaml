@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genegraph-clinvar
+  labels:
+    app: genegraph-clinvar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: genegraph-clinvar
+  template:
+    metadata:
+      labels:
+        app: genegraph-clinvar
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-local-ssd: "true"
+      volumes:
+        - name: genegraph-vol
+          hostPath:
+            path: "/mnt/disks/ssd0/genegraph-clinvar"
+      containers:
+        - image: gcr.io/clingen-dev/genegraph:cv-latest
+          imagePullPolicy: Always
+          name: genegraph
+          env:
+            - name: GENEGRAPH_DATA_PATH
+              value: "/data/"
+            - name: GENEGRAPH_DATA_VERSION
+              value: "2020-12-17T1429"
+            - name: SERVEUR_KEY_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: serveur-key-pass
+                  key: password
+            - name: CG_SEARCH_TOPICS
+              value: "clinvar-combined"
+            - name: GENEGRAPH_MODE
+              value: "production"
+            - name: GENEGRAPH_BUCKET
+              value: genegraph-dev
+            - name: GENEGRAPH_GQL_CACHE
+              value: "true"
+            - name: GENEGRAPH_VALIDATE_EVENTS
+              value: "true"
+            - name: GENEGRAPH_RESPONSE_CACHE
+              value: "true"
+            - name: DX_STAGE_JAAS
+              valueFrom:
+                secretKeyRef:
+                  name: dx-dev-jaas
+                  key: password
+          ports:
+            - containerPort: 8888
+              name: genegraph-port
+          volumeMounts:
+            - name: genegraph-vol
+              mountPath: /data/
+          readinessProbe:
+            periodSeconds: 30
+            successThreshold: 1
+            httpGet:
+              path: /live
+              port: genegraph-port
