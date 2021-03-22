@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seqrepo-rest
+  labels:
+    app: seqrepo-rest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seqrepo-rest
+  template:
+    metadata:
+      labels:
+        app: seqrepo-rest
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-local-ssd: "true"
+      volumes:
+        - name: local-ssd
+          hostPath:
+            path: "/mnt/disks/ssd0/seqrepo"
+      # https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+      initContainers:
+        # seqrepo will populate whatever device is at /usr/local/share/seqrepo
+        - image: biocommons/seqrepo:latest
+          imagePullPolicy: Always
+          name: seqrepo
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              memory: 256Mi
+              cpu: 0.5
+          volumeMounts:
+            - name: local-ssd
+              mountPath: "/usr/local/share/seqrepo"
+      containers:
+        - image: redis:latest
+          imagePullPolicy: Always
+          name: redis
+          ports:
+            - containerPort: 6379
+              name: redis
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: 0.1
+
+        - image: biocommons/seqrepo-rest-service:latest
+          imagePullPolicy: Always
+          name: seqrepo-rest
+          ports:
+            - containerPort: 5000
+              name: seqrepo-rest
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              memory: 256Mi
+              cpu: 0.5
+          volumeMounts:
+            - name: local-ssd
+              mountPath: "/usr/local/share/seqrepo"
+
