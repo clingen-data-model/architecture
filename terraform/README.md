@@ -9,7 +9,7 @@ This directory contains (or eventually will contain) the terraform definitions f
 
 ## terraform remote state
 
-To ensure that our infrastrucutre state is kept backed-up, and locked to prevent simultaneous exexecutions, the [terraform state](https://www.terraform.io/docs/language/state/index.html) files are kept in GCS buckets. Since I'd like the buckets to exist before terraform can store state in them, the buckets need to be created by hand, rather than managed with terraform. See the [Remote State](https://www.terraform.io/docs/language/settings/backends/gcs.html) docs for more info.
+To ensure that our infrastrucutre state is kept backed-up, and locked to prevent simultaneous executions, the [terraform state](https://www.terraform.io/docs/language/state/index.html) files are kept in GCS buckets. Since I'd like the buckets to exist before terraform can store state in them, the buckets need to be created by hand, rather than managed with terraform. See the [Remote State](https://www.terraform.io/docs/language/settings/backends/gcs.html) docs for more info.
 
 ## Inovking terraform
 
