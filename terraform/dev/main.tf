@@ -1,13 +1,13 @@
 terraform {
   backend "gcs" {
-    bucket  = "clingen-tfstate-dev"
-    prefix  = "terraform/state"
+    bucket = "clingen-tfstate-dev"
+    prefix = "terraform/state"
   }
 }
 
 provider "google" {
-  project     = "clingen-dev"
-  region      = "us-east1"
+  project = "clingen-dev"
+  region  = "us-east1"
 }
 
 # The IAM role that we'll use to allow read access to all GCP secrets within the project
