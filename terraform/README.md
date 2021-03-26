@@ -16,4 +16,6 @@ To ensure that our infrastrucutre state is kept backed-up, and locked to prevent
 To apply a configuration, cd into the desired env folder, and:
 
 - If it's the first time you've executed terraform, run `terraform init`.
-- Run a `terraform plan` to see the difference between the current configuration, and the actual infrastructure
+- make the desired changes to the terraform manifests.
+- Run a `terraform plan` to see the difference between the current configuration, and the actual infrastructure.
+- If the plan looks good, run `terraform apply` to apply your changes (it will stop and ask you to confirm first). 
