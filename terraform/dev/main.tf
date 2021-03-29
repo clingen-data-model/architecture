@@ -5,5 +5,5 @@ provider "google" {
 
 module "external-secrets" {
   source = "../modules/external-secrets"
-  env = "dev"
+  env    = "dev"
 }

@@ -1,4 +1,4 @@
 variable "env" {
-  type = string
+  type        = string
   description = "The name of the environment we are deploying to. E.g. {dev,stage,prod}"
 }
