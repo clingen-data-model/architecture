@@ -33,3 +33,23 @@ resource "google_project_iam_member" "k8s-external-secrets-iam-membership" {
   member = "serviceAccount:${google_service_account.clingen-dev-external-secrets.email}"
 }
 
+# Generate a key for the ServiceAccount, for the controller to authenticate with
+resource "google_service_account_key" "external_secrets_sa_key" {
+  service_account_id = google_service_account.clingen-dev-external-secrets.name
+}
+
+# create a secret to store the service account key in
+resource "google_secret_manager_secret" "external_secrets_sa_key_secret" {
+  secret_id = "secret"
+
+  replication {
+    automatic = true
+  }
+}
+
+# store the actual key data as a secret version
+resource "google_secret_manager_secret_version" "external_secrets_key_version" {
+  secret = google_secret_manager_secret.external_secrets_sa_key_secret.id
+
+  secret_data = base64decode(google_service_account_key.external_secrets_sa_key.private_key)
+}
