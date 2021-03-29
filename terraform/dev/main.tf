@@ -1,10 +1,3 @@
-terraform {
-  backend "gcs" {
-    bucket = "clingen-tfstate-dev"
-    prefix = "terraform/state"
-  }
-}
-
 provider "google" {
   project = "clingen-dev"
   region  = "us-east1"

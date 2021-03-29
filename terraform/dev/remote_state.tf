@@ -5,3 +5,10 @@ resource "google_storage_bucket_iam_member" "member" {
   role   = "roles/storage.objectAdmin"
   member = "group:clingendevs@broadinstitute.org"
 }
+
+terraform {
+  backend "gcs" {
+    bucket = "clingen-tfstate-dev"
+    prefix = "terraform/state"
+  }
+}
