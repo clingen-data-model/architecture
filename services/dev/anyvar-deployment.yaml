@@ -31,7 +31,7 @@ spec:
               memory: 512Mi
             requests:
               memory: 256Mi
-              cpu: 1
+              cpu: 0.2
           volumeMounts:
             - name: local-ssd
               mountPath: "/usr/local/share/seqrepo"
@@ -45,7 +45,7 @@ spec:
           resources:
             limits:
               memory: 512Mi
-              cpu: 0.5
+              cpu: 0.1
 
         - image: gcr.io/clingen-dev/anyvar:latest
           imagePullPolicy: Always
@@ -58,7 +58,7 @@ spec:
               memory: 512Mi
             requests:
               memory: 128Mi
-              cpu: 0.5
+              cpu: 0.2
           volumeMounts:
             - name: local-ssd
               mountPath: "/usr/local/share/seqrepo"
