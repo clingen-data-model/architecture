@@ -28,8 +28,6 @@ spec:
           name: seqrepo
           resources:
             limits:
-              memory: 512Mi
-            requests:
               memory: 256Mi
               cpu: 0.2
           volumeMounts:
@@ -44,9 +42,8 @@ spec:
               name: redis
           resources:
             limits:
-              memory: 512Mi
+              memory: 256Mi
               cpu: 0.1
-
         - image: gcr.io/clingen-dev/anyvar:latest
           imagePullPolicy: Always
           name: anyvar
@@ -56,6 +53,7 @@ spec:
           resources:
             limits:
               memory: 512Mi
+              cpu: 0.4
             requests:
               memory: 128Mi
               cpu: 0.2
