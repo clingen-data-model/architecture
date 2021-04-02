@@ -16,3 +16,7 @@ resource "google_dns_record_set" "argo_a_record" {
 
   rrdatas = [google_compute_global_address.argocd_external_ip.address]
 }
+
+module "broad_cloudarmor_policy" {
+  source = "git@github.com:broadinstitute/terraform-shared.git//terraform-modules/cloud-armor-rule?ref=71303ce4f7d1249657ebe404059b0aea52523748"
+}
