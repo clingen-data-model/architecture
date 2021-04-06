@@ -9,6 +9,6 @@ module "external-secrets" {
 }
 
 module "cloudbuild-firebase" {
-  source = "../modules/cloudbuild-firebase"
+  source            = "../modules/cloudbuild-firebase"
   project_id_number = "522856288592"
 }
