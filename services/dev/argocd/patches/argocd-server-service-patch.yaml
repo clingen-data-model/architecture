@@ -1,3 +1,0 @@
-metadata:
-  annotations:
-    cloud.google.com/backend-config: '{"default": "argo-cloudarmor-config"}'
