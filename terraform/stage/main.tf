@@ -7,3 +7,8 @@ module "cloudbuild-firebase" {
   source            = "../modules/cloudbuild-firebase"
   project_id_number = "583560269534"
 }
+
+module "external-secrets" {
+  source = "../modules/external-secrets"
+  env    = "stage"
+}
