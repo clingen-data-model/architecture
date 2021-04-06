@@ -1,0 +1,34 @@
+static_ip_name: global-dev-argocd-ip
+managed_cert_name: argocd-dev-certificate
+argo_host_name: argocd-dev.clingen.app
+
+# values to pass on to the argocd subchart
+argo-cd:
+  installCRDs: false
+  global:
+    image:
+      tag: v1.8.7
+  server:
+    extraArgs:
+    - --insecure
+    service:
+      annotations:
+        cloud.google.com/backend-config: '{"default": "argo-cloudarmor-config"}'
+  rbacConfig:
+    policy.default: role:readonly
+    policy.csv: |
+      g, clingen-data-model:b/g-engineers, role:admin
+  config:
+    url: https://argocd-dev.clingen.app
+    dex.config: |
+      connectors:
+        - type: github
+          id: github
+          name: GitHub
+          config:
+            clientID: 3b48211878f7a8ce54a0
+            clientSecret: $dex.github.clientSecret
+            orgs:
+            - name: clingen-data-model
+              teams:
+                - b/g-engineers
