@@ -11,21 +11,21 @@ argo-cd:
     service:
       annotations:
         cloud.google.com/backend-config: '{"default": "argo-cloudarmor-config"}'
-  rbacConfig:
-    policy.default: role:readonly
-    policy.csv: |
-      g, clingen-data-model:b/g-engineers, role:admin
-  config:
-    url: https://argocd-dev.clingen.app
-    dex.config: |
-      connectors:
-        - type: github
-          id: github
-          name: GitHub
-          config:
-            clientID: 3b48211878f7a8ce54a0
-            clientSecret: $dex.github.clientSecret
-            orgs:
-            - name: clingen-data-model
-              teams:
-                - b/g-engineers
+    rbacConfig:
+      policy.default: role:readonly
+      policy.csv: |
+        g, clingen-data-model:b/g-engineers, role:admin
+    config:
+      url: https://argocd-dev.clingen.app
+      dex.config: |
+        connectors:
+          - type: github
+            id: github
+            name: GitHub
+            config:
+              clientID: 3b48211878f7a8ce54a0
+              clientSecret: $dex.github.clientSecret
+              orgs:
+              - name: clingen-data-model
+                teams:
+                  - b/g-engineers

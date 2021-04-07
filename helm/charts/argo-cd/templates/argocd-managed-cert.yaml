@@ -6,4 +6,4 @@ metadata:
     namespace: argocd
 spec:
     domains:
-    - 'argocd-dev.clingen.app'
+    - '{{ .Values.argo_host_name }}'

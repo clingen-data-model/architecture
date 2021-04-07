@@ -15,10 +15,6 @@ spec:
       paths:
       - backend:
           serviceName: argocd-server
-          servicePort: http
+          servicePort: 80
     # host: argocd-dev.clingen.app
     host: {{ .Values.argo_host_name }}
-  tls:
-  - hosts:
-    - {{ .Values.argo_host_name }}
-    secretName: argocd-secret # do not change, this is provided by Argo CD
