@@ -5,9 +5,6 @@ argo_host_name: argocd-dev.clingen.app
 # values to pass on to the argocd subchart
 argo-cd:
   installCRDs: false
-  global:
-    image:
-      tag: v1.8.7
   server:
     extraArgs:
     - --insecure
