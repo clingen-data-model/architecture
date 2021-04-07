@@ -1,0 +1,9 @@
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+    name: argocd-dev-certificate
+    namespace: argocd
+spec:
+    domains:
+    - 'argocd-dev.clingen.app'
