@@ -6,11 +6,20 @@ argo_host_name: argocd-dev.clingen.app
 argo-cd:
   installCRDs: false
   server:
+    service:
+      namedTargetPort: false
+    ingress:
+      enabled: true
+      paths:
+        - /*
+      hosts:
+        - argocd-dev.clingen.app
+      annotations:
+        kubernetes.io/ingress.global-static-ip-name: global-dev-argocd-ip
+        networking.gke.io/managed-certificates: argocd-dev-certificate
+        kubernetes.io/ingress.class: "gce"
     extraArgs:
     - --insecure
-    service:
-      annotations:
-        cloud.google.com/backend-config: '{"default": "argo-cloudarmor-config"}'
     rbacConfig:
       policy.default: role:readonly
       policy.csv: |
