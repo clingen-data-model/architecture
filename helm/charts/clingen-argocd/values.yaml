@@ -8,6 +8,8 @@ argo-cd:
   server:
     service:
       namedTargetPort: false
+      annotations:
+        cloud.google.com/backend-config: '{"default": "argo-cloudarmor-config"}'
     ingress:
       enabled: true
       paths:
