@@ -1,37 +1,13 @@
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   labels:
-#     app: genegraph-clinvar-service
-#   name: genegraph-clinvar-service
-# spec:
-#   type: LoadBalancer
-#   ports:
-#     - port: 8888
-#       targetPort: 8888
-#       protocol: TCP
-#   selector:
-#     app: genegraph-clinvar
-# ---
-apiVersion: networking.gke.io/v1
-kind: ManagedCertificate
-metadata:
-    name: clingen-app-certificate
-spec:
-    domains:
-    # - 'clingen.app'
-    - 'genegraph-gvdev.clingen.app'
-    # - '*.clingen.app'
 ---
 apiVersion: v1
 kind: Service
 metadata:
     labels:
-      app: genegraph-clinvar-service
-    name: genegraph-clinvar-service
+      app: genegraph-gvdev-service
+    name: genegraph-gvdev-service
 spec:
   selector:
-    app: genegraph-clinvar
+    app: genegraph-gvdev
   type: NodePort
   ports:
     - protocol: TCP
@@ -41,12 +17,12 @@ spec:
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: genegraph-clinvar-ingress
+  name: genegraph-gvdev-ingress
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: genegraph-clinvar-ip
+    kubernetes.io/ingress.global-static-ip-name: global-dev-genegraph-gvdev-ip
     networking.gke.io/managed-certificates: clingen-app-certificate
     kubernetes.io/ingress.class: "gce"
 spec:
   backend:
-    serviceName: genegraph-clinvar-service
+    serviceName: genegraph-gvdev-service
     servicePort: 8888
