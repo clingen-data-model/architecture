@@ -1,24 +1,24 @@
 # prod.clingen.app dns zone
 resource "google_dns_managed_zone" "clingen_prod_zone" {
-  name = "prod-clingen-app-zone"
-  dns_name = "prod.clingen.app."
+  name        = "prod-clingen-app-zone"
+  dns_name    = "prod.clingen.app."
   description = "Managed by Terraform, Delegated from clingen.app zone in clingen-dev"
 }
 
 # upstream DNS zone records, for delegation
 data "google_dns_managed_zone" "clingen_dev_dns_zone" {
-  name = "clingen-app"
+  name    = "clingen-app"
   project = "clingen-dev"
 }
 
 # creates the delegated NS records in clingen-dev, since that's where the clingen.app domain zone lives
 resource "google_dns_record_set" "clingen_prod_dns_zone_ns" {
   managed_zone = data.google_dns_managed_zone.clingen_dev_dns_zone.name
-  project = "clingen-dev"
-  name    = "prod.clingen.app."
-  type    = "NS"
-  ttl     = 300
-  rrdatas = google_dns_managed_zone.clingen_prod_zone.name_servers
+  project      = "clingen-dev"
+  name         = "prod.clingen.app."
+  type         = "NS"
+  ttl          = 300
+  rrdatas      = google_dns_managed_zone.clingen_prod_zone.name_servers
 }
 
 # Reserved static IP addresses
