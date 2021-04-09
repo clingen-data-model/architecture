@@ -1,7 +1,7 @@
 static_ip_name: &staticip global-prod-argocd-ip
 managed_cert_name: &certname argocd-prod-certificate
-argo_host_name: &argohost argocd.clingen.app
-argo_url: &argourl https://argocd.clingen.app # sadly, we can't concat strings...
+argo_host_name: &argohost argocd.prod.clingen.app
+argo_url: &argourl https://argocd.prod.clingen.app # sadly, we can't concat strings...
 
 # values to pass on to the argocd subchart
 argo-cd:
