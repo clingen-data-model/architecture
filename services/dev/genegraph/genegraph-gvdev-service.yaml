@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+    labels:
+      app: genegraph-gvdev-service
+    name: genegraph-gvdev-service
+spec:
+  selector:
+    app: genegraph-gvdev
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8888
+      targetPort: 8888
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: genegraph-gvdev-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: global-dev-genegraph-gvdev-ip
+    networking.gke.io/managed-certificates: clingen-app-certificate
+    kubernetes.io/ingress.class: "gce"
+spec:
+  backend:
+    serviceName: genegraph-gvdev-service
+    servicePort: 8888

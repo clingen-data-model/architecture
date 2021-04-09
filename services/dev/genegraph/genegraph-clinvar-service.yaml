@@ -13,15 +13,15 @@
 #   selector:
 #     app: genegraph-clinvar
 # ---
-apiVersion: networking.gke.io/v1
-kind: ManagedCertificate
-metadata:
-    name: clingen-app-certificate
-spec:
-    domains:
-    # - 'clingen.app'
-    - 'genegraph-dev.clingen.app'
-    # - '*.clingen.app'
+# apiVersion: networking.gke.io/v1
+# kind: ManagedCertificate
+# metadata:
+#     name: clingen-app-certificate
+# spec:
+#     domains:
+#     # - 'clingen.app'
+#     - 'genegraph-dev.clingen.app'
+#     # - '*.clingen.app'
 ---
 apiVersion: v1
 kind: Service
