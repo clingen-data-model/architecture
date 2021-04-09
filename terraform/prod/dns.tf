@@ -1,5 +1,5 @@
 # prod.clingen.app dns zone
-resource "google_dns_managed_zone" "clingen_prod_zone" {
+resource "google_dns_managed_zone" "clingen_prod_dns_zone" {
   name        = "prod-clingen-app-zone"
   dns_name    = "prod.clingen.app."
   description = "Managed by Terraform, Delegated from clingen.app zone in clingen-dev"
@@ -18,7 +18,7 @@ resource "google_dns_record_set" "clingen_prod_dns_zone_ns" {
   name         = "prod.clingen.app."
   type         = "NS"
   ttl          = 300
-  rrdatas      = google_dns_managed_zone.clingen_prod_zone.name_servers
+  rrdatas      = google_dns_managed_zone.clingen_prod_dns_zone.name_servers
 }
 
 # Reserved static IP addresses
@@ -28,11 +28,11 @@ resource "google_compute_global_address" "argocd_external_ip" {
 
 # DNS Records in the prod.clingen.app zone
 resource "google_dns_record_set" "argo_a_record" {
-  name = "argocd.${google_dns_managed_zone.clingen_prod_zone.dns_name}"
+  name = "argocd.${google_dns_managed_zone.clingen_prod_dns_zone.dns_name}"
   type = "A"
   ttl  = 300
 
-  managed_zone = data.google_dns_managed_zone.clingen_prod_zone.name
+  managed_zone = data.google_dns_managed_zone.clingen_prod_dns_zone.name
 
   rrdatas = [google_compute_global_address.argocd_external_ip.address]
 }
