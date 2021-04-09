@@ -1,21 +1,38 @@
+# prod.clingen.app dns zone
 resource "google_dns_managed_zone" "clingen_prod_zone" {
   name = "prod-clingen-app-zone"
   dns_name = "prod.clingen.app."
   description = "Managed by Terraform, Delegated from clingen.app zone in clingen-dev"
 }
 
-# resource "google_compute_global_address" "argocd_external_ip" {
-#   name = "global-prod-argocd-ip"
-# }
+# upstream DNS zone records, for delegation
+data "google_dns_managed_zone" "clingen_dev_dns_zone" {
+  name = "clingen-app"
+  project = "clingen-dev"
+}
 
-# resource "google_dns_record_set" "argo_a_record" {
-#   name = "argocd.${google_dns_managed_zone.clingen_dns_zone.dns_name}"
-#   project = "clingen-dev"
-#   type = "A"
-#   ttl  = 300
+# creates the delegated NS records in clingen-dev, since that's where the clingen.app domain zone lives
+resource "google_dns_record_set" "clingen_prod_dns_zone_ns" {
+  managed_zone = data.google_dns_managed_zone.clingen_dev_dns_zone.name
+  project = "clingen-dev"
+  name    = "prod.clingen.app."
+  type    = "NS"
+  ttl     = 300
+  rrdatas = google_dns_managed_zone.clingen_prod_zone.name_servers
+}
 
-#   managed_zone = data.google_dns_managed_zone.clingen_dns_zone.name
+# Reserved static IP addresses
+resource "google_compute_global_address" "argocd_external_ip" {
+  name = "global-prod-argocd-ip"
+}
 
-#   rrdatas = [google_compute_global_address.argocd_external_ip.address]
-# }
+# DNS Records in the prod.clingen.app zone
+resource "google_dns_record_set" "argo_a_record" {
+  name = "argocd.${google_dns_managed_zone.clingen_prod_zone.dns_name}"
+  type = "A"
+  ttl  = 300
 
+  managed_zone = data.google_dns_managed_zone.clingen_prod_zone.name
+
+  rrdatas = [google_compute_global_address.argocd_external_ip.address]
+}
