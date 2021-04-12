@@ -32,7 +32,7 @@ resource "google_dns_record_set" "argo_a_record" {
   type = "A"
   ttl  = 300
 
-  managed_zone = data.google_dns_managed_zone.clingen_prod_dns_zone.name
+  managed_zone = google_dns_managed_zone.clingen_prod_dns_zone.name
 
   rrdatas = [google_compute_global_address.argocd_external_ip.address]
 }
