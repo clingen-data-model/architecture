@@ -1,0 +1,5 @@
+seqrepo_version: &seqrepo_vers 2020-04-13
+seqrepo_docker_tag: *seqrepo_vers
+anyvar_docker_tag: latest
+redis_docker_tag: latest
+image_pull_policy: Always
