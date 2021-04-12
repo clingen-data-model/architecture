@@ -37,7 +37,7 @@ spec:
             #   value: "true"
             - name: GENEGRAPH_RESPONSE_CACHE
               value: "false"
-            - name: DX_STAGE_JAAS
+            - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:
                   name: dx-prod-jaas
