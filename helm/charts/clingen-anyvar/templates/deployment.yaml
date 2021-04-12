@@ -5,9 +5,9 @@ metadata:
   labels:
     app: anyvar
     app.kubernetes.io/instance: {{ .Release.Name }}
-    helm.sh/chart: {{ .Chart.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/part-of: {{ .Chart.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
 spec:
   replicas: 1
   selector:
