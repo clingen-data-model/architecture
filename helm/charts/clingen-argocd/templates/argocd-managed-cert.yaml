@@ -2,7 +2,7 @@
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
-  name: argocd-dev-certificate
+  name: {{ .Values.managed_cert_name }}
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
     helm.sh/chart: {{ .Chart.Name }}
