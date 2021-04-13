@@ -1,5 +1,6 @@
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
 genegraph_docker_image_tag: v57
+genegraph_data_version: "2021-02-09T1847"
 genegraph_gcs_bucket: genegraph-dev
 genegraph_mode: production
 genegraph_validate_events: false
@@ -15,3 +16,9 @@ genegraph_deployment_resources: false
 genegraph_mcrt_domains:
 - 'genegraph-dev.clingen.app'
 - 'genegraph-gvdev.clingen.app'
+
+gvdev_genegraph_deployment: true
+gvdev_docker_image_tag: v75
+gvdev_genegraph_data_version: "2021-04-07T2006"
+gvdev_genegraph_cg_search_topics: "gene-dosage-jira;actionability;gene-validity-raw" 
+gvdev_genegraph_dx_stage_jaas_secretname: dx-dev-jaas

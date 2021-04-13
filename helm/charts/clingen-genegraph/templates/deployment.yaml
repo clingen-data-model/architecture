@@ -63,7 +63,7 @@ spec:
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2021-02-09T1847"
+              value: {{ .Values.genegraph_data_version | quote }}
             - name: CG_SEARCH_TOPICS
               value: {{ .Values.genegraph_cg_search_topics | quote }}
             - name: GENEGRAPH_MODE
