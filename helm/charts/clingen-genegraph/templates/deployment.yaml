@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genegraph
+  labels:
+    app: genegraph
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      app: genegraph
+  template:
+    metadata:
+      labels:
+        app: genegraph
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app: genegraph
+      nodeSelector:
+        cloud.google.com/gke-local-ssd: "true"
+      volumes:
+        - name: genegraph-vol
+          hostPath:
+            path: "/mnt/disks/ssd0"
+      containers:
+        - image: {{ .Values.genegraph_docker_image_name }}:{{ .Values.genegraph_docker_image_tag }}
+          imagePullPolicy: {{ .Values.genegraph_image_pull_policy }}
+          name: genegraph
+          {{- if .Values.genegraph_deployment_resources }}
+          {{- with .Values.genegraph_deployment_resources }}
+          resources:
+            requests:
+              {{- if .requests }}
+              {{- range $key, $val := .requests }}
+              {{ $key }}: {{ $val | quote }}
+              {{- end }}
+              {{- end }}
+            limits:
+              {{- if .limits }}
+              {{- range $key, $val := .limits }}
+              {{ $key }}: {{ $val | quote }}
+              {{- end }}
+              {{- end }}
+          {{- end }}
+          {{- end }}
+          env:
+            - name: GENEGRAPH_IMAGE_VERSION
+              value: "{{ .Values.genegraph_docker_image_name }}:{{ .Values.genegraph_docker_image_tag }}"
+            - name: GENEGRAPH_DATA_PATH
+              value: "/data/"
+            - name: GENEGRAPH_DATA_VERSION
+              value: "2021-02-09T1847"
+            - name: CG_SEARCH_TOPICS
+              value: {{ .Values.genegraph_cg_search_topics | quote }}
+            - name: GENEGRAPH_MODE
+              value: {{ .Values.genegraph_mode | quote }}
+            - name: GENEGRAPH_BUCKET
+              value: {{ .Values.genegraph_gcs_bucket }}
+            - name: GENEGRAPH_GQL_CACHE
+              value: "true"
+            {{- if .Values.genegraph_validate_events }}
+            - name: GENEGRAPH_VALIDATE_EVENTS
+              value: "true"
+            {{- end }}
+            - name: GENEGRAPH_RESPONSE_CACHE
+              value: "true"
+            - name: DX_STAGE_JAAS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.genegraph_dx_stage_jaas_secretname }}
+                  key: password
+          ports:
+            - containerPort: 8888
+              name: genegraph-port
+          volumeMounts:
+            - name: genegraph-vol
+              mountPath: /data/
+          readinessProbe:
+            periodSeconds: 30
+            successThreshold: 1
+            httpGet:
+              path: /ready
+              port: genegraph-port
+          livenessProbe:
+            periodSeconds: 30
+            successThreshold: 1
+            httpGet:
+              path: /live
+              port: genegraph-port

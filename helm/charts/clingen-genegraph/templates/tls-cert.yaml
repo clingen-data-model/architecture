@@ -1,0 +1,14 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: clingen-app-certificate
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+spec:
+  domains:
+  {{- range .Values.genegraph_mcrt_domains }}
+  - {{ . | quote }}
+  {{- end }}  
