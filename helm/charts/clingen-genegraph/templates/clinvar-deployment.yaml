@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genegraph-clinvar
+  labels:
+    app: genegraph-clinvar
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: genegraph-clinvar
+  template:
+    metadata:
+      labels:
+        app: genegraph-clinvar
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-local-ssd: "true"
+      volumes:
+        - name: genegraph-vol
+          hostPath:
+            path: "/mnt/disks/ssd0/genegraph-clinvar"
+      containers:
+        - image: {{ .Values.genegraph_docker_image_name }}:{{ .Values.clinvar_docker_image_tag }}
+          imagePullPolicy: {{ .Values.genegraph_image_pull_policy }}
+          name: genegraph
+          env:
+            - name: GENEGRAPH_DATA_PATH
+              value: "/data/"
+            - name: GENEGRAPH_DATA_VERSION
+              value: {{ .Values.clinvar_genegraph_data_version | quote }}
+            - name: SERVEUR_KEY_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: serveur-key-pass
+                  key: password
+            - name: CG_SEARCH_TOPICS
+              value: {{ .Values.clinvar_cg_search_topics | quote }}
+            - name: GENEGRAPH_MODE
+              value: {{ .Values.genegraph_mode | quote }}
+            - name: GENEGRAPH_BUCKET
+              value: {{ .Values.genegraph_gcs_bucket | quote }}
+            - name: GENEGRAPH_GQL_CACHE
+              value: "true"
+            - name: GENEGRAPH_VALIDATE_EVENTS
+              value: "true"
+            - name: GENEGRAPH_RESPONSE_CACHE
+              value: "true"
+            - name: DX_STAGE_JAAS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.clinvar_genegraph_dx_stage_jaas_secretname }}
+                  key: password
+          ports:
+            - containerPort: 8888
+              name: genegraph-port
+          volumeMounts:
+            - name: genegraph-vol
+              mountPath: /data/
+          readinessProbe:
+            periodSeconds: 30
+            successThreshold: 1
+            httpGet:
+              path: /live
+              port: genegraph-port
