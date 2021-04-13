@@ -3,3 +3,4 @@ seqrepo_docker_tag: *seqrepo_vers
 anyvar_docker_tag: latest
 redis_docker_tag: latest
 image_pull_policy: Always
+num_deployment_replicas: 1
