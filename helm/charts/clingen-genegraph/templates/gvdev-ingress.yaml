@@ -1,3 +1,4 @@
+{{- .Values.gvdev_genegraph_deployment }}
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
@@ -11,3 +12,4 @@ spec:
   backend:
     serviceName: {{ .Values.gvdev_service_name }}
     servicePort: 8888
+{{- end }}

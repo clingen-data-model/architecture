@@ -1,3 +1,4 @@
+{{- if .Values.clinvar_genegraph_deployment }}
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
@@ -11,3 +12,4 @@ spec:
   backend:
     serviceName: {{ .Values.clinvar_service_name }}
     servicePort: 8888
+{{- end }}

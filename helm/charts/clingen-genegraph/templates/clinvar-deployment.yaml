@@ -1,3 +1,4 @@
+{{- if .Values.clinvar_genegraph_deployment }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -67,3 +68,4 @@ spec:
             httpGet:
               path: /live
               port: genegraph-port
+{{- end }}
