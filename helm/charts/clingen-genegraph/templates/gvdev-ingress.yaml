@@ -1,0 +1,13 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: genegraph-gvdev-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.gvdev_static_ip_name }}
+    networking.gke.io/managed-certificates: {{ .Values.genegraph_mcrt_name }}
+    kubernetes.io/ingress.class: "gce"
+spec:
+  backend:
+    serviceName: {{ .Values.gvdev_service_name }}
+    servicePort: 8888

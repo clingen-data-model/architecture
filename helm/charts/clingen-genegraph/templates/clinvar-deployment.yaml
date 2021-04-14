@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/part-of: {{ .Chart.Name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.clinvar_replicas }}
   selector:
     matchLabels:
       app: genegraph-clinvar

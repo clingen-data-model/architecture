@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: {{ .Values.clinvar_service_name }}
+    labels:
+      app: {{ .Values.clinvar_service_name }}
+spec:
+  selector:
+    app: genegraph-clinvar
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8888
+      targetPort: 8888

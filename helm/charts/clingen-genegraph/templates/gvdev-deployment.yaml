@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/part-of: {{ .Chart.Name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.gvdev_genegraph_replicas }}
   selector:
     matchLabels:
       app: genegraph-gvdev
