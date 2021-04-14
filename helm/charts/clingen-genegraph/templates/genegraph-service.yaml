@@ -1,0 +1,21 @@
+{{- if .Values.genegraph_service }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: genegraph
+  labels:
+    app: genegraph
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+spec:
+  type: LoadBalancer
+  loadBalancerIP: {{ .Values.genegraph_service_lb_ip }}
+  ports:
+    - port: 80
+      targetPort: 8888
+      protocol: TCP
+  selector:
+    app: genegraph
+{{- end}}

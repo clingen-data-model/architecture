@@ -1,18 +1,15 @@
+genegraph_cg_search_topics: "gene-dosage-jira;actionability;gci-legacy"
+genegraph_data_version: "2021-02-09T1847"
+genegraph_deployment_resources: false
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
 genegraph_docker_image_tag: v57
-genegraph_data_version: "2021-02-09T1847"
+genegraph_dx_jaas_secretname: dx-prod-jaas
 genegraph_gcs_bucket: genegraph-dev
+genegraph_image_pull_policy: Always
 genegraph_mode: production
 genegraph_validate_events: false
-genegraph_cg_search_topics: "gene-dosage-jira;actionability;gci-legacy"
-genegraph_image_pull_policy: Always
-genegraph_dx_stage_jaas_secretname: dx-prod-jaas
-genegraph_deployment_resources: false
-  # requests:
-  #   memory: 6Gi
-  #   cpu: 1000m
-  # limits:
-  #   memory: 10Gi
+
+genegraph_tls_cert: true
 genegraph_mcrt_name: clingen-app-certificate 
 genegraph_mcrt_domains:
 - 'genegraph-dev.clingen.app'

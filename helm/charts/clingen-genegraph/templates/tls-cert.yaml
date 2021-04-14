@@ -1,3 +1,4 @@
+{{- if .Values.genegraph_tls_cert }}
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
@@ -12,3 +13,4 @@ spec:
   {{- range .Values.genegraph_mcrt_domains }}
   - {{ . | quote }}
   {{- end }}  
+{{- end }}
