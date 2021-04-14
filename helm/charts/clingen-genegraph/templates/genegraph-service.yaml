@@ -11,7 +11,9 @@ metadata:
     app.kubernetes.io/part-of: {{ .Chart.Name }}
 spec:
   type: LoadBalancer
+  {{- if .Values.genegraph_service_lb_ip }}
   loadBalancerIP: {{ .Values.genegraph_service_lb_ip }}
+  {{- end }}
   ports:
     - port: 80
       targetPort: 8888
