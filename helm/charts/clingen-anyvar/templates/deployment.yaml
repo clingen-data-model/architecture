@@ -48,7 +48,7 @@ spec:
             limits:
               memory: 256Mi
               cpu: 0.1
-        - image: gcr.io/clingen-dev/anyvar:{{ .Values.anyvar_docker_tag }}
+        - image: {{ .Values.anyvar_docker_image_name }}:{{ .Values.anyvar_docker_tag }}
           imagePullPolicy: {{ .Values.image_pull_policy }}
           name: anyvar
           ports:
