@@ -1,5 +1,5 @@
 genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
-genegraph_data_version: 2021-04-02T0125
+genegraph_data_version: "2021-04-02T0125"
 genegraph_deployment_resources:
   requests:
     memory: 6Gi

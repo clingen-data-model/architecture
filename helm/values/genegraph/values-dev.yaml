@@ -1,0 +1,29 @@
+genegraph_cg_search_topics: "gene-dosage-jira;actionability;gci-legacy"
+genegraph_data_version: "2021-02-09T1847"
+genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
+genegraph_docker_image_tag: v57
+genegraph_gcs_bucket: genegraph-dev
+
+genegraph_tls_cert: true
+genegraph_mcrt_name: clingen-app-certificate 
+genegraph_mcrt_domains:
+- 'genegraph-dev.clingen.app'
+- 'genegraph-gvdev.clingen.app'
+
+clinvar_genegraph_deployment: true
+clinvar_docker_image_tag: cv-latest
+clinvar_genegraph_data_version: "2020-12-17T1429"
+clinvar_cg_search_topics: "clinvar-combined"
+clinvar_genegraph_dx_jaas_secretname: dx-dev-jaas
+clinvar_service_name: genegraph-clinvar-service
+clinvar_static_ip_name: genegraph-clinvar-ip
+clinvar_replicas: 1
+
+gvdev_genegraph_deployment: true
+gvdev_static_ip_name: global-dev-genegraph-gvdev-ip
+gvdev_service_name: genegraph-gvdev-service
+gvdev_docker_image_tag: v75
+gvdev_genegraph_data_version: "2021-04-07T2006"
+gvdev_genegraph_cg_search_topics: "gene-dosage-jira;actionability;gene-validity-raw" 
+gvdev_genegraph_dx_jaas_secretname: dx-dev-jaas
+gvdev_genegraph_replicas: 1
