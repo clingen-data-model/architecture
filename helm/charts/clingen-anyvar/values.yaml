@@ -1,0 +1,7 @@
+seqrepo_version: &seqrepo_vers 2020-04-13
+seqrepo_docker_tag: *seqrepo_vers
+anyvar_docker_tag: latest
+anyvar_docker_image_name: gcr.io/clingen-dev/anyvar
+redis_docker_tag: latest
+image_pull_policy: Always
+num_deployment_replicas: 1

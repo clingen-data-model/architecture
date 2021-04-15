@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: anyvar
+  labels:
+    app: anyvar
+{{ include "clingen-anyvar.chartLabels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.num_deployment_replicas }}
+  selector:
+    matchLabels:
+      app: anyvar
+  template:
+    metadata:
+      labels:
+        app: anyvar
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-local-ssd: "true"
+      volumes:
+        - name: local-ssd
+          hostPath:
+            path: "/mnt/disks/ssd0/seqrepo"
+      # https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+      initContainers:
+        # seqrepo by default will populate whatever device is at /usr/local/share/seqrepo
+        - image: biocommons/seqrepo:{{ .Values.seqrepo_docker_tag }}
+          imagePullPolicy: {{ .Values.image_pull_policy }}
+          name: seqrepo
+          resources:
+            limits:
+              memory: 256Mi
+              cpu: 0.2
+          volumeMounts:
+            - name: local-ssd
+              mountPath: "/usr/local/share/seqrepo"
+      containers:
+        - image: redis:{{ .Values.redis_docker_tag }}
+          imagePullPolicy: {{ .Values.image_pull_policy }}
+          name: redis
+          ports:
+            - containerPort: 6379
+              name: redis
+          resources:
+            limits:
+              memory: 256Mi
+              cpu: 0.1
+        - image: {{ .Values.anyvar_docker_image_name }}:{{ .Values.anyvar_docker_tag }}
+          imagePullPolicy: {{ .Values.image_pull_policy }}
+          name: anyvar
+          ports:
+            - containerPort: 5000
+              name: anyvar
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: 0.4
+            requests:
+              memory: 128Mi
+              cpu: 0.2
+          volumeMounts:
+            - name: local-ssd
+              mountPath: "/usr/local/share/seqrepo"
+          env:
+            - name: GA4GH_VRS_DATAPROXY_URI
+              # Based on biocommons/seqrepo container version
+              value: "seqrepo+file:///usr/local/share/seqrepo/{{ .Values.seqrepo_version }}"
+            - name: ANYVAR_STORAGE_URI
+              # Containers in pod share network namespace
+              value: "localhost:6379"
