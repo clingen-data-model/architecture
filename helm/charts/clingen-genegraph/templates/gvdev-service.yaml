@@ -3,13 +3,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-    name: {{ .Values.gvdev_service_name }}
-    labels:
-      app: {{ .Values.gvdev_service_name }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      helm.sh/chart: {{ .Chart.Name }}
-      app.kubernetes.io/managed-by: {{ .Release.Service }}
-      app.kubernetes.io/part-of: {{ .Chart.Name }}
+  name: {{ .Values.gvdev_service_name }}
+  labels:
+    app: {{ .Values.gvdev_service_name }}
+{{ include "clingen-genegraph.chartLabels" . | indent 4 }}
 spec:
   selector:
     app: genegraph-gvdev

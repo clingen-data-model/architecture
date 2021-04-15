@@ -4,6 +4,8 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: genegraph-clinvar-ingress
+  labels:
+{{ include "clingen-genegraph.chartLabels" . | indent 4 }}
   annotations:
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.clinvar_static_ip_name }}
     networking.gke.io/managed-certificates: {{ .Values.genegraph_mcrt_name }}
