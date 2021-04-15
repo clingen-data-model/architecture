@@ -4,10 +4,7 @@ metadata:
   name: anyvar
   labels:
     app: anyvar
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/part-of: {{ .Chart.Name }}
-    helm.sh/chart: {{ .Chart.Name }}
+{{ include "clingen-anyvar.chartLabels" . | indent 4 }}
 spec:
   replicas: {{ .Values.num_deployment_replicas }}
   selector:
