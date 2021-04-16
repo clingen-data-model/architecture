@@ -7,6 +7,12 @@ resource "google_container_cluster" "primary" {
   # node pool and immediately delete it.
   remove_default_node_pool = var.remove_default_node_pool
   initial_node_count       = 1
+  network = var.network_id
+  subnetwork = var.subnetwork_id
+  default_max_pods_per_node   = var.default_max_pods_per_node
+  enable_intranode_visibility = var.enable_intranode_visibility
+  enable_shielded_nodes       = var.enable_shielded_nodes
+  enable_tpu                  = var.enable_tpu
 
   maintenance_policy {
     dynamic "recurring_window" {
