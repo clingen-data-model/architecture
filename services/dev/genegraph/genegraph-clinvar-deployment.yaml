@@ -46,7 +46,7 @@ spec:
               value: "true"
             - name: GENEGRAPH_RESPONSE_CACHE
               value: "true"
-            - name: DX_STAGE_JAAS
+            - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:
                   name: dx-dev-jaas

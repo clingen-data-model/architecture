@@ -60,7 +60,9 @@ spec:
             #   value: "true"
             - name: GENEGRAPH_RESPONSE_CACHE
               value: "true"
-            - name: DX_STAGE_JAAS
+            #- name: GENEGRAPH_GQL_LOGGING_TOPIC
+            #  value: "genegraph_logs"
+            - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:
                   name: dx-stage-jaas

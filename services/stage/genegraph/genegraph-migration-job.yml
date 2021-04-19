@@ -33,7 +33,7 @@ spec:
               value: "true"
             - name: GENEGRAPH_DATABASE_BUILD_MODE
               value: "true"
-            - name: DX_STAGE_JAAS
+            - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:
                   name: dx-stage-jaas
