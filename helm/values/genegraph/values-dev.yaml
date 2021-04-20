@@ -6,6 +6,7 @@ genegraph_gcs_bucket: genegraph-dev
 
 genegraph_tls_cert: false
 
+genegraph_image_version_envvar: true
 genegraph_configure_pod_antiaffinity: true
 genegraph_updateStrategy: true
 genegraph_configureLivenessProbe: true

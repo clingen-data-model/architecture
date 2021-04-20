@@ -11,6 +11,7 @@ genegraph_docker_image_tag: 86a9b27faf2e6ebbc69143f0ae29bb948dbbe1c4
 genegraph_dx_jaas_secretname: dx-stage-jaas
 genegraph_gcs_bucket: genegraph-stage
 genegraph_validate_events: true
+genegraph_image_version_envvar: true
 
 genegraph_tls_cert: false
 genegraph_service: true
