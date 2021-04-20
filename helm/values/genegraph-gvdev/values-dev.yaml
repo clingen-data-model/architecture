@@ -1,25 +1,34 @@
+# in order of appearance in the helm templates
+# deployment
+genegraphreplicas: 1
+genegraph_updateStrategy: false
+genegraph_configure_pod_antiaffinity: false
+genegraph_volume_mountPath: "/mnt/disks/ssd0/genegraph-gvdev"
+genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
+genegraph_docker_image_tag: v75
+genegraph_data_version: "2021-04-07T2006"
+genegraph_include_serveur_keypass: true
+genegraph_cg_search_topics: "gene-dosage-jira;actionability;gene-validity-raw"
+genegraph_gcs_bucket: genegraph-dev
+genegraph_gql_cache: false
+genegraph_validate_events: true
+genegraph_response_cache: false
+genegraph_dx_jaas_secretname: dx-dev-jaas
+genegraph_readiness_probe_path: /live
+genegraph_configureLivenessProbe: false
+
+# certificate and ingress
 genegraph_tls_cert: true
 genegraph_mcrt_name: gvdev-app-certificate
 genegraph_mcrt_domains:
 - 'genegraph-gvdev.clingen.app'
+genegraph_configure_ingress: true
+genegraph_static_ip_name: global-dev-genegraph-gvdev-ip
 
-genegraph_docker_image_tag: v75
-genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
-genegraph_data_version: "2021-04-07T2006"
-genegraph_cg_search_topics: "gene-dosage-jira;actionability;gene-validity-raw"
-genegraph_dx_jaas_secretname: dx-dev-jaas
-genegraph_static_ip_name: genegraph-clinvar-ip
-genegraph_replicas: 1
-genegraph_include_serveur_keypass: true
-genegraph_bucket: genegraph-dev
-genegraph_validate_events: true
-
+# service
 genegraph_service: true
 genegraph_service_type: NodePort
-genegraph_configure_pod_antiaffinity: false
-genegraph_updateStrategy: false
-genegraph_configureLivenessProbe: false
-genegraph_volume_mountPath: "/mnt/disks/ssd0/genegraph-gvdev"
-genegraph_configure_ingress: true
-genegraph_readiness_probe_path: /live
+genegraph_port: 8888
+
+# storageclass
 genegraph_configure_storageclass: false

@@ -1,15 +1,17 @@
-genegraph_cg_search_topics: "gene-dosage-jira;actionability;gci-legacy"
-genegraph_data_version: "2021-02-09T1847"
+# in order of appearance in the helm templates
+
+# deployment
+genegraph_updateStrategy: true
+genegraph_configure_pod_antiaffinity: true
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
 genegraph_docker_image_tag: v57
-genegraph_gcs_bucket: genegraph-dev
-
-genegraph_tls_cert: false
-
 genegraph_image_version_envvar: true
-genegraph_configure_pod_antiaffinity: true
-genegraph_updateStrategy: true
-genegraph_configureLivenessProbe: true
-
+genegraph_data_version: "2021-02-09T1847"
+genegraph_cg_search_topics: "gene-dosage-jira;actionability;gci-legacy"
+genegraph_gcs_bucket: genegraph-dev
 genegraph_gql_cache: false
 genegraph_response_cache: false
+genegraph_configureLivenessProbe: true
+
+# certificate and ingress
+genegraph_tls_cert: false

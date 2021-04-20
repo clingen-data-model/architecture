@@ -2,5 +2,5 @@
 type: RollingUpdate
 rollingUpdate:
   maxSurge: 50%
-  maxUnavailable: 50
+  maxUnavailable: 50%
 {{- end }}

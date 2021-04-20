@@ -14,7 +14,7 @@ spec:
   loadBalancerIP: {{ .Values.genegraph_service_lb_ip }}
   {{- end }}
   ports:
-    - port: 80
+    - port: {{ .Values.genegraph_port }}
       targetPort: 8888
       protocol: TCP
 {{- end}}

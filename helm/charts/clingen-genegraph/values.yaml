@@ -1,17 +1,26 @@
-genegraph_update_strategy: false
-genegraph_configure_pod_antiaffinity: false
-genegraph_image_version_envvar: false
-genegraph_deployment_resources: false
-genegraph_dx_jaas_secretname: dx-prod-jaas
-genegraph_image_pull_policy: Always
-genegraph_mode: production
-genegraph_validate_events: false
+# in order of appearance in the templates
 
+# deployment
+genegraph_update_strategy: false
+genegraph_replicas: 1
+genegraph_configure_pod_antiaffinity: false
+genegraph_volume_mountPath: /mnt/disks/ssd0
+genegraph_image_pull_policy: Always
+genegraph_deployment_resources: false
+genegraph_image_version_envvar: false
+genegraph_mode: production
+genegraph_gql_cache: true
+genegraph_validate_events: false
+genegraph_response_cache: true
+genegraph_dx_jaas_secretname: dx-prod-jaas
+genegraph_readiness_probe_path: /ready
+
+# certificate and ingress
 genegraph_tls_cert: false
 
-genegraph_volume_mountPath: /mnt/disks/ssd0
-genegraph_readiness_probe_path: /ready
+# service
 genegraph_service_type: LoadBalancer
+genegraph_port: 80
+
+# storage class
 genegraph_configure_storageclass: true
-genegraph_gql_cache: true
-genegraph_response_cache: true
