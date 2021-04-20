@@ -1,5 +1,5 @@
 genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
-genegraph_data_version: 2021-04-02T0125
+genegraph_data_version: "2021-04-02T0125"
 genegraph_deployment_resources:
   requests:
     memory: 6Gi
@@ -15,6 +15,6 @@ genegraph_validate_events: false
 genegraph_tls_cert: false
 genegraph_service: true
 
-clinvar_genegraph_deployment: false
-
-gvdev_genegraph_deployment: false
+genegraph_configure_pod_antiaffinity: true
+genegraph_updateStrategy: true
+genegraph_configureLivenessProbe: true
