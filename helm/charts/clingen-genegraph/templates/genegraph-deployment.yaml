@@ -98,4 +98,4 @@ spec:
               port: genegraph-port
 {{- if .Values.genegraph_configureLivenessProbe }}
 {{ include "clingen-genegraph.livenessProbe" . | indent 10 }}
-{{- end -}}
+{{- end }}

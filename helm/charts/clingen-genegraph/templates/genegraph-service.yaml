@@ -17,4 +17,4 @@ spec:
     - port: {{ .Values.genegraph_port }}
       targetPort: 8888
       protocol: TCP
-{{- end}}
+{{- end }}

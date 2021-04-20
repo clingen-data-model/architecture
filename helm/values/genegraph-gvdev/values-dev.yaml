@@ -1,6 +1,5 @@
 # in order of appearance in the helm templates
 # deployment
-genegraphreplicas: 1
 genegraph_updateStrategy: false
 genegraph_configure_pod_antiaffinity: false
 genegraph_volume_mountPath: "/mnt/disks/ssd0/genegraph-gvdev"
