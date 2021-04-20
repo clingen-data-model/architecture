@@ -1,38 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: genegraph
+  name: {{ .Release.Name }}
   labels:
-    app: genegraph
+    app: {{ .Release.Name }}
 {{ include "clingen-genegraph.chartLabels" . | indent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.genegraph_replicas }}
+{{- if .Values.genegraph_updateStrategy }}
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 50%
-      maxUnavailable: 50%
+{{ include "clingen-genegraph.updateStrategy" . | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
-      app: genegraph
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: genegraph
+        app: {{ .Release.Name }}
     spec:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - topologyKey: kubernetes.io/hostname
-            labelSelector:
-              matchLabels:
-                app: genegraph
+{{- if .Values.genegraph_configure_pod_antiaffinity }}
+{{ include "clingen-genegraph.podAntiAffinity" . | indent 6}}
+{{- end }}
       nodeSelector:
         cloud.google.com/gke-local-ssd: "true"
       volumes:
         - name: genegraph-vol
           hostPath:
-            path: "/mnt/disks/ssd0"
+            path: {{ .Values.genegraph_volume_mountPath | quote }}
       containers:
         - image: {{ .Values.genegraph_docker_image_name }}:{{ .Values.genegraph_docker_image_tag }}
           imagePullPolicy: {{ .Values.genegraph_image_pull_policy }}
@@ -55,12 +50,21 @@ spec:
           {{- end }}
           {{- end }}
           env:
+            {{- if .Values.genegraph_image_version_envvar }}
             - name: GENEGRAPH_IMAGE_VERSION
               value: "{{ .Values.genegraph_docker_image_name }}:{{ .Values.genegraph_docker_image_tag }}"
+            {{- end }}
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
               value: {{ .Values.genegraph_data_version | quote }}
+            {{- if .Values.genegraph_include_serveur_keypass }}
+            - name: SERVEUR_KEY_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: serveur-key-pass
+                  key: password
+            {{- end }}
             - name: CG_SEARCH_TOPICS
               value: {{ .Values.genegraph_cg_search_topics | quote }}
             - name: GENEGRAPH_MODE
@@ -90,11 +94,8 @@ spec:
             periodSeconds: 30
             successThreshold: 1
             httpGet:
-              path: /ready
+              path: {{ .Values.genegraph_readiness_probe_path }}
               port: genegraph-port
-          livenessProbe:
-            periodSeconds: 30
-            successThreshold: 1
-            httpGet:
-              path: /live
-              port: genegraph-port
+{{- if .Values.genegraph_configureLivenessProbe }}
+{{ include "clingen-genegraph.livenessProbe" . | indent 10 }}
+{{- end -}}

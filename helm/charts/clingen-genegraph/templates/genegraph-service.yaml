@@ -2,12 +2,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: genegraph
+  name: {{ .Release.Name }}
   labels:
-    app: genegraph
+    app: {{ .Release.Name }}
 {{ include "clingen-genegraph.chartLabels" . | indent 4 }}
 spec:
-  type: LoadBalancer
+  selector:
+    app: {{ .Release.Name }}
+  type: {{ .Values.genegraph_service_type }}
   {{- if .Values.genegraph_service_lb_ip }}
   loadBalancerIP: {{ .Values.genegraph_service_lb_ip }}
   {{- end }}
@@ -15,6 +17,4 @@ spec:
     - port: 80
       targetPort: 8888
       protocol: TCP
-  selector:
-    app: genegraph
 {{- end}}

@@ -1,17 +1,17 @@
-{{- if .Values.gvdev_genegraph_deployment }}
+{{- if .Values.genegraph_configure_ingress }}
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: genegraph-gvdev-ingress
+  name: {{ .Release.Name }}-ingress
   labels:
 {{ include "clingen-genegraph.chartLabels" . | indent 4 }}
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: {{ .Values.gvdev_static_ip_name }}
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.genegraph_static_ip_name }}
     networking.gke.io/managed-certificates: {{ .Values.genegraph_mcrt_name }}
     kubernetes.io/ingress.class: "gce"
 spec:
   backend:
-    serviceName: {{ .Values.gvdev_service_name }}
+    serviceName: {{ .Release.Name }}
     servicePort: 8888
 {{- end }}

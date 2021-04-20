@@ -1,0 +1,25 @@
+genegraph_tls_cert: true
+genegraph_mcrt_name: clingen-app-certificate
+genegraph_mcrt_domains:
+- 'genegraph-dev.clingen.app'
+
+genegraph_docker_image_tag: cv-latest
+genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
+genegraph_data_version: "2020-12-17T1429"
+genegraph_cg_search_topics: "clinvar-combined"
+genegraph_dx_jaas_secretname: dx-dev-jaas
+genegraph_static_ip_name: genegraph-clinvar-ip
+genegraph_replicas: 1
+genegraph_include_serveur_keypass: true
+genegraph_bucket: genegraph-dev
+genegraph_validate_events: true
+
+genegraph_service: true
+genegraph_service_type: NodePort
+genegraph_configure_pod_antiaffinity: false
+genegraph_updateStrategy: false
+genegraph_configureLivenessProbe: false
+genegraph_volume_mountPath: "/mnt/disks/ssd0/genegraph-clinvar"
+genegraph_configure_ingress: true
+genegraph_readiness_probe_path: /live
+genegraph_configure_storageclass: false

@@ -1,3 +1,6 @@
+genegraph_update_strategy: false
+genegraph_configure_pod_antiaffinity: false
+genegraph_image_version_envvar: false
 genegraph_deployment_resources: false
 genegraph_dx_jaas_secretname: dx-prod-jaas
 genegraph_image_pull_policy: Always
@@ -6,6 +9,7 @@ genegraph_validate_events: false
 
 genegraph_tls_cert: false
 
-clinvar_genegraph_deployment: false
-
-gvdev_genegraph_deployment: false
+genegraph_volume_mountPath: /mnt/disks/ssd0
+genegraph_readiness_probe_path: /ready
+genegraph_service_type: LoadBalancer
+genegraph_configure_storageclass: true

@@ -15,7 +15,3 @@ genegraph_validate_events: true
 genegraph_tls_cert: false
 genegraph_service: true
 genegraph_service_lb_ip: 34.74.244.24
-
-clinvar_genegraph_deployment: false
-
-gvdev_genegraph_deployment: false
