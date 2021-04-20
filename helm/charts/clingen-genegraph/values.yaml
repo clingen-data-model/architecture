@@ -13,3 +13,5 @@ genegraph_volume_mountPath: /mnt/disks/ssd0
 genegraph_readiness_probe_path: /ready
 genegraph_service_type: LoadBalancer
 genegraph_configure_storageclass: true
+genegraph_gql_cache: true
+genegraph_response_cache: true

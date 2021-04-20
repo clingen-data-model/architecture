@@ -10,3 +10,6 @@ genegraph_image_version_envvar: true
 genegraph_configure_pod_antiaffinity: true
 genegraph_updateStrategy: true
 genegraph_configureLivenessProbe: true
+
+genegraph_gql_cache: false
+genegraph_response_cache: false

@@ -72,14 +72,14 @@ spec:
             - name: GENEGRAPH_BUCKET
               value: {{ .Values.genegraph_gcs_bucket }}
             - name: GENEGRAPH_GQL_CACHE
-              value: "true"
+              value: {{ .Values.genegraph_gql_cache | quote }}
             {{- if .Values.genegraph_validate_events }}
             - name: GENEGRAPH_VALIDATE_EVENTS
               value: "true"
             {{- end }}
             - name: GENEGRAPH_RESPONSE_CACHE
-              value: "true"
-            - name: DX_STAGE_JAAS
+              value: {{ .Values.genegraph_response_cache | quote }}
+            - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.genegraph_dx_stage_jaas_secretname }}
