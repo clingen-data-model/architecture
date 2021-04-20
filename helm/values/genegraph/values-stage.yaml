@@ -15,3 +15,6 @@ genegraph_validate_events: true
 genegraph_tls_cert: false
 genegraph_service: true
 genegraph_service_lb_ip: 34.74.244.24
+genegraph_configure_pod_antiaffinity: true
+genegraph_updateStrategy: true
+genegraph_configureLivenessProbe: true
