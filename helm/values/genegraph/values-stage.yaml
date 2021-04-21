@@ -1,6 +1,6 @@
 # in order of appearance in the helm templates
 # deployment
-genegraph_updateStrategy: true
+genegraph_update_strategy: true
 genegraph_configure_pod_antiaffinity: true
 genegraph_docker_image_name: gcr.io/clingen-stage/genegraph
 genegraph_docker_image_tag: 86a9b27faf2e6ebbc69143f0ae29bb948dbbe1c4
@@ -15,7 +15,7 @@ genegraph_data_version: "2021-04-02T0125"
 genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
 genegraph_gcs_bucket: genegraph-stage
 genegraph_dx_jaas_secretname: dx-stage-jaas
-genegraph_configureLivenessProbe: true
+genegraph_configure_livenessProbe: true
 
 # certificate and ingress
 genegraph_tls_cert: false

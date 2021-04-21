@@ -7,7 +7,7 @@ metadata:
 {{ include "clingen-genegraph.chartLabels" . | indent 4 }}
 spec:
   replicas: {{ .Values.genegraph_replicas }}
-{{- if .Values.genegraph_updateStrategy }}
+{{- if .Values.genegraph_update_strategy }}
   strategy:
 {{ include "clingen-genegraph.updateStrategy" . | indent 4 }}
 {{- end }}
@@ -96,6 +96,6 @@ spec:
             httpGet:
               path: {{ .Values.genegraph_readiness_probe_path }}
               port: genegraph-port
-{{- if .Values.genegraph_configureLivenessProbe }}
+{{- if .Values.genegraph_configure_livenessProbe }}
 {{ include "clingen-genegraph.livenessProbe" . | indent 10 }}
 {{- end }}
