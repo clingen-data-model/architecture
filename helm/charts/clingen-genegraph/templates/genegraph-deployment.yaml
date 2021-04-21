@@ -96,6 +96,6 @@ spec:
             httpGet:
               path: {{ .Values.genegraph_readiness_probe_path }}
               port: genegraph-port
-{{- if .Values.genegraph_configure_livenessProbe }}
+{{- if .Values.genegraph_configure_liveness_probe }}
 {{ include "clingen-genegraph.livenessProbe" . | indent 10 }}
 {{- end }}

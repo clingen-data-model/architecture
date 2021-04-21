@@ -11,7 +11,7 @@ genegraph_cg_search_topics: "gene-dosage-jira;actionability;gci-legacy"
 genegraph_gcs_bucket: genegraph-dev
 genegraph_gql_cache: false
 genegraph_response_cache: false
-genegraph_configure_livenessProbe: true
+genegraph_configure_liveness_probe: true
 
 # certificate and ingress
 genegraph_tls_cert: false
