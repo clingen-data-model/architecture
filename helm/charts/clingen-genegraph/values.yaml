@@ -4,7 +4,6 @@
 genegraph_replicas: 1
 genegraph_update_strategy: false
 genegraph_configure_pod_antiaffinity: false
-genegraph_volume_mountPath: /mnt/disks/ssd0
 genegraph_image_pull_policy: Always
 genegraph_deployment_resources: false
 genegraph_image_version_envvar: false

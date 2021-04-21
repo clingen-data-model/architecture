@@ -27,7 +27,7 @@ spec:
       volumes:
         - name: genegraph-vol
           hostPath:
-            path: {{ .Values.genegraph_volume_mountPath | quote }}
+            path: "/mnt/disks/ssd0/{{ .Release.Name }}"
       containers:
         - image: {{ .Values.genegraph_docker_image_name }}:{{ .Values.genegraph_docker_image_tag }}
           imagePullPolicy: {{ .Values.genegraph_image_pull_policy }}

@@ -2,7 +2,6 @@
 # deployment
 genegraph_updateStrategy: false
 genegraph_configure_pod_antiaffinity: false
-genegraph_volume_mountPath: "/mnt/disks/ssd0/genegraph-clinvar"
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
 genegraph_docker_image_tag: cv-latest
 genegraph_data_version: "2020-12-17T1429"
