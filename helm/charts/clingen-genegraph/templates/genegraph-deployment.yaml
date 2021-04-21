@@ -82,7 +82,7 @@ spec:
             - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.genegraph_dx_stage_jaas_secretname }}
+                  name: {{ .Values.genegraph_dx_jaas_secretname }}
                   key: password
           ports:
             - containerPort: 8888
