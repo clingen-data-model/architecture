@@ -78,12 +78,11 @@ spec:
           volumeMounts:
             - name: genegraph-vol
               mountPath: /data/
+          {{- with .Values.genegraph_readiness_probe }}
           readinessProbe:
-            periodSeconds: 30
-            successThreshold: 1
-            httpGet:
-              path: {{ .Values.genegraph_readiness_probe_path }}
-              port: genegraph-port
-          {{- if .Values.genegraph_configure_liveness_probe }}
-            {{- include "clingen-genegraph.livenessProbe" . | nindent 10 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.genegraph_liveness_probe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
           {{- end }}

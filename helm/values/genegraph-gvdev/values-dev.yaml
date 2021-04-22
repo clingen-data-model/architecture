@@ -11,8 +11,12 @@ genegraph_gql_cache: false
 genegraph_validate_events: true
 genegraph_response_cache: false
 genegraph_dx_jaas_secretname: dx-dev-jaas
-genegraph_readiness_probe_path: /live
-genegraph_configure_liveness_probe: false
+genegraph_readiness_probe:
+  periodSeconds: 30
+  successThreshold: 1
+  httpGet:
+    path: /live
+    port: genegraph-port
 
 # certificate and ingress
 genegraph_tls_cert: true
