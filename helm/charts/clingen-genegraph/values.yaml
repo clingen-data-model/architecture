@@ -2,7 +2,7 @@
 
 # deployment
 genegraph_replicas: 1
-genegraph_update_strategy: false
+genegraph_update_strategy: {}
 genegraph_pod_affinity: {}
 genegraph_image_pull_policy: Always
 genegraph_deployment_resources: {}

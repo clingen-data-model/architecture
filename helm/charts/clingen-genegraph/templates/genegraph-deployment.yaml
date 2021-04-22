@@ -7,9 +7,9 @@ metadata:
     {{- include "clingen-genegraph.chartLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.genegraph_replicas }}
-  {{- if .Values.genegraph_update_strategy }}
+  {{- with .Values.genegraph_update_strategy }}
   strategy:
-    {{- toYaml .Values.genegraph_update_strategy | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   selector:
     matchLabels:
