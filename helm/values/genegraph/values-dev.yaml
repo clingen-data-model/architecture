@@ -7,6 +7,16 @@ genegraph_update_strategy:
     maxSurge: 50%
     maxUnavailable: 50%
 genegraph_configure_pod_antiaffinity: true
+genegraph_pod_affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - topologyKey: kubernetes.io/hostname
+      labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - genegraph
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
 genegraph_docker_image_tag: v57
 genegraph_image_version_envvar: true

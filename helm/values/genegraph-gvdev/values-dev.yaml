@@ -1,6 +1,6 @@
 # in order of appearance in the helm templates
 # deployment
-genegraph_configure_pod_antiaffinity: false
+genegraph_pod_affinity: {}
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
 genegraph_docker_image_tag: v75
 genegraph_data_version: "2021-04-07T2006"

@@ -19,8 +19,9 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
-      {{- if .Values.genegraph_configure_pod_antiaffinity }}
-        {{- include "clingen-genegraph.podAntiAffinity" . | nindent 6}}
+      {{- with .Values.genegraph_pod_affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       nodeSelector:
         cloud.google.com/gke-local-ssd: "true"
@@ -32,8 +33,10 @@ spec:
         - image: {{ .Values.genegraph_docker_image_name }}:{{ .Values.genegraph_docker_image_tag }}
           imagePullPolicy: {{ .Values.genegraph_image_pull_policy }}
           name: genegraph
+          {{- with .Values.genegraph_deployment_resources }}
           resources:
-          {{- toYaml .Values.genegraph_deployment_resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           env:
             {{- if .Values.genegraph_image_version_envvar }}
             - name: GENEGRAPH_IMAGE_VERSION
