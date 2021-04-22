@@ -17,6 +17,7 @@ genegraph_readiness_probe:
   httpGet:
     path: /live
     port: genegraph-port
+genegraph_liveness_probe: false
 
 # certificate and ingress
 genegraph_tls_cert: true
