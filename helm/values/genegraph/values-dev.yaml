@@ -6,7 +6,6 @@ genegraph_update_strategy:
   rollingUpdate:
     maxSurge: 50%
     maxUnavailable: 50%
-genegraph_configure_pod_antiaffinity: true
 genegraph_pod_affinity:
   podAntiAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
