@@ -1,6 +1,10 @@
 # in order of appearance in the helm templates
 # deployment
-genegraph_update_strategy: true
+genegraph_update_strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 50%
+    maxUnavailable: 50%
 genegraph_configure_pod_antiaffinity: true
 genegraph_docker_image_name: gcr.io/clingen-stage/genegraph
 genegraph_docker_image_tag: 86a9b27faf2e6ebbc69143f0ae29bb948dbbe1c4

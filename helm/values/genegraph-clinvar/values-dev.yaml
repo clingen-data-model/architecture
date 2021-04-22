@@ -1,6 +1,5 @@
 # in order of appearance in the helm templates
 # deployment
-genegraph_update_strategy: false
 genegraph_configure_pod_antiaffinity: false
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
 genegraph_docker_image_tag: cv-latest
