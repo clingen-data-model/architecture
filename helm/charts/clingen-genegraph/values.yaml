@@ -5,7 +5,7 @@ genegraph_replicas: 1
 genegraph_update_strategy: false
 genegraph_configure_pod_antiaffinity: false
 genegraph_image_pull_policy: Always
-genegraph_deployment_resources: false
+genegraph_deployment_resources: {}
 genegraph_image_version_envvar: false
 genegraph_mode: production
 genegraph_gql_cache: true

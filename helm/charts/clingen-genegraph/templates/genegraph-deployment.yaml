@@ -4,13 +4,13 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     app: {{ .Release.Name }}
-{{ include "clingen-genegraph.chartLabels" . | indent 4 }}
+    {{- include "clingen-genegraph.chartLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.genegraph_replicas }}
-{{- if .Values.genegraph_update_strategy }}
+  {{- if .Values.genegraph_update_strategy }}
   strategy:
-{{ include "clingen-genegraph.updateStrategy" . | indent 4 }}
-{{- end }}
+    {{- include "clingen-genegraph.updateStrategy" . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ .Release.Name }}
@@ -19,9 +19,9 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
-{{- if .Values.genegraph_configure_pod_antiaffinity }}
-{{ include "clingen-genegraph.podAntiAffinity" . | indent 6}}
-{{- end }}
+      {{- if .Values.genegraph_configure_pod_antiaffinity }}
+        {{- include "clingen-genegraph.podAntiAffinity" . | nindent 6}}
+      {{- end }}
       nodeSelector:
         cloud.google.com/gke-local-ssd: "true"
       volumes:
@@ -32,23 +32,8 @@ spec:
         - image: {{ .Values.genegraph_docker_image_name }}:{{ .Values.genegraph_docker_image_tag }}
           imagePullPolicy: {{ .Values.genegraph_image_pull_policy }}
           name: genegraph
-          {{- if .Values.genegraph_deployment_resources }}
-          {{- with .Values.genegraph_deployment_resources }}
           resources:
-            requests:
-              {{- if .requests }}
-              {{- range $key, $val := .requests }}
-              {{ $key }}: {{ $val | quote }}
-              {{- end }}
-              {{- end }}
-            limits:
-              {{- if .limits }}
-              {{- range $key, $val := .limits }}
-              {{ $key }}: {{ $val | quote }}
-              {{- end }}
-              {{- end }}
-          {{- end }}
-          {{- end }}
+          {{- toYaml .Values.genegraph_deployment_resources | nindent 12 }}
           env:
             {{- if .Values.genegraph_image_version_envvar }}
             - name: GENEGRAPH_IMAGE_VERSION
@@ -96,6 +81,6 @@ spec:
             httpGet:
               path: {{ .Values.genegraph_readiness_probe_path }}
               port: genegraph-port
-{{- if .Values.genegraph_configure_liveness_probe }}
-{{ include "clingen-genegraph.livenessProbe" . | indent 10 }}
-{{- end }}
+          {{- if .Values.genegraph_configure_liveness_probe }}
+            {{- include "clingen-genegraph.livenessProbe" . | nindent 10 }}
+          {{- end }}
