@@ -1,0 +1,38 @@
+# in order of appearance in the helm templates
+# deployment
+genegraph_pod_affinity: {}
+genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
+genegraph_docker_image_tag: cv-latest
+genegraph_data_version: "2020-12-17T1429"
+genegraph_include_serveur_keypass: true
+genegraph_cg_search_topics: "clinvar-combined"
+genegraph_gcs_bucket: genegraph-dev
+genegraph_gql_cache: false
+genegraph_validate_events: true
+genegraph_response_cache: false
+genegraph_dx_jaas_secretname: dx-dev-jaas
+genegraph_readiness_probe_path: /live
+genegraph_readiness_probe:
+  periodSeconds: 30
+  successThreshold: 1
+  httpGet:
+    path: /live
+    port: genegraph-port
+genegraph_liveness_probe: false
+
+
+# certificate and ingress
+genegraph_tls_cert: true
+genegraph_mcrt_name: clingen-app-certificate
+genegraph_mcrt_domains:
+- 'genegraph-dev.clingen.app'
+genegraph_configure_ingress: true
+genegraph_static_ip_name: genegraph-clinvar-ip
+
+# service
+genegraph_service: true
+genegraph_service_type: NodePort
+genegraph_port: 8888
+
+# storageclass
+genegraph_configure_storageclass: false

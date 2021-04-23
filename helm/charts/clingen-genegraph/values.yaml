@@ -1,0 +1,39 @@
+# in order of appearance in the templates
+
+# deployment
+genegraph_replicas: 1
+genegraph_update_strategy: {}
+genegraph_pod_affinity: {}
+genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
+genegraph_docker_image_tag: latest
+genegraph_image_pull_policy: Always
+genegraph_deployment_resources: {}
+genegraph_image_version_envvar: false
+genegraph_mode: production
+genegraph_gql_cache: true
+genegraph_validate_events: false
+genegraph_response_cache: true
+genegraph_dx_jaas_secretname: dx-prod-jaas
+genegraph_readiness_probe_path: /ready
+genegraph_readiness_probe:
+  periodSeconds: 30
+  successThreshold: 1
+  httpGet:
+    path: /ready
+    port: genegraph-port
+genegraph_liveness_probe:
+  periodSeconds: 30
+  successThreshold: 1
+  httpGet:
+    path: /live
+    port: genegraph-port
+
+# certificate and ingress
+genegraph_tls_cert: false
+
+# service
+genegraph_service_type: LoadBalancer
+genegraph_port: 80
+
+# storage class
+genegraph_configure_storageclass: true

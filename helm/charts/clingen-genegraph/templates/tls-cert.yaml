@@ -1,0 +1,13 @@
+{{- if .Values.genegraph_tls_cert }}
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: {{ .Values.genegraph_mcrt_name }}
+  labels:
+{{ include "clingen-genegraph.chartLabels" . | indent 4 }}
+spec:
+  domains:
+  {{- range .Values.genegraph_mcrt_domains }}
+  - {{ . | quote }}
+  {{- end }}  
+{{- end }}

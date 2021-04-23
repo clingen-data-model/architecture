@@ -1,0 +1,20 @@
+{{- if .Values.genegraph_service }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+{{ include "clingen-genegraph.chartLabels" . | indent 4 }}
+spec:
+  selector:
+    app: {{ .Release.Name }}
+  type: {{ .Values.genegraph_service_type }}
+  {{- if .Values.genegraph_service_lb_ip }}
+  loadBalancerIP: {{ .Values.genegraph_service_lb_ip }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.genegraph_port }}
+      targetPort: 8888
+      protocol: TCP
+{{- end }}
