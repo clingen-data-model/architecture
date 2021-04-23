@@ -13,8 +13,12 @@ image:
 podAnnotations: {}
 
 service:
-  type: LoadBalancer
+  type: clusterIP
   port: 80
+
+ingress:
+  static_ip_name: ""
+  clinvar_hostnames: []
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

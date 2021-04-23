@@ -1,0 +1,4 @@
+ingress:
+  static_ip_name: "global-stage-clinvar-submitter-ip"
+  clinvar_hostnames:
+  - "clinvar-submitter.stage.clingen.app"
