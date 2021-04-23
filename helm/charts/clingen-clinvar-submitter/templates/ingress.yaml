@@ -10,5 +10,5 @@ metadata:
     kubernetes.io/ingress.class: "gce"
 spec:
   backend:
-    serviceName: {{ include "clingen-clinvar-submitter.fullname" . }}
+    serviceName: {{ include "clingen-clinvar-submitter.name" . }}
     servicePort: {{ .Values.service.port }}

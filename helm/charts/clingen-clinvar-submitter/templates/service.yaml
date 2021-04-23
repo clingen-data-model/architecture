@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "clingen-clinvar-submitter.fullname" . }}
+  name: {{ include "clingen-clinvar-submitter.name" . }}
   labels:
     {{- include "clingen-clinvar-submitter.labels" . | nindent 4 }}
 spec:
