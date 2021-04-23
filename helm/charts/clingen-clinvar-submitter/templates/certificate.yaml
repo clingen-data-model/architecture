@@ -1,0 +1,11 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: {{ include "clingen-clinvar-submitter.fullname" . }}-certificate
+  labels:
+{{ include "clingen-clinvar-submitter.labels" . | indent 4 }}
+spec:
+  domains:
+  {{- range .Values.ingress.clinvar_hostnames }}
+  - {{ . | quote }}
+  {{- end }}  

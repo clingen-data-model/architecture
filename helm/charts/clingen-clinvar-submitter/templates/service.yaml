@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "clingen-clinvar-submitter.fullname" . }}
+  labels:
+    {{- include "clingen-clinvar-submitter.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "clingen-clinvar-submitter.selectorLabels" . | nindent 4 }}
