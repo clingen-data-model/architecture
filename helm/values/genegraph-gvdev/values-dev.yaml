@@ -21,7 +21,6 @@ genegraph_liveness_probe: false
 
 # certificate and ingress
 genegraph_tls_cert: true
-genegraph_mcrt_name: genegraph-gvdev-certificate
 genegraph_mcrt_domains:
 - 'genegraph-gvdev.clingen.app'
 genegraph_configure_ingress: true
