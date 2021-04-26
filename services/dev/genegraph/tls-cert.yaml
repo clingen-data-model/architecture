@@ -5,6 +5,5 @@ metadata:
 spec:
     domains:
     # - 'clingen.app'
-    - 'genegraph-dev.clingen.app'
     - 'genegraph-gvdev.clingen.app'
     # - '*.clingen.app'
