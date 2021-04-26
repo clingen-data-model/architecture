@@ -19,7 +19,7 @@ genegraph_readiness_probe:
     path: /live
     port: genegraph-port
 genegraph_liveness_probe: false
-
+genegraph_local_ssd: false
 
 # certificate and ingress
 genegraph_tls_cert: true

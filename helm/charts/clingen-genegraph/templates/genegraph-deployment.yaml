@@ -24,11 +24,15 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       nodeSelector:
+        {{- if .Values.genegraph_local_ssd }}
         cloud.google.com/gke-local-ssd: "true"
+        {{- end }}
       volumes:
+        {{- if .Values.genegraph_local_ssd }}
         - name: genegraph-vol
           hostPath:
             path: "/mnt/disks/ssd0/{{ .Release.Name }}"
+        {{- end }}
       containers:
         - image: {{ .Values.genegraph_docker_image_name }}:{{ .Values.genegraph_docker_image_tag }}
           imagePullPolicy: {{ .Values.genegraph_image_pull_policy }}
@@ -76,8 +80,10 @@ spec:
             - containerPort: 8888
               name: genegraph-port
           volumeMounts:
+          {{- if .Values.genegraph_local_ssd }}
             - name: genegraph-vol
               mountPath: /data/
+          {{- end }}
           {{- with .Values.genegraph_readiness_probe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
