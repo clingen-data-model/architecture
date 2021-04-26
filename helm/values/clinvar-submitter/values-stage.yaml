@@ -2,3 +2,8 @@ ingress:
   static_ip_name: "global-stage-clinvar-submitter-ip"
   clinvar_hostnames:
   - "clinvar-submitter.stage.clingen.app"
+
+image:
+  repository: gcr.io/clingen-stage/clinvar-submitter
+  pullPolicy: Always
+  tag: "8f9ab0d75210f4589ab4e9fa1c04227178d979cc"
