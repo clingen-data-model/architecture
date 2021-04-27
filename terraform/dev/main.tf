@@ -14,7 +14,7 @@ module "cloudbuild-firebase" {
 }
 
 module "dev-gke-cluster" {
-  source                    = "git@github.com:broadinstitute/tgg-terraform-modules.git//imported-gke-cluster?ref=de68768bedf1c37cc81d2e696d673f75dc70d1d7"
+  source                    = "git@github.com:broadinstitute/tgg-terraform-modules.git//imported-gke-cluster?ref=ce78edb118f2cd4bdb9d0adec33aa323b92f7a2f"
   cluster_name              = "genegraph-dev"
   cluster_location          = "us-east1-b"
   network_id                = "projects/clingen-dev/global/networks/default"
@@ -22,6 +22,7 @@ module "dev-gke-cluster" {
   maint_start_time          = "2021-03-24T11:00:00Z"
   maint_end_time            = "2021-03-24T23:00:00Z"
   maint_recurrence_sched    = "FREQ=WEEKLY;BYDAY=SA,SU"
+  initial_node_count        = 0
   default_pool_node_count   = 2
   default_pool_machine_type = "n1-highmem-2"
   cluster_v4_cidr           = "10.36.0.0/14"
