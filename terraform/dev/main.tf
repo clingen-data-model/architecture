@@ -27,7 +27,7 @@ module "dev-gke-cluster" {
   cluster_v4_cidr           = "10.36.0.0/14"
   services_v4_cidr          = "10.101.0.0/20"
   resource_labels = {
-    admin = "terry, steve"
+    admin = "terry"
     creator = "terry"
     managed_by = "terraform"
   }
