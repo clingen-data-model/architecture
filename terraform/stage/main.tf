@@ -14,7 +14,7 @@ module "external-secrets" {
 }
 
 module "stage-gke-cluster" {
-  source                    = "git@github.com:broadinstitute/tgg-terraform-modules.git//imported-gke-cluster?ref=ce78edb118f2cd4bdb9d0adec33aa323b92f7a2f"
+  source                    = "git@github.com:broadinstitute/tgg-terraform-modules.git//imported-gke-cluster?ref=26fcbffd5441e69e2b3e5fb6fe4e66d0e66a0bbc"
   cluster_name              = "stage-cluster"
   cluster_location          = "us-east1-b"
   network_id                = "projects/clingen-stage/global/networks/default"
@@ -37,8 +37,8 @@ module "stage-gke-cluster" {
 # stage cluster has no default pool, but does have a custom ssd-pool
 resource "google_container_node_pool" "ssd-pool" {
   name       = "ssd-pool"
-  location   = "us-east-1b"
-  cluster    = module.stage-gke-cluster.google_container_cluster.cluster.name
+  location   = "us-east1-b"
+  cluster    = module.stage-gke-cluster.gke-cluster-name
   node_count = 2
 
   node_config {
