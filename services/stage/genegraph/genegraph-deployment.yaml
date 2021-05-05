@@ -47,7 +47,7 @@ spec:
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2021-04-21T1250"
+              value: "2021-05-05T1915"
             - name: CG_SEARCH_TOPICS
               value: "actionability;gci-legacy;gene-dosage-jira"
             - name: GENEGRAPH_MODE
