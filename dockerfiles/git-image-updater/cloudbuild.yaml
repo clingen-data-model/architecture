@@ -4,4 +4,3 @@ steps:
 
 images:
 - 'gcr.io/$PROJECT_ID/git-image-updater'
-
