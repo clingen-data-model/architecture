@@ -1,0 +1,6 @@
+releases:
+  - name: genegraph
+    namespace: default
+    chart: ../charts/clingen-genegraph
+    values:
+    - ../values/genegraph/values-prod.yaml

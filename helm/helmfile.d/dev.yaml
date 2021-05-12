@@ -1,0 +1,16 @@
+releases:
+  - name: genegraph
+    namespace: default
+    chart: ../charts/clingen-genegraph
+    values:
+    - ../values/genegraph/values-dev.yaml
+  - name: genegraph-gvdev
+    namespace: default
+    chart: ../charts/clingen-genegraph
+    values:
+    - ../values/genegraph-gvdev/values-dev.yaml
+  - name: genegraph-clinvar
+    namespace: default
+    chart: ../charts/clingen-genegraph
+    values:
+    - ../values/genegraph-clinvar/values-dev.yaml
