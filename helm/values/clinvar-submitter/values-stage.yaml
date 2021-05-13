@@ -5,4 +5,4 @@ ingress:
 image:
   repository: gcr.io/clingen-stage/clinvar-submitter
   pullPolicy: Always
-  tag: "6b7c1571fa0acdd002cbd09ce6d17cd0cf7c0775"
+  tag: "62e49242082151736753ea2d26731077c80a88b2"
