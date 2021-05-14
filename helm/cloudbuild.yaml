@@ -1,0 +1,19 @@
+# Cloud Build configuration for linting helm charts
+#
+# Command line test usage:
+# gcloud builds submit --project=clingen-stage --config ./cloudbuild.yaml \
+#  --substitutions=COMMIT_SHA="testbuild" .
+
+# Builds clinvar-submitter and tags for both stage and prod image repositories
+steps:
+- name: 'gcr.io/clingen-stage/helm-linter'
+  args: 
+    - '-euo'
+    - 'pipefail'
+    - '-c'
+    - |-
+      declare -a changed=($(git diff-tree --no-commit-id --name-only -r $COMMIT_SHA | grep '^helm/charts' | cut -d/ -f 3))
+      for i in ${changed[@]}; do echo "$i"; done
+
+# timeout if not complete in 30 minutes
+timeout: 1800s
