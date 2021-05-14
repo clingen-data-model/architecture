@@ -13,7 +13,12 @@ steps:
     - '-c'
     - |-
       declare -a changed=($(git diff-tree --no-commit-id --name-only -r $COMMIT_SHA | grep '^helm/charts' | cut -d/ -f 3))
-      for i in ${changed[@]}; do echo "$i"; done
+      cd helm/
+      for chart in ${changed[@]}; do
+        echo "===== Linting $chart ====="
+        helm lint charts/$chart
+        helmfile -q -l chart=$chart template | kubeconform -strict -skip "ManagedCertificate" -verbose
+      done
 
-# timeout if not complete in 30 minutes
-timeout: 1800s
+# timeout if not complete in 10 minutes
+timeout: 600s
