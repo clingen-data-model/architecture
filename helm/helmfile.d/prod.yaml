@@ -4,3 +4,7 @@ releases:
     chart: ../charts/clingen-genegraph
     values:
     - ../values/genegraph/values-prod.yaml
+  - name: clingen-argocd
+    namespace: argocd
+    chart: ../charts/clingen-argocd
+
