@@ -33,7 +33,7 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-stage/genegraph:e4d4d49c4e61f12af84a68c5fbd438b5f919f459
+        - image: gcr.io/clingen-stage/genegraph:5ca9a8a37787f75dc2db23f9fc0daa2f33b3644a
           name: genegraph
           resources:
             requests:
@@ -43,11 +43,11 @@ spec:
               memory: 10Gi
           env:
             - name: GENEGRAPH_IMAGE_VERSION
-              value: "gcr.io/clingen-stage/genegraph:e4d4d49c4e61f12af84a68c5fbd438b5f919f459"
+              value: "gcr.io/clingen-stage/genegraph:5ca9a8a37787f75dc2db23f9fc0daa2f33b3644a"
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "2021-05-05T1915"
+              value: "2021-05-17T1615"
             - name: CG_SEARCH_TOPICS
               value: "actionability;gci-legacy;gene-dosage-jira"
             - name: GENEGRAPH_MODE
