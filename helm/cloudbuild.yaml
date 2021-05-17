@@ -15,7 +15,7 @@ steps:
       cd helm/
       for chart in $(ls charts); do
         echo "===== Linting $chart ====="
-        helm lint charts/$chart
+        helm lint --with-subcharts=false charts/$chart
         helmfile -q -l chart=$chart template | kubeconform -strict -skip "ManagedCertificate,BackendConfig" -verbose
       done
 
