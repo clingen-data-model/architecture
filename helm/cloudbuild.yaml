@@ -12,10 +12,8 @@ steps:
     - 'pipefail'
     - '-c'
     - |-
-      declare -a changed=($(git diff-tree --no-commit-id --name-only -r $COMMIT_SHA | grep '^helm/charts' | cut -d/ -f 3))
-      echo "changed charts: ${changed[@]}"
       cd helm/
-      for chart in ${changed[@]}; do
+      for chart in $(ls charts); do
         echo "===== Linting $chart ====="
         helm lint charts/$chart
         helmfile -q -l chart=$chart template | kubeconform -strict -skip "ManagedCertificate,BackendConfig" -verbose
