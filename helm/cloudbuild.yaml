@@ -4,7 +4,6 @@
 # gcloud builds submit --project=clingen-stage --config ./cloudbuild.yaml \
 #  --substitutions=COMMIT_SHA="testbuild" .
 
-# Builds clinvar-submitter and tags for both stage and prod image repositories
 steps:
 - name: 'gcr.io/clingen-stage/helm-linter'
   args: 
