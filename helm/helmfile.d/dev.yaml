@@ -14,3 +14,6 @@ releases:
     chart: ../charts/clingen-genegraph
     values:
     - ../values/genegraph-clinvar/values-dev.yaml
+  - name: clingen-anyvar
+    namespace: default
+    chart: ../charts/clingen-anyvar
