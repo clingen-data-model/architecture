@@ -1,6 +1,6 @@
 # Umbrella helm chart for deploying the clingen argocd instance
 
-This helm chart pulls in the upstream argo-cd helm chart from the [argo-helm repository](https://argoproj.github.io/argo-helm). The idea is that we provide any resources which are required on our end, in the templates directory, and then pass in the variable values that we want into the argo-cd chart using the values.yaml file.
+This helm chart pulls in the upstream argo-cd helm chart from the [argo-helm repository](https://argoproj.github.io/argo-helm). The idea is that we provide any resources which are required on our end in the templates directory, and then pass in the variable values that we want into the argo-cd chart using the values.yaml file.
 
 ## Installing argo in clingen
 

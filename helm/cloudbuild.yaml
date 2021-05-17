@@ -13,6 +13,7 @@ steps:
     - '-c'
     - |-
       declare -a changed=($(git diff-tree --no-commit-id --name-only -r $COMMIT_SHA | grep '^helm/charts' | cut -d/ -f 3))
+      echo "changed charts: ${changed[@]}"
       cd helm/
       for chart in ${changed[@]}; do
         echo "===== Linting $chart ====="
