@@ -27,3 +27,16 @@ module "prod-gke-cluster" {
     managed_by = "terraform"
   }
 }
+
+# IAM bindings for the clinvarSCV cloud functions
+resource "google_service_account_iam_member" "cloudbuild_appspot_binding" {
+  service_account_id = "projects/clingen-dx/serviceAccounts/clingen-dx@appspot.gserviceaccount.com"
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
+}
+
+resource "google_project_iam_member" "cloudbuild_cloudfunctions_grant" {
+  role   = "roles/cloudfunctions.developer"
+  member = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
+}
+
