@@ -1,0 +1,11 @@
+releases:
+  - name: stage-clingen-clinvar-submitter
+    namespace: submitter
+    chart: ../charts/clingen-clinvar-submitter
+    values:
+      - ../values/clinvar-submitter/values-stage.yaml
+  - name: genegraph
+    namespace: default
+    chart: ../charts/clingen-genegraph
+    values:
+    - ../values/genegraph/values-stage.yaml
