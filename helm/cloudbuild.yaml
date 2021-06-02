@@ -1,0 +1,22 @@
+# Cloud Build configuration for linting helm charts
+#
+# Command line test usage:
+# gcloud builds submit --project=clingen-stage --config ./cloudbuild.yaml \
+#  --substitutions=COMMIT_SHA="testbuild" .
+
+steps:
+- name: 'gcr.io/clingen-stage/helm-linter'
+  args: 
+    - '-euo'
+    - 'pipefail'
+    - '-c'
+    - |-
+      cd helm/
+      for chart in $(ls charts); do
+        echo "===== Linting $chart ====="
+        helm lint --with-subcharts=false charts/$chart
+        helmfile -q -l chart=$chart template | kubeconform -strict -skip "ManagedCertificate,BackendConfig" -verbose
+      done
+
+# timeout if not complete in 10 minutes
+timeout: 600s
