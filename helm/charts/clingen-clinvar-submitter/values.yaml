@@ -37,3 +37,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+scv_service_url: "https://us-central1-clingen-dx.cloudfunctions.net/ClinVarSCV"
