@@ -52,3 +52,4 @@ resource "google_dns_record_set" "clinvar_submitter_a_record" {
 
   rrdatas = [google_compute_global_address.clinvar_submitter_ip.address]
 }
+

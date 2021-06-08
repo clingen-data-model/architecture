@@ -7,3 +7,4 @@ image:
   pullPolicy: Always
   tag: "466fb22d69072d85f89252de485316828427a7ec"
 scv_service_url: "https://us-central1-clingen-dx.cloudfunctions.net/ClinVarSCV"
+
