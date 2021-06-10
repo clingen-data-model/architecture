@@ -6,7 +6,7 @@
 
 steps:
 - name: 'gcr.io/clingen-stage/helm-linter'
-  args: 
+  args:
     - '-euo'
     - 'pipefail'
     - '-c'
@@ -15,7 +15,7 @@ steps:
       for chart in $(ls charts); do
         echo "===== Linting $chart ====="
         helm lint --with-subcharts=false charts/$chart
-        helmfile -q -l chart=$chart template | kubeconform -strict -skip "ManagedCertificate,BackendConfig" -verbose
+        helmfile -q -l chart=$chart template | kubeconform -strict -skip "ManagedCertificate,BackendConfig,ExternalSecret" -verbose
       done
 
 # timeout if not complete in 10 minutes
