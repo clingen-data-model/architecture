@@ -1,5 +1,5 @@
 apiVersion: v2
-name: clingen-clinvar-streans
+name: clingen-clinvar-streams
 description: A Helm chart for deploying clinvar-streams applications on kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
