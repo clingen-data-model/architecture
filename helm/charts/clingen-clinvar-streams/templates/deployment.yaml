@@ -24,7 +24,7 @@ spec:
             path: "/mnt/disks/ssd0/{{ .Release.Name }}"
         {{- end }}
       containers:
-        - image: {{ .Values.clinvar_streams_docker_image_name }}:{{ .Values.clinvar_streams_docker_image_tag }}
+        - image: "{{ .Values.clinvar_streams_docker_image_name }}:{{ .Values.clinvar_streams_docker_image_tag }}"
           imagePullPolicy: {{ .Values.clinvar_streams_image_pull_policy }}
           name: clinvar-streams
           {{- with .Values.clinvar_streams_deployment_resources }}
@@ -46,7 +46,8 @@ spec:
                   key: kafka_password
             - name: KAFKA_GROUP
               value: "clinvar-streams-{{ .Release.Name }}"
-          args: {{  toYaml .Values.clinvar_streams_container_args | nindent 12 }}
+          args:
+            {{-  toYaml .Values.clinvar_streams_container_args | nindent 12 }}
 
 ---
 apiVersion: kubernetes-client.io/v1
