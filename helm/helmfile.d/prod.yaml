@@ -7,6 +7,11 @@ releases:
     chart: ../charts/clingen-genegraph
     values:
     - ../values/genegraph/values-prod.yaml
+  - name: prod-clingen-clinvar-submitter
+    namespace: submitter
+    chart: ../charts/clingen-clinvar-submitter
+    values:
+      - ../values/clinvar-submitter/values-prod.yaml
   - name: clingen-argocd
     namespace: argocd
     chart: ../charts/clingen-argocd

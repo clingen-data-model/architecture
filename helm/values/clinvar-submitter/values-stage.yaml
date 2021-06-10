@@ -6,3 +6,4 @@ image:
   repository: gcr.io/clingen-stage/clinvar-submitter
   pullPolicy: Always
   tag: "466fb22d69072d85f89252de485316828427a7ec"
+scv_service_url: "https://us-central1-clingen-stage.cloudfunctions.net/ClinVarSCV"
