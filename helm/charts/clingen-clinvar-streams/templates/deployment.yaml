@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      volumes:
+        {{- if .Values.clinvar_streams_persistent_vol }}
+        - name: clinvar-streams-vol
+          hostPath:
+            path: "/mnt/disks/ssd0/{{ .Release.Name }}"
+        {{- end }}
+      containers:
+        - image: {{ .Values.clinvar_streams_docker_image_name }}:{{ .Values.clinvar_streams_docker_image_tag }}
+          imagePullPolicy: {{ .Values.clinvar_streams_image_pull_policy }}
+          name: clinvar-streams
+          {{- with .Values.clinvar_streams_deployment_resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: SQLITE_DB
+              value: "/data/clinvar.sqlite3"
+            - name: KAFKA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dx-creds
+                  key: kafka_user
+            - name: KAFKA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dx-creds
+                  key: kafka_password
+            - name: KAFKA_GROUP
+              value: "clinvar-streams-{{ .Release.Name }}"
+          args: {{  toYaml .Values.clinvar_streams_container_args | nindent 12 }}
+
+---
+apiVersion: kubernetes-client.io/v1
+kind: ExternalSecret
+metadata:
+  name: dx-creds
+spec:
+  backendType: gcpSecretsManager
+  projectId: clingen-dev
+  data:
+    - key: dx-creds
+      property: kafka_user
+      name: kafka_user
+      version: latest
+    - key: dx-creds
+      property: kafka_password
+      name: kafka_password
+      version: latest
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: clinvar-streams-persistent-volume
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Gi
