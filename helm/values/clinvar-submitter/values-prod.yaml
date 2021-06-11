@@ -1,0 +1,10 @@
+ingress:
+  static_ip_name: "global-prod-clinvar-submitter-ip"
+  clinvar_hostnames:
+    - "clinvar-submitter.prod.clingen.app"
+image:
+  repository: gcr.io/clingen-dx/clinvar-submitter
+  pullPolicy: Always
+  tag: "466fb22d69072d85f89252de485316828427a7ec"
+scv_service_url: "https://us-central1-clingen-dx.cloudfunctions.net/ClinVarSCV"
+
