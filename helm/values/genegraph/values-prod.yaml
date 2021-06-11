@@ -28,6 +28,7 @@ genegraph_image_version_envvar: true
 genegraph_data_version: "2021-05-27T1329"
 genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
 genegraph_gcs_bucket: genegraph-prod
+genegraph_gql_logging_topic: genegraph_logs
 genegraph_dx_jaas_secretname: dx-stage-jaas
 
 # certificate and ingress

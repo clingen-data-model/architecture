@@ -13,6 +13,7 @@ genegraph_mode: production
 genegraph_gql_cache: true
 genegraph_validate_events: false
 genegraph_response_cache: true
+genegraph_gql_logging_topic: 
 genegraph_dx_jaas_secretname: dx-prod-jaas
 genegraph_readiness_probe_path: /ready
 genegraph_readiness_probe:
