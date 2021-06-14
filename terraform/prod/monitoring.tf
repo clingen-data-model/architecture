@@ -11,7 +11,6 @@ resource "google_monitoring_uptime_check_config" "clinvar_submitter_website" {
   monitored_resource {
     type = "uptime_url"
     labels = {
-      project_id = "clingen-dx"
       host       = "clinvar-submitter.clinicalgenome.org"
     }
   }
@@ -30,7 +29,6 @@ resource "google_monitoring_uptime_check_config" "genegraph_prod" {
   monitored_resource {
     type = "uptime_url"
     labels = {
-      project_id = "clingen-dx"
       host       = "34.75.154.128" # TODO: see if this hostname is defined in tf
     }
   }
