@@ -40,3 +40,9 @@ resource "google_project_iam_member" "cloudbuild_cloudfunctions_grant" {
   member = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
 }
 
+# IAM binding for allowing staging clinvarSCV function to run prod bigquery
+resource "google_bigquery_dataset_iam_member" "stage_appspot_sa" {
+  dataset_id = "projects/clingen-dx/datasets/clinvar_qa"
+  role       = "roles/bigquery.dataViewer"
+  member     = "serviceAccount:clingen-stage@appspot.gserviceaccount.com"
+}
