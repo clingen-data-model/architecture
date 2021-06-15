@@ -36,27 +36,27 @@ resource "google_cloudbuild_trigger" "architecture_helm_lint" {
 
 # curator build
 resource "google_cloudbuild_trigger" "curator_stage" {
-  name = "curator-stage-deploy"
+  name        = "curator-stage-deploy"
   description = "triggers on push to curator/master"
 
   github {
-    name = "curator"
+    name  = "curator"
     owner = "clingen-data-model"
     push {
       branch = "^master$"
     }
 
     filename = "cloudbuild.yaml"
-  } 
+  }
 }
 
 # genegraph stage build
 resource "google_cloudbuild_trigger" "genegraph_stage" {
-  name = "genegraph-stage-build"
+  name        = "genegraph-stage-build"
   description = "Build Genegraph on push to master. Copy image to prod. Sync stage and prod migration buckets."
 
   github {
-    name = "genegraph"
+    name  = "genegraph"
     owner = "clingen-data-model"
     push {
       branch = "^master$"
@@ -66,32 +66,16 @@ resource "google_cloudbuild_trigger" "genegraph_stage" {
   filename = "cloudbuild.yaml"
 }
 
-# clinvar raw build
-resource "google_cloudbuild_trigger" "clinvar_raw_stage" {
-  name = "clinvar-raw-stage-build"
-  description = "Push to master"
-
-  github {
-    name = "clinvar-scv"
-    owner = "clingen-data-model"
-    push {
-      branch = "^master$"
-    }
-  }
-
-  filename = "Dockerfile"
-}
-
 # clinvar streams build
 resource "google_cloudbuild_trigger" "clinvar_streams_build" {
- name = "clinvar-streams-build"
- description = "Build clinvar-streams docker image on push to master"
+  name        = "clinvar-streams-build"
+  description = "Build clinvar-streams docker image on push to master"
 
- github {
-   name = "clinvar-streams"
-   owner = "clingen-data-model"
-   push {
-     branch = "^main$"
-   }
- }
+  github {
+    name  = "clinvar-streams"
+    owner = "clingen-data-model"
+    push {
+      branch = "^main$"
+    }
+  }
 }
