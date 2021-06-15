@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-clingen-clinvar-submitter
+  namespace: argocd
+spec:
+  project: prod
+  source:
+    repoURL: https://github.com/clingen-data-model/architecture.git
+    targetRevision: HEAD
+    path: helm/charts/clingen-clinvar-submitter
+    helm:
+      valueFiles:
+      - ../../values/clinvar-submitter/values-prod.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: submitter
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
