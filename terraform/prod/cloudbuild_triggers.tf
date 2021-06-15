@@ -7,7 +7,7 @@ resource "google_cloudbuild_trigger" "clinvar_scv_prod" {
   github {
     name  = "clinvar-submitter"
     owner = "clingen-data-model"
-    pull_request {
+    push {
       branch = "^master$"
     }
   }
@@ -15,4 +15,6 @@ resource "google_cloudbuild_trigger" "clinvar_scv_prod" {
   included_files = [
     "gcp/function-source/*"
   ]
+
+  filename = "gcp/function-source/cloudbuild.yaml"
 }
