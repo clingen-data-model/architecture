@@ -8,10 +8,22 @@ data "google_secret_manager_secret_version" "slack_token" {
 }
 
 resource "google_monitoring_notification_channel" "clingen_private_alerts" {
-  display_name = "clingen alerts for developer consumption"
+  display_name = "#clingen-monitoring channel: clingen alerts for developer consumption"
   type         = "slack"
   labels = {
     "channel_name" = "#clingen-monitoring"
+  }
+
+  sensitive_labels {
+    auth_token = data.google_secret_manager_secret_version.slack_token.secret_data
+  }
+}
+
+resource "google_monitoring_notification_channel" "clingen_public_alerts" {
+  display_name = "#clingen-alerts channel: clingen alerts for public and user consumption"
+  type         = "slack"
+  labels = {
+    "channel_name" = "#clingen-alerts"
   }
 
   sensitive_labels {
@@ -24,8 +36,9 @@ resource "google_monitoring_notification_channel" "clingen_private_alerts" {
 ####
 
 resource "google_monitoring_uptime_check_config" "clinvar_submitter_website" {
-  display_name = "clinvar-submitter-website"
+  display_name = "Clinvar Submitter Web Site"
   timeout      = "10s"
+  period       = "60s"
 
   http_check {
     path           = "/api/v1/submission?healthcheck"
@@ -36,7 +49,8 @@ resource "google_monitoring_uptime_check_config" "clinvar_submitter_website" {
   monitored_resource {
     type = "uptime_url"
     labels = {
-      host = "clinvar-submitter.clinicalgenome.org"
+      host       = "clinvar-submitter.clinicalgenome.org"
+      project_id = "clingen-dx"
     }
   }
 }
@@ -44,6 +58,7 @@ resource "google_monitoring_uptime_check_config" "clinvar_submitter_website" {
 resource "google_monitoring_uptime_check_config" "genegraph_prod" {
   display_name = "genegraph-prod"
   timeout      = "60s"
+  period       = "60s"
 
   http_check {
     path           = "/ready"
@@ -54,7 +69,8 @@ resource "google_monitoring_uptime_check_config" "genegraph_prod" {
   monitored_resource {
     type = "uptime_url"
     labels = {
-      host = "34.75.154.128"
+      host       = "34.75.154.128"
+      project_id = "clingen-dx"
     }
   }
 
