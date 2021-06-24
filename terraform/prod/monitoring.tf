@@ -84,6 +84,28 @@ resource "google_monitoring_uptime_check_config" "genegraph_prod" {
 # Alert Policies
 ####
 
+resource "google_monitoring_alert_policy" "genegraph_prod_mem_util_alert_policy" {
+  display_name = "genegraph memory limit utilization"
+  combiner     = "OR"
+  conditions {
+    display_name = "memory limit utilization is greater than 60%"
+    condition_threshold {
+      filter     = "metric.type=\"kubernetes.io/container/memory/limit_utilization\" resource.type=\"k8s_container\" resource.label.\"cluster_name\"=\"prod-cluster\" resource.label.\"container_name\"=\"genegraph\" metric.label.\"memory_type\"=\"non-evictable\""
+      duration   = "300s"
+      comparison = "COMPARISON_GT"
+      threshold_value = "0.6"
+      aggregations {
+        alignment_period   = "60s"
+        per_series_aligner = "ALIGN_MEAN"
+      }
+    }
+  }
+
+  notification_channels = [
+    google_monitoring_notification_channel.clingen_private_alerts.id
+  ]
+}
+
 # TODO: Google doesn't allow us to manage GCP mobile apps as notification targets via the API (they are console-only)
 # the current alerting policies use the GCP mobile apps as targets. Need to speak with the team to get their thoughts
 # on how well that works, and if we should consider alternatives
