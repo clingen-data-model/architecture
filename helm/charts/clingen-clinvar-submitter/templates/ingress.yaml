@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "clingen-clinvar-submitter.fullname" . }}-ingress
@@ -9,6 +9,14 @@ metadata:
     networking.gke.io/managed-certificates: {{ include "clingen-clinvar-submitter.fullname" . }}-certificate
     kubernetes.io/ingress.class: "gce"
 spec:
-  backend:
-    serviceName: {{ include "clingen-clinvar-submitter.fullname" . }}
-    servicePort: {{ .Values.service.port }}
+  rules:
+    - host: {{ first .Values.ingress.clinvar_hostnames }}
+      http:
+        paths:
+          - path: /*
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "clingen-clinvar-submitter.fullname" . }}
+                port:
+                  number: {{ .Values.service.port }}
