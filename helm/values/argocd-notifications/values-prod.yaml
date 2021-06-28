@@ -1,4 +1,5 @@
 argocdUrl: "https://argocd.prod.clingen.app"
+logLevel: warn
 secret:
   create: false
 subscriptions:

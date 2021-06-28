@@ -6,7 +6,15 @@ argo_url: &argourl https://argocd.prod.clingen.app # sadly, we can't concat stri
 # values to pass on to the argocd subchart
 argo-cd:
   installCRDs: false
+  controller:
+    logLevel: warn
+    logFormat: json
+  repoServer:
+    logLevel: warn
+    logFormat: json
   server:
+    logLevel: warn
+    logFormat: json
     service:
       namedTargetPort: false
       annotations:
