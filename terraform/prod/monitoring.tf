@@ -119,6 +119,7 @@ resource "google_monitoring_alert_policy" "prod_node_allocatable_memory_utilizat
       aggregations {
         alignment_period   = "360s"
         per_series_aligner = "ALIGN_MEAN"
+        cross_series_reducer = "REDUCE_NONE"
       }
     }
   }
