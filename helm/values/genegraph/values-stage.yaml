@@ -10,13 +10,13 @@ genegraph_update_strategy:
 genegraph_pod_affinity:
   podAntiAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
-    - topologyKey: kubernetes.io/hostname
-      labelSelector:
-        matchExpressions:
-        - key: app
-          operator: In
-          values:
-          - genegraph
+      - topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - genegraph
 genegraph_docker_image_name: gcr.io/clingen-stage/genegraph
 genegraph_docker_image_tag: 4a545c519c6a3c2a4abe35542fed8064b558ece1
 genegraph_deployment_resources:
@@ -26,14 +26,88 @@ genegraph_deployment_resources:
   limits:
     memory: 10Gi
 genegraph_image_version_envvar: true
-genegraph_data_version: "2021-07-06T1729"
+genegraph_data_version: "$DATE_TIME"
 genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
 genegraph_gcs_bucket: genegraph-stage
 genegraph_dx_jaas_secretname: dx-stage-jaas
-
 # certificate and ingress
 genegraph_tls_cert: false
-
 # service
 genegraph_service: true
 genegraph_service_lb_ip: 34.74.244.24
+image:
+  tag: testbuild
+---
+# in order of appearance in the helm templates
+# deployment
+genegraph_replicas: 2
+genegraph_update_strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 50%
+    maxUnavailable: 50%
+genegraph_pod_affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - genegraph
+genegraph_docker_image_name: gcr.io/clingen-dx/genegraph
+genegraph_docker_image_tag: 4a545c519c6a3c2a4abe35542fed8064b558ece1
+genegraph_deployment_resources:
+  requests:
+    memory: 6Gi
+    cpu: 1000m
+  limits:
+    memory: 10Gi
+genegraph_image_version_envvar: true
+genegraph_data_version: "$DATE_TIME"
+genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
+genegraph_gcs_bucket: genegraph-prod
+genegraph_gql_logging_topic: genegraph_logs
+genegraph_dx_jaas_secretname: dx-stage-jaas
+# certificate and ingress
+genegraph_tls_cert: false
+genegraph_service: true
+image:
+  tag: testbuild
+---
+# in order of appearance in the helm templates
+# deployment
+genegraph_replicas: 2
+genegraph_update_strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 50%
+    maxUnavailable: 50%
+genegraph_pod_affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - genegraph
+genegraph_docker_image_name: gcr.io/clingen-dx/genegraph
+genegraph_docker_image_tag: 4a545c519c6a3c2a4abe35542fed8064b558ece1
+genegraph_deployment_resources:
+  requests:
+    memory: 6Gi
+    cpu: 1000m
+  limits:
+    memory: 10Gi
+genegraph_image_version_envvar: true
+genegraph_data_version: "$DATE_TIME"
+genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
+genegraph_gcs_bucket: genegraph-prod
+genegraph_gql_logging_topic: genegraph_logs
+genegraph_dx_jaas_secretname: dx-stage-jaas
+# certificate and ingress
+genegraph_tls_cert: false
+genegraph_service: true
