@@ -90,13 +90,36 @@ resource "google_monitoring_alert_policy" "genegraph_prod_mem_util_alert_policy"
   conditions {
     display_name = "memory limit utilization is greater than 60%"
     condition_threshold {
-      filter     = "metric.type=\"kubernetes.io/container/memory/limit_utilization\" resource.type=\"k8s_container\" resource.label.\"cluster_name\"=\"prod-cluster\" resource.label.\"container_name\"=\"genegraph\" metric.label.\"memory_type\"=\"non-evictable\""
-      duration   = "300s"
-      comparison = "COMPARISON_GT"
+      filter          = "metric.type=\"kubernetes.io/container/memory/limit_utilization\" resource.type=\"k8s_container\" resource.label.\"cluster_name\"=\"prod-cluster\" resource.label.\"container_name\"=\"genegraph\" metric.label.\"memory_type\"=\"non-evictable\""
+      duration        = "300s"
+      comparison      = "COMPARISON_GT"
       threshold_value = "0.6"
       aggregations {
         alignment_period   = "60s"
         per_series_aligner = "ALIGN_MEAN"
+      }
+    }
+  }
+
+  notification_channels = [
+    google_monitoring_notification_channel.clingen_private_alerts.id
+  ]
+}
+
+resource "google_monitoring_alert_policy" "prod_node_allocatable_memory_utilization" {
+  display_name = "Prod node memory utilization"
+  combiner     = "OR"
+  conditions {
+    display_name = "node memory is more than 75% allocated"
+    condition_threshold {
+      filter          = "metric.type=\"kubernetes.io/node/memory/allocatable_utilization\" resource.type=\"k8s_node\" resource.label.\"cluster_name\"=\"prod-cluster\" metric.label.\"memory_type\"=\"non-evictable\""
+      duration        = "1800s"
+      comparison      = "COMPARISON_GT"
+      threshold_value = "0.75"
+      aggregations {
+        alignment_period   = "360s"
+        per_series_aligner = "ALIGN_MEAN"
+        cross_series_reducer = "REDUCE_NONE"
       }
     }
   }
