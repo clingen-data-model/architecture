@@ -48,7 +48,6 @@ module "clingen_projects_iam_bindings" {
     "roles/dns.admin" = [
       "group:clingendevs@broadinstitute.org",
       "group:<collaborators-tbd>@broadinstitute.org",
-
     ]
 
     "roles/firebase.admin" = [
