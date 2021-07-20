@@ -7,9 +7,33 @@ module "clingen_projects_iam_bindings" {
   projects = ["clingen-dx", "clingen-stage", "clingen-dev"]
 
   bindings = {
-    "roles/storage.admin" = [
+
+    "roles/appengine.appAdmin" = [
       "group:clingendevs@broadinstitute.org",
-      "group:<collaborators-tbd>@broadinstitute.org",
+    ]
+
+    "roles/appengine.appCreator" = [
+      "group:clingendevs@broadinstitute.org",
+    ]
+
+    "roles/bigquery.admin" = [
+      "group:clingendevs@broadinstitute.org",
+    ]
+
+    "roles/billing.viewer" = [
+      "group:clingendevs@broadinstitute.org",
+    ]
+
+    "roles/cloudbuild.builds.editor" = [
+      "group:clingendevs@broadinstitute.org",
+    ]
+
+    "roles/cloudfunctions.admin" = [
+      "group:clingendevs@broadinstitute.org",
+    ]
+
+    "roles/cloudscheduler.admin" = [
+      "group:clingendevs@broadinstitute.org",
     ]
 
     "roles/container.admin" = [
@@ -21,33 +45,13 @@ module "clingen_projects_iam_bindings" {
       "group:<collaborators-tbd>@broadinstitute.org",
     ]
 
-    "roles/appengine.appCreator" = [
-      "group:clingendevs@broadinstitute.org",
-    ]
-
-    "roles/appengine.appAdmin" = [
-      "group:clingendevs@broadinstitute.org",
-    ]
-
-    "roles/cloudfunctions.admin" = [
-      "group:clingendevs@broadinstitute.org",
-    ]
-
-    "roles/run.admin" = [
-      "group:clingendevs@broadinstitute.org",
-    ]
-
-    "roles/cloudscheduler.admin" = [
-      "group:clingendevs@broadinstitute.org",
-    ]
-
     "roles/dns.admin" = [
       "group:clingendevs@broadinstitute.org",
       "group:<collaborators-tbd>@broadinstitute.org",
 
     ]
 
-    "roles/bigquery.admin" = [
+    "roles/firebase.admin" = [
       "group:clingendevs@broadinstitute.org",
     ]
 
@@ -59,17 +63,15 @@ module "clingen_projects_iam_bindings" {
       "group:clingendevs@broadinstitute.org",
     ]
 
-    "roles/firebase.admin" = [
+    "roles/run.admin" = [
       "group:clingendevs@broadinstitute.org",
     ]
 
-    "roles/cloudbuild.builds.editor" = [
+    "roles/storage.admin" = [
       "group:clingendevs@broadinstitute.org",
+      "group:<collaborators-tbd>@broadinstitute.org",
     ]
 
-    "roles/billing.viewer" = [
-      "group:clingendevs@broadinstitute.org",
-    ]
   }
 }
 
