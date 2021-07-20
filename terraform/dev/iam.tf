@@ -73,8 +73,8 @@ module "clingen_projects_iam_bindings" {
   }
 }
 
-# grants for specific storage buckets
-module "clingen_storage_buckets_iam" {
+# grants read access for specific storage buckets
+module "clingen_storage_readers_iam" {
   source  = "terraform-google-modules/iam/google//modules/storage_buckets_iam"
   version = "7.2.0"
   mode    = "additive"
