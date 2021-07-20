@@ -2,7 +2,7 @@
 module "clingen_projects_iam_bindings" {
   source  = "terraform-google-modules/iam/google//modules/projects_iam"
   version = "7.2.0"
-  mode = "additive"
+  mode    = "additive"
 
   projects = ["clingen-dx", "clingen-stage", "clingen-dev"]
 
@@ -81,7 +81,7 @@ module "clingen_storage_readers_iam" {
 
   storage_buckets = ["clinvar-reports"]
 
-    bindings = {
+  bindings = {
     "roles/storage.objectViewer" = [
       "<clingen-data-viewers-tbd>@broadinstitute.org",
     ]
