@@ -19,9 +19,9 @@ spec:
     spec:
       volumes:
         {{- if .Values.clinvar_streams_persistent_vol }}
-        - name: clinvar-streams-vol
-          hostPath:
-            path: "/mnt/disks/ssd0/{{ .Release.Name }}"
+        - name: {{ .Release.Name }}-vol
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-pvc
         {{- end }}
       containers:
         - image: "{{ .Values.clinvar_streams_docker_image_name }}:{{ .Values.clinvar_streams_docker_image_tag }}"
@@ -31,9 +31,20 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- if .Values.clinvar_streams_persistent_vol }}
+          volumeMounts:
+            - name: {{ .Release.Name }}-vol
+              mountPath: "/data/"
+          {{- end }}
           env:
             - name: SQLITE_DB
               value: "/data/clinvar.sqlite3"
+            - name: DX_CV_SNAPSHOT_BUCKET
+              value: clinvar-streams-dev
+            - name: DX_CV_COMBINER_SNAPSHOT_VERSION
+              value: ""
+            - name: DX_CV_COMBINER_MODE
+              value: stream
             - name: KAFKA_USER
               valueFrom:
                 secretKeyRef:
@@ -45,7 +56,7 @@ spec:
                   name: dx-creds
                   key: kafka_password
             - name: KAFKA_GROUP
-              value: "clinvar-streams-{{ .Release.Name }}"
+              value: "{{ .Values.clinvar_streams_kafka_group }}"
           args:
             {{-  toYaml .Values.clinvar_streams_container_args | nindent 12 }}
 
@@ -54,6 +65,11 @@ apiVersion: kubernetes-client.io/v1
 kind: ExternalSecret
 metadata:
   name: dx-creds
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
 spec:
   backendType: gcpSecretsManager
   projectId: clingen-dev
@@ -70,7 +86,12 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: clinvar-streams-persistent-volume
+  name: {{ .Release.Name }}-pvc
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
 spec:
   accessModes:
     - ReadWriteOnce
