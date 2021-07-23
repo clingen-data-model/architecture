@@ -1,3 +1,7 @@
+provider "google" {
+  region  = "us-east1"
+}
+
 # project-level permissions that need to be consistent across all three environments
 module "clingen_projects_iam_bindings" {
   source  = "terraform-google-modules/iam/google//modules/projects_iam"
@@ -88,3 +92,4 @@ module "clingen_storage_readers_iam" {
     ]
   }
 }
+

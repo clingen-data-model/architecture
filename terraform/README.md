@@ -2,7 +2,8 @@
 
 This directory contains (or eventually will contain) the terraform definitions for the infrastructure behind various clingen components.
 
-- `modules/` - Contains reusable terraform modules. Appropriate for shared code between environments
+- `modules/` - Contains reusable terraform modules. Appropriate for shared components that are reused or repeated between environments
+- `shared/` - Configuration that is defined centrally for all environments. Appropriate for configs that are not necessarily reusable, but try to express identical configurations in all of det,stage, and prod.
 - `dev/` - development environment configs
 - `stage/` - staging environment configs
 - `prod/` - production environment configs
