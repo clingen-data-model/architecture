@@ -1,5 +1,5 @@
 provider "google" {
-  region  = "us-east1"
+  region = "us-east1"
 }
 
 # project-level permissions that need to be consistent across all three environments
@@ -68,6 +68,14 @@ module "clingen_projects_iam_bindings" {
 
     "roles/run.admin" = [
       "group:clingendevs@broadinstitute.org",
+    ]
+
+    "roles/iam.serviceAccountAdmin" = [
+      "group:clingendevs@broadinstitute.org"
+    ]
+
+    "roles/serviceusage.apiKeysAdmin" = [
+      "group:clingendevs@broadinstitute.org"
     ]
 
     "roles/storage.admin" = [
