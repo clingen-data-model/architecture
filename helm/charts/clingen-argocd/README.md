@@ -24,6 +24,25 @@ cd <repo>/helm
 helm install -n argocd clingen-argocd charts/clingen-argocd
 ```
 
+## Updating argo in clingen
+
+To update our argocd release, first update the argo-cd dependency in Chart.yaml to the desired version, then run the dependency update to pull down the new version of the official argocd helm chart:
+
+```
+helm dependency update
+```
+
+This will also update our Chart.lock file with the new version and SHA sum.
+
+To push the update out, ensure your kubectl it pointed at the prod clingen cluster, and run:
+
+```
+cd <repo>/helm
+helm upgrade --install -n argocd clingen-argocd charts/clingen-argocd
+```
+
+This will cause all the pods to restart in the argocd namespace, so it's important to do this when there are no planned deployments.
+
 ## Manual configuration
 
 ### Github authentication
