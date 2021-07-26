@@ -13,74 +13,74 @@ module "clingen_projects_iam_bindings" {
   bindings = {
 
     "roles/appengine.appAdmin" = [
-      "group:clingendevs@broadinstitute.org",
+      "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
     "roles/appengine.appCreator" = [
-      "group:clingendevs@broadinstitute.org",
+      "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
     "roles/bigquery.admin" = [
-      "group:clingendevs@broadinstitute.org",
+      "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
     "roles/billing.viewer" = [
-      "group:clingendevs@broadinstitute.org",
+      "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
     "roles/cloudbuild.builds.editor" = [
-      "group:clingendevs@broadinstitute.org",
+      "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
     "roles/cloudfunctions.admin" = [
-      "group:clingendevs@broadinstitute.org",
+      "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
     "roles/cloudscheduler.admin" = [
-      "group:clingendevs@broadinstitute.org",
+      "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
     "roles/container.admin" = [
-      "group:clingendevs@broadinstitute.org",
+      "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
     "roles/compute.admin" = [
+      "group:clingen-gcp-admin@broadinstitute.org",
       "group:clingendevs@broadinstitute.org",
-      "group:<collaborators-tbd>@broadinstitute.org",
     ]
 
     "roles/dns.admin" = [
+      "group:clingen-gcp-admin@broadinstitute.org",
       "group:clingendevs@broadinstitute.org",
-      "group:<collaborators-tbd>@broadinstitute.org",
     ]
 
     "roles/firebase.admin" = [
-      "group:clingendevs@broadinstitute.org",
+      "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
     "roles/monitoring.admin" = [
-      "group:clingendevs@broadinstitute.org",
+      "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
     "roles/pubsub.admin" = [
-      "group:clingendevs@broadinstitute.org",
+      "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
     "roles/run.admin" = [
-      "group:clingendevs@broadinstitute.org",
+      "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
     "roles/iam.serviceAccountAdmin" = [
-      "group:clingendevs@broadinstitute.org"
+      "group:clingen-gcp-admin@broadinstitute.org"
     ]
 
     "roles/serviceusage.apiKeysAdmin" = [
-      "group:clingendevs@broadinstitute.org"
+      "group:clingen-gcp-admin@broadinstitute.org"
     ]
 
     "roles/storage.admin" = [
+      "group:clingen-gcp-admin@broadinstitute.org",
       "group:clingendevs@broadinstitute.org",
-      "group:<collaborators-tbd>@broadinstitute.org",
     ]
 
   }
@@ -96,7 +96,7 @@ module "clingen_storage_readers_iam" {
 
   bindings = {
     "roles/storage.objectViewer" = [
-      "<clingen-data-viewers-tbd>@broadinstitute.org",
+      "clingen-data-read@broadinstitute.org",
     ]
   }
 }
