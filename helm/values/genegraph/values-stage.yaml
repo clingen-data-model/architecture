@@ -1,6 +1,6 @@
 # helm template genegraph charts/clingen-genegraph -f values/genegraph/values-stage.yaml
 
-# in order of appearance in the helm templates
+# In order of appearance in the helm templates
 # deployment
 genegraph_update_strategy:
   type: RollingUpdate
@@ -18,7 +18,7 @@ genegraph_pod_affinity:
               values:
                 - genegraph
 genegraph_docker_image_name: gcr.io/clingen-stage/genegraph
-genegraph_docker_image_tag: testbuild
+genegraph_docker_image_tag: 37ad117d73977364ecaffd6215ae10c9eb19e167
 genegraph_deployment_resources:
   requests:
     memory: 6Gi
@@ -26,7 +26,7 @@ genegraph_deployment_resources:
   limits:
     memory: 10Gi
 genegraph_image_version_envvar: true
-genegraph_data_version: "2021-07-14T1333"
+genegraph_data_version: "2021-07-26T1525"
 genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
 genegraph_gcs_bucket: genegraph-stage
 genegraph_dx_jaas_secretname: dx-stage-jaas
