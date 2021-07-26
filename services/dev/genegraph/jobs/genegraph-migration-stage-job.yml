@@ -17,7 +17,7 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-dev/genegraph:v85
+        - image: gcr.io/clingen-dev/genegraph:v87
           imagePullPolicy: Always
           name: genegraph
           env:
