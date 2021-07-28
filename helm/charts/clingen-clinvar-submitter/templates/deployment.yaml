@@ -6,6 +6,7 @@ metadata:
     {{- include "clingen-clinvar-submitter.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
       {{- include "clingen-clinvar-submitter.selectorLabels" . | nindent 6 }}
