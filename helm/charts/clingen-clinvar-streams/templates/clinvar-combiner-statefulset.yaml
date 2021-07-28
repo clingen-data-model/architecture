@@ -3,10 +3,7 @@ kind: ExternalSecret
 metadata:
   name: dx-creds
   labels:
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/part-of: {{ .Chart.Name }}
-    helm.sh/chart: {{ .Chart.Name }}
+    {{- include  "clingen-clinvar-streams.chartLabels" . | nindent 4 }}
 spec:
   backendType: gcpSecretsManager
   projectId: clingen-dev
@@ -25,7 +22,8 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app: {{ .Release.Name }}
+    # app: {{ .Release.Name }}
+    {{- include  "clingen-clinvar-streams.chartLabels" . | nindent 4 }}
 spec:
   # ports:
   # - port: 80
@@ -40,10 +38,7 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     app: {{ .Release.Name }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/part-of: {{ .Chart.Name }}
-    helm.sh/chart: {{ .Chart.Name }}
+    {{- include  "clingen-clinvar-streams.chartLabels" . | nindent 4 }}
 spec:
   serviceName: {{ .Release.Name }}
   selector:
@@ -113,10 +108,7 @@ apiVersion: storage.k8s.io/v1
 metadata:
   name: slow
   labels:
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/part-of: {{ .Chart.Name }}
-    helm.sh/chart: {{ .Chart.Name }}
+    {{- include  "clingen-clinvar-streams.chartLabels" . | nindent 4 }}
 provisioner: kubernetes.io/gce-pd
 parameters:
   type: pd-standard
@@ -128,10 +120,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-pvc
   labels:
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/part-of: {{ .Chart.Name }}
-    helm.sh/chart: {{ .Chart.Name }}
+    {{- include  "clingen-clinvar-streams.chartLabels" . | nindent 4 }}
 spec:
   storageClassName: slow
   accessModes:
