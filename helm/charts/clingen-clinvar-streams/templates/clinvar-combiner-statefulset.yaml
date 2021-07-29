@@ -20,34 +20,29 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}
+  name: "{{ .Release.Name }}-svc"
   labels:
-    # app: {{ .Release.Name }}
     {{- include  "clingen-clinvar-streams.chartLabels" . | nindent 4 }}
 spec:
-  # ports:
-  # - port: 80
-  #   name: web
   clusterIP: None
   selector:
-    app: {{ .Release.Name }}
+    {{- include "clingen-clinvar-streams.selectorLabels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app: {{ .Release.Name }}
     {{- include  "clingen-clinvar-streams.chartLabels" . | nindent 4 }}
 spec:
-  serviceName: {{ .Release.Name }}
+  serviceName: "{{ .Release.Name }}-svc"
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      {{- include "clingen-clinvar-streams.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}
+        {{- include "clingen-clinvar-streams.selectorLabels" . | nindent 8 }}
     spec:
       terminationGracePeriodSeconds: 600
       volumes:

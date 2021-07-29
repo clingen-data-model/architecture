@@ -7,3 +7,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/part-of: {{ .Chart.Name }}
 helm.sh/chart: {{ .Chart.Name }}
 {{- end }}
+
+{{- define "clingen-clinvar-streams.selectorLabels" -}}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
