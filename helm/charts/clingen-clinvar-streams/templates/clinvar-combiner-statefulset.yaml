@@ -75,7 +75,7 @@ spec:
             - name: DX_CV_SNAPSHOT_BUCKET
               value: clinvar-streams-dev
             - name: DX_CV_COMBINER_SNAPSHOT_VERSION
-              value: ""
+              value: "LOCAL"
             - name: DX_CV_COMBINER_MODE
               value: stream
             - name: KAFKA_USER
@@ -99,12 +99,12 @@ spec:
             preStop:
               httpGet:
                 # host defaults to pod IP
-                path: "/PreStop"
+                path: "PreStop"
                 port: 8080
 ---
 # https://github.com/kubernetes/examples/blob/master/staging/persistent-volume-provisioning/README.md
-kind: StorageClass
 apiVersion: storage.k8s.io/v1
+kind: StorageClass
 metadata:
   name: slow
   labels:
@@ -112,7 +112,6 @@ metadata:
 provisioner: kubernetes.io/gce-pd
 parameters:
   type: pd-standard
-  # zone: us-central1-a
   fsType: ext4
 ---
 apiVersion: v1
