@@ -4,11 +4,13 @@
 
 replicaCount: 1
 
+revisionHistoryLimit: 3
+
 image:
   repository: gcr.io/clingen-stage/clinvar-submitter
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "testbuild"
+  #tag: "testbuild"
 
 podAnnotations: {}
 
@@ -38,4 +40,4 @@ tolerations: []
 
 affinity: {}
 
-scv_service_url: "https://us-central1-clingen-dx.cloudfunctions.net/ClinVarSCV"
+scv_service_url: ""

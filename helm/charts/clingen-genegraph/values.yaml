@@ -2,6 +2,7 @@
 
 # deployment
 genegraph_replicas: 1
+genegraph_revisionhistorylimit: 3
 genegraph_update_strategy: {}
 genegraph_pod_affinity: {}
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
@@ -13,6 +14,7 @@ genegraph_mode: production
 genegraph_gql_cache: true
 genegraph_validate_events: false
 genegraph_response_cache: true
+genegraph_gql_logging_topic: 
 genegraph_dx_jaas_secretname: dx-prod-jaas
 genegraph_readiness_probe_path: /ready
 genegraph_readiness_probe:
