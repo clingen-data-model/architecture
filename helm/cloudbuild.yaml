@@ -15,7 +15,7 @@ steps:
       for chart in $(ls charts); do
         echo "===== Linting $chart ====="
         helm lint --with-subcharts=false charts/$chart
-        helmfile -q -l chart=$chart template | kubeconform -strict -skip "ManagedCertificate,BackendConfig" -verbose -kubernetes-version "1.19.9"
+        helmfile -q -l chart=$chart template | kubeconform -strict -skip "ManagedCertificate,BackendConfig" -verbose -kubernetes-version "1.20.8"
       done
 
 # timeout if not complete in 10 minutes
