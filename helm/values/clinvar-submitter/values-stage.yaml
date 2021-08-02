@@ -7,3 +7,10 @@ image:
   pullPolicy: Always
   tag: "8ba1ab11d8eefa02b37f02f09057e72aaccbf6cd"
 scv_service_url: "https://us-central1-clingen-stage.cloudfunctions.net/ClinVarSCV"
+resources:
+  requests:
+    cpu: 500m
+    memory: 350Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi

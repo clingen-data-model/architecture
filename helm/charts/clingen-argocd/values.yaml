@@ -23,6 +23,7 @@ argo-cd:
       enabled: true
       paths:
         - /*
+      pathType: ImplementationSpecific
       hosts:
         - *argohost
       annotations:
