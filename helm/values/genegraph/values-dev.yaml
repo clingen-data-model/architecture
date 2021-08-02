@@ -1,35 +1,44 @@
 # in order of appearance in the helm templates
 
 # deployment
-genegraph_update_strategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 50%
-    maxUnavailable: 50%
-genegraph_pod_affinity:
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-    - topologyKey: kubernetes.io/hostname
-      labelSelector:
-        matchExpressions:
-        - key: app
-          operator: In
-          values:
-          - genegraph
+#genegraph_update_strategy:
+#  type: RollingUpdate
+#  rollingUpdate:
+#    maxSurge: 50%
+#    maxUnavailable: 50%
+#genegraph_pod_affinity:
+#  podAntiAffinity:
+#    requiredDuringSchedulingIgnoredDuringExecution:
+#    - topologyKey: kubernetes.io/hostname
+#      labelSelector:
+#        matchExpressions:
+#        - key: app
+#          operator: In
+#          values:
+#          - genegraph
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
-genegraph_docker_image_tag: v81
+genegraph_docker_image_tag: v90
 genegraph_image_version_envvar: true
-genegraph_data_version: "2021-05-19T1221"
+genegraph_data_version: "2021-07-30T1405"
 genegraph_cg_search_topics: "gene-dosage-jira;actionability;gci-legacy;gci-legacy-dev"
 genegraph_gcs_bucket: genegraph-dev
-genegraph_gql_cache: false
-genegraph_response_cache: false
+genegraph_gql_cache: true
+genegraph_response_cache: true
+
+# migration job
+genegraph_migration: true
+
+# storage class
+genegraph_configure_storageclass: true
+
+# Local SSD
+genegraph_local_ssd: true
 
 # certificate and ingress
-genegraph_tls_cert: true
+genegraph_tls_cert: false
 genegraph_mcrt_domains:
 - 'genegraph-testing.clingen.app'
-genegraph_configure_ingress: true
+genegraph_configure_ingress: false
 genegraph_static_ip_name: global-dev-genegraph-dev-ip
 
 # service
