@@ -24,7 +24,7 @@ resource "google_monitoring_notification_channel" "clingen_private_alerts" {
 ####
 
 resource "google_monitoring_alert_policy" "kubernetes_pod_volume_utilization" {
-  display_name = "kubernetes pod storage utilization alarm"
+  display_name = "kubernetes pod volume utilization alarm"
   combiner     = "OR"
   conditions {
     display_name = "pod storage volume utilization is greater than 80%"
