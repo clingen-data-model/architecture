@@ -24,10 +24,6 @@ module "clingen_projects_iam_bindings" {
       "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
-    "roles/billing.viewer" = [
-      "group:clingen-gcp-admin@broadinstitute.org",
-    ]
-
     "roles/cloudbuild.builds.editor" = [
       "group:clingen-gcp-admin@broadinstitute.org",
     ]
@@ -96,7 +92,7 @@ module "clingen_storage_readers_iam" {
 
   bindings = {
     "roles/storage.objectViewer" = [
-      "clingen-data-read@broadinstitute.org",
+      "group:clingen-data-read@broadinstitute.org",
     ]
   }
 }
