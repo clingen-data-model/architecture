@@ -15,7 +15,7 @@ resource "google_cloudbuild_trigger" "clinvar_submitter_push" {
 }
 
 # clinvar-submitter pull request checks
-resource "google_cloudbuild_trigger" "architecture_helm_lint" {
+resource "google_cloudbuild_trigger" "clinvar_submitter_pr" {
   name        = "clinvar-submitter-pull-request"
   description = "checks to perform on pull requests in the clinvar-submitter"
 
