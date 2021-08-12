@@ -11,7 +11,7 @@ resource "google_cloudbuild_trigger" "clinvar_submitter_push" {
     }
   }
 
-  filename = "cloudbuild.yaml"
+  filename = ".cloudbuild/docker-build.cloudbuild.yaml"
 }
 
 # clinvar-submitter pull request checks
