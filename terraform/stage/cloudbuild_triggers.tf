@@ -83,8 +83,25 @@ resource "google_cloudbuild_trigger" "genegraph_stage" {
     }
   }
 
-  filename = "cloudbuild.yaml"
+  filename = ".cloudbuild/docker-build.cloudbuild.yaml"
 }
+
+# genegraph pull request checks
+resource "google_cloudbuild_trigger" "genegraph_pr" {
+  name        = "genegraph-pull-request"
+  description = "checks to perform on pull requests in the genegraph repository"
+
+  github {
+    name  = "genegraph"
+    owner = "clingen-data-model"
+    pull_request {
+      branch = "^master$"
+    }
+  }
+
+  filename = ".cloudbuild/pull-request.cloudbuild.yaml"
+}
+
 
 # # clinvar streams build
 resource "google_cloudbuild_trigger" "clinvar_streams_build" {
