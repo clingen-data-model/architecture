@@ -1,4 +1,4 @@
-# in order of appearance in the helm templates
+# helm template genegraph charts/clingen-genegraph -f values/genegraph/values-dev.yaml
 
 # deployment
 #genegraph_update_strategy:
@@ -18,30 +18,28 @@
 #          - genegraph
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
 genegraph_docker_image_tag: v90
+genegraph_deployment_resources:
+  requests:
+    memory: 6Gi
+    cpu: 1000m
+  limits:
+    memory: 10Gi
 genegraph_image_version_envvar: true
 genegraph_data_version: "2021-07-30T1405"
 genegraph_cg_search_topics: "gene-dosage-jira;actionability;gci-legacy;gci-legacy-dev"
 genegraph_gcs_bucket: genegraph-dev
-genegraph_gql_cache: true
-genegraph_response_cache: true
-
-# migration job
-genegraph_migration: true
-
-# storage class
-genegraph_configure_storageclass: true
-
-# Local SSD
-genegraph_local_ssd: true
 
 # certificate and ingress
+genegraph_configure_ingress: false
 genegraph_tls_cert: false
 genegraph_mcrt_domains:
 - 'genegraph-testing.clingen.app'
-genegraph_configure_ingress: false
 genegraph_static_ip_name: global-dev-genegraph-dev-ip
 
 # service
-genegraph_service: true
 genegraph_service_type: NodePort
 genegraph_port: 8888
+
+# run migration job before deployment
+genegraph_run_migration: true
+

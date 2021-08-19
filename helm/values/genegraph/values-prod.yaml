@@ -1,4 +1,5 @@
-# in order of appearance in the helm templates
+# helm template genegraph charts/clingen-genegraph -f values/genegraph/values-dev.yaml
+
 # deployment
 genegraph_replicas: 2
 genegraph_update_strategy:
@@ -33,4 +34,4 @@ genegraph_dx_jaas_secretname: dx-stage-jaas
 
 # certificate and ingress
 genegraph_tls_cert: false
-genegraph_service: true
+

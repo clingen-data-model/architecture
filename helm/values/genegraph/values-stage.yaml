@@ -1,6 +1,5 @@
 # helm template genegraph charts/clingen-genegraph -f values/genegraph/values-stage.yaml
 
-# in order of appearance in the helm templates
 # deployment
 genegraph_update_strategy:
   type: RollingUpdate
@@ -30,8 +29,12 @@ genegraph_data_version: "2021-08-09T1450"
 genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
 genegraph_gcs_bucket: genegraph-stage
 genegraph_dx_jaas_secretname: dx-stage-jaas
+
 # certificate and ingress
 genegraph_tls_cert: false
+
 # service
-genegraph_service: true
 genegraph_service_lb_ip: 34.74.244.24
+
+# run migration job before deployment
+genegraph_run_migration: true

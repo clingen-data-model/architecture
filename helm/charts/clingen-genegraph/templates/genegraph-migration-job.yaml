@@ -1,4 +1,4 @@
-{{- if .Values.genegraph_migration }}
+{{- if .Values.genegraph_run_migration }}
 apiVersion: batch/v1
 kind: Job
 metadata:
