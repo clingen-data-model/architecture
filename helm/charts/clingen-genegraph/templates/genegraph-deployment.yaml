@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     app: {{ .Release.Name }}
-    {{- include "clingen-genegraph.chartLabels" . | nindent 4 }}
+    {{- include "clingen-genegraph.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.genegraph_replicas }}
   revisionHistoryLimit: {{ .Values.genegraph_revisionhistorylimit }}
@@ -14,11 +14,11 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      {{- include "clingen-genegraph.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}
+         {{- include "clingen-genegraph.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.genegraph_pod_affinity }}
       affinity:

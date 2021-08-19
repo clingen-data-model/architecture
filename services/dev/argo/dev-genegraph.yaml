@@ -11,7 +11,7 @@ spec:
     path: helm/charts/clingen-genegraph
     helm:
       valueFiles:
-      - ../../values/clingen-genegraph/values-dev.yaml    
+      - ../../values/genegraph/values-dev.yaml    
   destination:
     server: https://35.237.22.18
     namespace: default

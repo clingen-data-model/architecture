@@ -5,7 +5,7 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}-ingress
   labels:
-{{ include "clingen-genegraph.chartLabels" . | indent 4 }}
+{{ include "clingen-genegraph.labels" . | indent 4 }}
   annotations:
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.genegraph_static_ip_name }}
     networking.gke.io/managed-certificates: {{ .Release.Name }}-certificate
