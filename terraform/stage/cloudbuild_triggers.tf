@@ -102,6 +102,22 @@ resource "google_cloudbuild_trigger" "genegraph_pr" {
   filename = ".cloudbuild/pull-request.cloudbuild.yaml"
 }
 
+# genegraph-ui deployment
+resource "google_cloudbuild_trigger" "genegraph_ui_stage" {
+  name        = "genegraph-ui-stage-deploy"
+  description = "triggers on push to genegraph-ui/master"
+
+  github {
+    name  = "genegraph-ui"
+    owner = "clingen-data-model"
+    push {
+      branch = "^master$"
+    }
+  }
+
+  filename = "cloudbuild.yaml"
+}
+
 
 # # clinvar streams build
 resource "google_cloudbuild_trigger" "clinvar_streams_build" {
