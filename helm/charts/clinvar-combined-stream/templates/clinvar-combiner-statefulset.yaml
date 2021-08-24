@@ -46,12 +46,12 @@ spec:
             - name: KAFKA_USER
               valueFrom:
                 secretKeyRef:
-                  name: dx-creds
+                  name: dx-creds-{{ .Release.Name }}
                   key: kafka_user
             - name: KAFKA_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: dx-creds
+                  name: dx-creds-{{ .Release.Name }}
                   key: kafka_password
             - name: KAFKA_GROUP
               value: "{{ .Values.clinvar_streams_kafka_group }}"
