@@ -1,7 +1,7 @@
+project_id: clingen-dev
 clinvar_streams_docker_image_name: gcr.io/clingen-dev/clinvar-streams
 clinvar_streams_docker_image_tag: latest
 clinvar_streams_image_pull_policy: Always
-clinvar_streams_persistent_vol: false
 clinvar_streams_deployment_resources:
   requests:
     memory: 256Mi
