@@ -50,6 +50,26 @@ resource "google_cloudbuild_trigger" "architecture_helm_lint" {
   filename = "helm/cloudbuild.yaml"
 }
 
+# architecture terraform linting
+resource "google_cloudbuild_trigger" "architecture_tflint" {
+  name = "architecture-terraform-pr-lint"
+  description = "lint terraform manifests on changes to the terraform folder"
+
+  github {
+    name = "architecture"
+    owner = "clingen-data-model"
+    pull_request {
+      branch = "^master$"
+    }
+
+    included_files = [
+      "terraform/**"
+    ]
+
+    filename = "terraform/cloudbuild.yaml"
+  }
+}
+
 # curator build
 resource "google_cloudbuild_trigger" "curator_stage" {
   name        = "curator-stage-deploy"
