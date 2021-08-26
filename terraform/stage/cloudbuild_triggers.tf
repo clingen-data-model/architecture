@@ -64,7 +64,8 @@ resource "google_cloudbuild_trigger" "architecture_tflint" {
   }
 
   included_files = [
-    "terraform/**"
+    "terraform/**",
+    "dockerfiles/terraform-linter/**"
   ]
 
   filename = "terraform/cloudbuild.yaml"
