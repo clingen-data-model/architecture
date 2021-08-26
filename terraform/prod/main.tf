@@ -9,7 +9,7 @@ module "external-secrets" {
 }
 
 module "prod-gke-cluster" {
-  source                    = "git@github.com:broadinstitute/tgg-terraform-modules.git//imported-gke-cluster?ref=26fcbffd5441e69e2b3e5fb6fe4e66d0e66a0bbc"
+  source                    = "github.com/broadinstitute/tgg-terraform-modules//imported-gke-cluster?ref=26fcbffd5441e69e2b3e5fb6fe4e66d0e66a0bbc"
   cluster_name              = "prod-cluster"
   cluster_location          = "us-east1-b"
   network_id                = "projects/clingen-dx/global/networks/default"
