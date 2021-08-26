@@ -6,6 +6,8 @@ RUN apt-get update \
      wget \
      ca-certificates \
      unzip \
+     git \
+     openssh-client\
   && wget -q https://releases.hashicorp.com/terraform/1.0.5/terraform_1.0.5_linux_amd64.zip -O /tmp/terraform.zip \
   && wget -q https://github.com/terraform-linters/tflint/releases/download/v0.31.0/tflint_linux_amd64.zip -O /tmp/tflint.zip \
   && unzip /tmp/terraform.zip -d /usr/local/bin \
