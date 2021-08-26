@@ -61,13 +61,13 @@ resource "google_cloudbuild_trigger" "architecture_tflint" {
     pull_request {
       branch = "^master$"
     }
-
-    included_files = [
-      "terraform/**"
-    ]
-
-    filename = "terraform/cloudbuild.yaml"
   }
+
+  included_files = [
+    "terraform/**"
+  ]
+
+  filename = "terraform/cloudbuild.yaml"
 }
 
 # curator build
