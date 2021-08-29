@@ -1,4 +1,5 @@
 # in order of appearance in the helm templates
+# helm template genegraph charts/clingen-genegraph -f values/genegraph/values-dev.yaml
 
 # deployment
 genegraph_update_strategy:
@@ -17,13 +18,14 @@ genegraph_pod_affinity:
           values:
           - genegraph
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
-genegraph_docker_image_tag: v81
+genegraph_docker_image_tag: v95
 genegraph_image_version_envvar: true
-genegraph_data_version: "2021-05-19T1221"
-genegraph_cg_search_topics: "gene-dosage-jira;actionability;gci-legacy;gci-legacy-dev"
+genegraph_data_version: "2021-08-24T2034"
+genegraph_cg_search_topics: "gene-validity-raw"
 genegraph_gcs_bucket: genegraph-dev
 genegraph_gql_cache: false
 genegraph_response_cache: false
+genegraph_experimental_schema: true
 
 # certificate and ingress
 genegraph_tls_cert: true
