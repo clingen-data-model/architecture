@@ -20,3 +20,17 @@ To apply a configuration, cd into the desired env folder, and:
 - make the desired changes to the terraform manifests.
 - Run a `terraform plan` to see the difference between the current configuration, and the actual infrastructure.
 - If the plan looks good, run `terraform apply` to apply your changes (it will stop and ask you to confirm first). 
+
+## Testing and linting
+
+We're using a tool called tflint to lint the terraform manifests. tflint can be installed with `brew install tflint`, or can be downloaded from: https://github.com/terraform-linters/tflint/releases.
+
+A helper script is included in terraform/linter.sh. To run it, cd into the terraform folder, and run the script.
+
+If you'd like to lint an individual terraform configuration, you need to cd into one of the dev/stage/prod folders, and then run tflint with the -c flag to point at the shared .tflint.hcl config file:
+
+```bash
+cd terraform
+tflint --init # you can skip this if you've already init'd before
+tflint --module -c ../.tflint.hcl # the --module flag tells tflint to recurse referenced modules
+```

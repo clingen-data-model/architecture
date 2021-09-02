@@ -50,6 +50,27 @@ resource "google_cloudbuild_trigger" "architecture_helm_lint" {
   filename = "helm/cloudbuild.yaml"
 }
 
+# architecture terraform linting
+resource "google_cloudbuild_trigger" "architecture_tflint" {
+  name = "architecture-terraform-pr-lint"
+  description = "lint terraform manifests on changes to the terraform folder"
+
+  github {
+    name = "architecture"
+    owner = "clingen-data-model"
+    pull_request {
+      branch = "^master$"
+    }
+  }
+
+  included_files = [
+    "terraform/**",
+    "dockerfiles/terraform-linter/**"
+  ]
+
+  filename = "terraform/cloudbuild.yaml"
+}
+
 # curator build
 resource "google_cloudbuild_trigger" "curator_stage" {
   name        = "curator-stage-deploy"
@@ -83,8 +104,25 @@ resource "google_cloudbuild_trigger" "genegraph_stage" {
     }
   }
 
-  filename = "cloudbuild.yaml"
+  filename = ".cloudbuild/docker-build.cloudbuild.yaml"
 }
+
+# genegraph pull request checks
+resource "google_cloudbuild_trigger" "genegraph_pr" {
+  name        = "genegraph-pull-request"
+  description = "checks to perform on pull requests in the genegraph repository"
+
+  github {
+    name  = "genegraph"
+    owner = "clingen-data-model"
+    pull_request {
+      branch = "^master$"
+    }
+  }
+
+  filename = ".cloudbuild/pull-request.cloudbuild.yaml"
+}
+
 
 # # clinvar streams build
 resource "google_cloudbuild_trigger" "clinvar_streams_build" {
