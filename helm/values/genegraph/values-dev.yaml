@@ -30,7 +30,6 @@ genegraph_cg_search_topics: "gene-dosage-jira;actionability;gci-legacy;gci-legac
 genegraph_gcs_bucket: genegraph-dev
 
 # certificate and ingress
-genegraph_configure_ingress: false
 genegraph_tls_cert: false
 genegraph_mcrt_domains:
 - 'genegraph-testing.clingen.app'
