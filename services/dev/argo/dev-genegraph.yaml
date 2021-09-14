@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: genegraph
+  name: dev-genegraph
   namespace: argocd
 spec:
   project: dev
@@ -10,7 +10,7 @@ spec:
     targetRevision: migration-parity
     path: helm/charts/clingen-genegraph
     helm:
-      releaseName: dev-genegraph 
+      releaseName: genegraph 
       valueFiles:
       - ../../values/genegraph/values-dev.yaml
   destination:
