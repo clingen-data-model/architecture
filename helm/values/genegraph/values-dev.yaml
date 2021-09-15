@@ -19,8 +19,11 @@ genegraph_mcrt_domains:
 genegraph_static_ip_name: global-dev-genegraph-dev-ip
 
 # service
+# node port
 #genegraph_service_type: NodePort
 #genegraph_port: 8888
+# load balancer
+genegraph_service_lb_ip: global-dev-genegraph-dev-ip
 
 # run migration job before deployment
 genegraph_run_migration: true
