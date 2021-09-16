@@ -36,7 +36,7 @@ genegraph_tls_cert: true
 
 # service
 genegraph_service: true
-genegraph_service_type: LoadBalancer
+genegraph_service_type: NodePort
 genegraph_port: 80
 
 # storage

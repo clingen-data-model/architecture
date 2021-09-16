@@ -12,8 +12,6 @@ genegraph_gql_cache: true
 genegraph_response_cache: true
 
 # certificate and ingress
-genegraph_configure_ingress: false
-genegraph_tls_cert: false
 genegraph_mcrt_domains:
   - 'genegraph-dev.clingen.app'
 genegraph_static_ip_name: global-dev-genegraph-dev-ip
@@ -23,7 +21,7 @@ genegraph_static_ip_name: global-dev-genegraph-dev-ip
 #genegraph_service_type: NodePort
 #genegraph_port: 8888
 # load balancer
-genegraph_service_lb_ip: 35.227.247.152
+# genegraph_service_lb_ip: 35.227.247.152
 
 # run migration job before deployment
 genegraph_run_migration: false
