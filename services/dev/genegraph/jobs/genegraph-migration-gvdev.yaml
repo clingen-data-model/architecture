@@ -17,7 +17,7 @@ spec:
           hostPath:
             path: "/mnt/disks/ssd0"
       containers:
-        - image: gcr.io/clingen-dev/genegraph:v75
+        - image: gcr.io/clingen-dev/genegraph:v97
           imagePullPolicy: Always
           name: genegraph
           env:
@@ -26,7 +26,7 @@ spec:
             # - name: GENEGRAPH_DATA_VERSION
             #   value: "DOESNT GET USED DURING MIGRATION"
             - name: CG_SEARCH_TOPICS
-              value: "gene-dosage-jira;actionability;gene-validity-raw"
+              value: "gene-validity-raw"
             - name: GENEGRAPH_MODE
               value: "production"
             - name: GENEGRAPH_BUCKET
@@ -35,6 +35,8 @@ spec:
               value: "true"
             - name: GENEGRAPH_RESPONSE_CACHE
               value: "true"
+            - name: GENEGRAPH_BATCH_EVENT_SOURCES
+              value: "gci-express-json;gci-raw-snapshot"
             - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:

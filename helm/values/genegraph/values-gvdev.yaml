@@ -1,5 +1,5 @@
 # in order of appearance in the helm templates
-# helm template genegraph charts/clingen-genegraph -f values/genegraph/values-dev.yaml
+# helm template genegraph-gvdev charts/clingen-genegraph -f values/genegraph/values-dev.yaml
 
 # deployment
 genegraph_update_strategy:
@@ -10,27 +10,30 @@ genegraph_update_strategy:
 genegraph_pod_affinity:
   podAntiAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
-      - topologyKey: kubernetes.io/hostname
-        labelSelector:
-          matchExpressions:
-            - key: app
-              operator: In
-              values:
-                - genegraph
+    - topologyKey: kubernetes.io/hostname
+      labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - genegraph
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
-genegraph_docker_image_tag: 8d7efb1d369afd237c8d3fb8e73187ce35a3a5ce
+genegraph_docker_image_tag: v97
 genegraph_image_version_envvar: true
-genegraph_data_version: "2021-09-10T1243"
-genegraph_cg_search_topics: "gene-dosage-jira;actionability;gci-legacy;gci-legacy-dev"
+genegraph_data_version: "2021-09-09T1838"
+genegraph_cg_search_topics: "gene-validity-raw"
 genegraph_gcs_bucket: genegraph-dev
 genegraph_gql_cache: false
 genegraph_response_cache: false
+genegraph_experimental_schema: true
+
 # certificate and ingress
 genegraph_tls_cert: true
 genegraph_mcrt_domains:
-  - 'genegraph-testing.clingen.app'
+- 'genegraph-testing.clingen.app'
 genegraph_configure_ingress: true
 genegraph_static_ip_name: global-dev-genegraph-dev-ip
+
 # service
 genegraph_service: true
 genegraph_service_type: NodePort

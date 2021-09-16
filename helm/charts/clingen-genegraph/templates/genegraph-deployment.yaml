@@ -60,6 +60,8 @@ spec:
             {{- end }}
             - name: CG_SEARCH_TOPICS
               value: {{ .Values.genegraph_cg_search_topics | quote }}
+            - name: GENEGRAPH_EXPERIMENTAL_SCHEMA
+              value: {{ .Values.genegraph_experimental_schema | quote }}              
             - name: GENEGRAPH_MODE
               value: {{ .Values.genegraph_mode | quote }}
             - name: GENEGRAPH_BUCKET
