@@ -1,29 +1,21 @@
-apiVersion: apps/v1
-kind: Deployment
+{{- if .Values.genegraph_run_migration }}
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: {{ .Release.Name }}
+  name:  {{ .Release.Name }}-migration
   labels:
-    app: {{ .Release.Name }}
+    app: {{ .Release.Name }}-migration
     {{- include "clingen-genegraph.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
-  replicas: {{ .Values.genegraph_replicas }}
-  revisionHistoryLimit: {{ .Values.genegraph_revisionhistorylimit }}
-  {{- with .Values.genegraph_update_strategy }}
-  strategy:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  selector:
-    matchLabels:
-      {{- include "clingen-genegraph.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-         {{- include "clingen-genegraph.selectorLabels" . | nindent 8 }}
+        app: {{ .Release.Name }}-migration
     spec:
-      {{- with .Values.genegraph_pod_affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       nodeSelector:
         {{- if .Values.genegraph_local_ssd }}
         cloud.google.com/gke-local-ssd: "true"
@@ -32,32 +24,17 @@ spec:
         {{- if .Values.genegraph_local_ssd }}
         - name: genegraph-vol
           hostPath:
-            path: "/mnt/disks/ssd0/{{ .Release.Name }}"
+            path: "/mnt/disks/ssd0/{{ .Release.Name }}-migration"
         {{- end }}
       containers:
         - image: {{ .Values.genegraph_docker_image_name }}:{{ .Values.genegraph_docker_image_tag }}
           imagePullPolicy: {{ .Values.genegraph_image_pull_policy }}
           name: genegraph
-          {{- with .Values.genegraph_deployment_resources }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           env:
-            {{- if .Values.genegraph_image_version_envvar }}
-            - name: GENEGRAPH_IMAGE_VERSION
-              value: "{{ .Values.genegraph_docker_image_name }}:{{ .Values.genegraph_docker_image_tag }}"
-            {{- end }}
-            - name: GENEGRAPH_DATA_PATH
-              value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
               value: "{{ .Values.genegraph_data_version }}:{{.Values.genegraph_docker_image_tag }}"
-            {{- if .Values.genegraph_include_serveur_keypass }}
-            - name: SERVEUR_KEY_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: serveur-key-pass
-                  key: password
-            {{- end }}
+            - name: GENEGRAPH_DATA_PATH
+              value: "/data/"
             - name: CG_SEARCH_TOPICS
               value: {{ .Values.genegraph_cg_search_topics | quote }}
             - name: GENEGRAPH_MODE
@@ -72,10 +49,6 @@ spec:
             {{- end }}
             - name: GENEGRAPH_RESPONSE_CACHE
               value: {{ .Values.genegraph_response_cache | quote }}
-            {{- if .Values.genegraph_gql_logging_topic }}
-            - name: GENEGRAPH_GQL_LOGGING_TOPIC
-              value: {{.Values.genegraph_gql_logging_topic | quote }}
-            {{- end }}
             - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:
@@ -89,11 +62,6 @@ spec:
             - name: genegraph-vol
               mountPath: /data/
           {{- end }}
-          {{- with .Values.genegraph_readiness_probe }}
-          readinessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.genegraph_liveness_probe }}
-          livenessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          command: ["java", "-jar", "/app/app.jar", "migration"]
+      restartPolicy: "Never"
+{{- end }}

@@ -6,7 +6,7 @@ kind: StorageClass
 metadata:
   name: faster
   labels:
-{{ include "clingen-genegraph.chartLabels" . | indent 4 }}
+{{ include "clingen-genegraph.labels" . | indent 4 }}
 provisioner: kubernetes.io/gce-pd
 parameters:
   type: pd-ssd
