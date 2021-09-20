@@ -1,8 +1,4 @@
-module "broad_cloudarmor_policy" {
-  source = "github.com/broadinstitute/terraform-shared//terraform-modules/cloud-armor-rule?ref=71303ce4f7d1249657ebe404059b0aea52523748"
-}
-
-
+# Cloudarmor policy for restricting access to the argo web UI
 resource "google_compute_security_policy" "argocd_cloudarmor_policy" {
   name = "clingen-argo-cloud-armor"
 
