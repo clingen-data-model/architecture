@@ -6,6 +6,7 @@ module "broad_cloudarmor_policy" {
 resource "google_compute_security_policy" "argocd_cloudarmor_policy" {
   name = "clingen-argo-cloud-armor"
 
+  # subnets for the Broad
   # only 5 cidrs allowed per rule
   rule {
     action   = "allow"
@@ -58,6 +59,22 @@ resource "google_compute_security_policy" "argocd_cloudarmor_policy" {
           "69.173.64.0/19",
           "69.173.127.192/27",
           "69.173.124.0/23"
+        ]
+      }
+    }
+  }
+
+  # external collaborator subnets
+  rule {
+    action   = "allow"
+    priority = "3"
+
+    match {
+      versioned_expr = "SRC_IPS_V1"
+
+      config {
+        src_ip_ranges = [
+          "74.69.78.31/32"
         ]
       }
     }
