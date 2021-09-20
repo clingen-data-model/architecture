@@ -17,3 +17,13 @@ releases:
   - name: clingen-anyvar
     namespace: default
     chart: ../charts/clingen-anyvar
+  - name: clinvar-raw-stream
+    namespace: default
+    chart: ../charts/clinvar-raw-stream
+    values:
+      - ../values/clinvar-raw-stream/values-dev.yaml
+  - name: clinvar-combined-stream
+    namespace: default
+    chart: ../charts/clinvar-combined-stream
+    values:
+      - ../values/clinvar-combined-stream/values-dev.yaml
