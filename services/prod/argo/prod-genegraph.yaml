@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: dev-genegraph
+  name: prod-genegraph
   namespace: argocd
 spec:
-  project: dev
+  project: prod
   source:
     repoURL: https://github.com/clingen-data-model/architecture.git
     targetRevision: HEAD
@@ -12,7 +12,7 @@ spec:
     helm:
       releaseName: genegraph 
       valueFiles:
-      - ../../values/genegraph/values-dev.yaml
+      - ../../values/genegraph/values-prod.yaml
   destination:
     server: https://35.237.22.18
     namespace: default
