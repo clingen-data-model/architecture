@@ -4,8 +4,8 @@ set -x
 # exit on fail
 set -e
 
-input_topic=clinvar-raw-testdata_20210302
-output_topic=clinvar-combined-testdata_20210302
+input_topic=clinvar-raw-dev #-testdata_20210302
+output_topic=clinvar-combined-dev #-testdata_20210302
 cluster=clingen-streams-dev
 cluster_id=$(ccloud kafka cluster list | grep $cluster | awk '{print $1}')
 
@@ -30,7 +30,7 @@ function topic_offset_to_zero {
 }
 
 echo "Resetting input topic offset"
-group=clinvar-raw-dev
+group=clinvar-combined-dev
 topic_offset_to_zero $input_topic $group
 
 echo "Deleting and recreating output topic"
