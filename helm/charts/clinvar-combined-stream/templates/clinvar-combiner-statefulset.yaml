@@ -34,7 +34,7 @@ spec:
             - name: SQLITE_DB
               value: "/data/clinvar.sqlite3"
             - name: DX_CV_SNAPSHOT_BUCKET
-              value: clinvar-streams-dev
+              value: {{ .Values.clinvar_combiner_snapshot_bucket }}
             - name: DX_CV_COMBINER_SNAPSHOT_VERSION
               value: {{ .Values.clinvar_combiner_snapshot_version }}
             - name: DX_CV_COMBINER_MODE

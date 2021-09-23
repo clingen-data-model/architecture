@@ -8,6 +8,7 @@ clinvar_combiner_input_topic: clinvar-raw-testdata_20210302
 clinvar_combiner_output_topic: clinvar-combined-testdata_20210302
 clinvar_combiner_snapshot_version: LOCAL
 clinvar_combiner_mode: stream
+clinvar_combiner_snapshot_bucket: clinvar-streams-dev
 
 clinvar_streams_deployment_resources:
   requests:
