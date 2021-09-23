@@ -16,4 +16,4 @@ clinvar_streams_deployment_resources:
     cpu: 0.2
   limits:
     memory: 1Gi
-    cpu: 1
+    cpu: 2
