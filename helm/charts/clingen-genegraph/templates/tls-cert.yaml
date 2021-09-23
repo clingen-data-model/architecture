@@ -4,7 +4,7 @@ kind: ManagedCertificate
 metadata:
   name: {{ .Release.Name }}-certificate
   labels:
-{{ include "clingen-genegraph.chartLabels" . | indent 4 }}
+{{ include "clingen-genegraph.labels" . | indent 4 }}
 spec:
   domains:
   {{- range .Values.genegraph_mcrt_domains }}

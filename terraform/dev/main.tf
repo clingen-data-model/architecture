@@ -14,7 +14,7 @@ module "cloudbuild-firebase" {
 }
 
 module "dev-gke-cluster" {
-  source                    = "git@github.com:broadinstitute/tgg-terraform-modules.git//imported-gke-cluster?ref=ce78edb118f2cd4bdb9d0adec33aa323b92f7a2f"
+  source                    = "github.com/broadinstitute/tgg-terraform-modules//imported-gke-cluster?ref=ce78edb118f2cd4bdb9d0adec33aa323b92f7a2f"
   cluster_name              = "genegraph-dev"
   cluster_location          = "us-east1-b"
   network_id                = "projects/clingen-dev/global/networks/default"

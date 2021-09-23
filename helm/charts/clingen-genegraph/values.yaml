@@ -1,4 +1,4 @@
-# in order of appearance in the templates
+# genegraph default chart values
 
 # deployment
 genegraph_replicas: 1
@@ -29,14 +29,24 @@ genegraph_liveness_probe:
   httpGet:
     path: /live
     port: genegraph-port
-genegraph_local_ssd: true
 
 # certificate and ingress
-genegraph_tls_cert: false
+genegraph_configure_ingress: true 
+genegraph_tls_cert: true
+genegraph_mcrt_domains:
+  - 'genegraph-override-this.clingen.app'
+genegraph_static_ip_name: override-this-static-ip
+
 
 # service
-genegraph_service_type: LoadBalancer
+genegraph_service: true
+genegraph_service_type: NodePort
 genegraph_port: 80
 
-# storage class
+# storage
+genegraph_local_ssd: true 
 genegraph_configure_storageclass: true
+
+# run migration job before deployment
+genegraph_run_migration: false
+

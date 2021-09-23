@@ -9,4 +9,4 @@ metadata:
     app.kubernetes.io/part-of: {{ .Chart.Name }}
 spec:
   securityPolicy:
-    name: "broad-cloud-armor"
+    name: "clingen-argo-cloud-armor"

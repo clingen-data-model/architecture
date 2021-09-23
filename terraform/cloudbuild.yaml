@@ -1,0 +1,15 @@
+# Cloud Build configuration for linting terraform configurations
+#
+# Command line test usage:
+# gcloud builds submit --project=clingen-stage --config ./cloudbuild.yaml .
+
+steps:
+- name: 'gcr.io/clingen-stage/terraform-linter'
+  args: 
+    - '-c'
+    - |-
+      cd terraform/
+      ./linter.sh
+
+# timeout if not complete in 10 minutes
+timeout: 600s
