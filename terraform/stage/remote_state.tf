@@ -7,6 +7,8 @@ resource "google_storage_bucket_iam_member" "member" {
 }
 
 terraform {
+  required_version = ">= 1.0.0, < 1.1.0"
+
   backend "gcs" {
     bucket = "clingen-tfstate-stage"
     prefix = "terraform/state"
