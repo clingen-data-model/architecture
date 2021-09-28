@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  annotations:
+    notifications.argoproj.io/subscribe.on-health-degraded.slack: clingen-deploy
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: clingen-deploy
+    notifications.argoproj.io/subscribe.on-sync-running.slack: clingen-deploy
+    notifications.argoproj.io/subscribe.on-sync-status-unknown.slack: clingen-deploy
+    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: clingen-deploy
+  creationTimestamp: "2021-04-12T20:05:59Z"
+  generation: 4
+  name: stage
+  namespace: argocd
+  resourceVersion: "185367585"
+  uid: 8e58b052-d3e3-438e-ace9-a2eddcaa1567
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  description: staging environment
+  destinations:
+  - namespace: '*'
+    server: https://35.185.65.146
+  sourceRepos:
+  - https://github.com/clingen-data-model/architecture.git
