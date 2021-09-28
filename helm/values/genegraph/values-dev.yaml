@@ -3,19 +3,17 @@
 
 # deployment
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
-genegraph_docker_image_tag: 8d7efb1d369afd237c8d3fb8e73187ce35a3a5ce
+genegraph_docker_image_tag: 1378af18ee1c8196f06acaba86edf8171fa8cf73
 genegraph_image_version_envvar: true
-genegraph_data_version: "2021-09-15T1200"
+genegraph_data_version: "2021-09-28T1601"
 genegraph_cg_search_topics: "gene-dosage-jira;actionability;gci-legacy;gci-legacy-dev"
 genegraph_gcs_bucket: genegraph-dev
 genegraph_gql_cache: true
 genegraph_response_cache: true
-
 # certificate and ingress
 genegraph_mcrt_domains:
   - 'genegraph-dev.clingen.app'
 genegraph_static_ip_name: global-dev-genegraph-dev-ip
-
 # service
 # node port
 #genegraph_service_type: NodePort
@@ -25,4 +23,3 @@ genegraph_static_ip_name: global-dev-genegraph-dev-ip
 
 # run migration job before deployment
 genegraph_run_migration: false
-
