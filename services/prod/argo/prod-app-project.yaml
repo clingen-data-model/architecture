@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  annotations:
+    notifications.argoproj.io/subscribe.on-health-degraded.slack: clingen-deploy
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: clingen-deploy
+    notifications.argoproj.io/subscribe.on-sync-running.slack: clingen-deploy
+    notifications.argoproj.io/subscribe.on-sync-status-unknown.slack: clingen-deploy
+    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: clingen-deploy
+  creationTimestamp: "2021-04-12T20:06:30Z"
+  generation: 4
+  name: prod
+  namespace: argocd
+  resourceVersion: "185367753"
+  uid: 8f6e020f-308b-4776-8830-5d575ff8e670
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  description: production environment
+  destinations:
+  - namespace: '*'
+    server: https://kubernetes.default.svc
+  sourceRepos:
+  - https://github.com/clingen-data-model/architecture.git
