@@ -23,4 +23,4 @@ genegraph_static_ip_name: global-dev-genegraph-dev-ip
 # genegraph_service_lb_ip: 35.227.247.152
 
 # run migration job before deployment
-genegraph_run_migration: false
+genegraph_run_migration: true
