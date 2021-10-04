@@ -2,15 +2,6 @@ argocdUrl: "https://argocd.prod.clingen.app"
 logLevel: warn
 secret:
   create: false
-subscriptions:
-  - recipients:
-    - slack:clingen-deploy
-    triggers:
-      - on-sync-status-unknown
-      - on-health-degraded
-      - on-sync-failed
-      - on-sync-running
-      - on-sync-succeeded
 triggers:
   trigger.on-health-degraded: |
     - description: Application has degraded
