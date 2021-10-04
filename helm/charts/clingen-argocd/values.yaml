@@ -9,10 +9,47 @@ argo-cd:
   controller:
     logLevel: warn
     logFormat: json
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "384Mi"
+  dex:
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "64Mi"
+      limits:
+        cpu: "300m"
+        memory: "128Mi"
+  redis:
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "64Mi"
+      limits:
+        cpu: "300m"
+        memory: "128Mi"
   repoServer:
     logLevel: warn
     logFormat: json
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "64Mi"
+      limits:
+        cpu: "300m"
+        memory: "128Mi"
   server:
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "500m"
+        memory: "256Mi"
     logLevel: warn
     logFormat: json
     service:
