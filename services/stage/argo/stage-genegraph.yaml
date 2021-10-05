@@ -14,7 +14,7 @@ spec:
       valueFiles:
       - ../../values/genegraph/values-stage.yaml
   destination:
-    server: https://35.237.22.18
+    server: https://35.185.65.146
     namespace: default
   syncPolicy:
     automated:
