@@ -11,15 +11,15 @@ genegraph_update_strategy:
 genegraph_pod_affinity:
   podAntiAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
-    - topologyKey: kubernetes.io/hostname
-      labelSelector:
-        matchExpressions:
-        - key: app.kubernetes.io/name
-          operator: In
-          values:
-          - genegraph
+      - topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - genegraph
 genegraph_docker_image_name: gcr.io/clingen-dx/genegraph
-genegraph_docker_image_tag: 4b79a01bcd459146ae33b7b9511a430e4776b1a0
+genegraph_docker_image_tag: 4f862261ac009d3512d136850ef0c853c742a50d
 genegraph_deployment_resources:
   requests:
     memory: 6Gi
@@ -27,16 +27,14 @@ genegraph_deployment_resources:
   limits:
     memory: 10Gi
 genegraph_image_version_envvar: true
-genegraph_data_version: "2021-08-17T2022"
+genegraph_data_version: "2021-10-05T1859"
 genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
 genegraph_gcs_bucket: genegraph-prod
 genegraph_gql_logging_topic: genegraph_logs
 genegraph_dx_jaas_secretname: dx-stage-jaas
-
 # certificate and ingress
 genegraph_mcrt_domains:
   - 'genegraph.prod.clingen.app'
 genegraph_static_ip_name: global-prod-genegraph-prod-ip
-
 # run migration job before deployment
 genegraph_run_migration: false
