@@ -12,7 +12,7 @@ genegraph_pod_affinity:
       - topologyKey: kubernetes.io/hostname
         labelSelector:
           matchExpressions:
-            - key: app
+            - key: app.kubernetes.io/name
               operator: In
               values:
                 - genegraph
@@ -31,12 +31,9 @@ genegraph_gcs_bucket: genegraph-stage
 genegraph_dx_jaas_secretname: dx-stage-jaas
 
 # certificate and ingress
-genegraph_tls_cert: false
-genegraph_configure_ingress: false
-
-# service
-genegraph_service_type: LoadBalancer
-genegraph_service_lb_ip: 34.74.244.24
+genegraph_mcrt_domains:
+  - 'genegraph.stage.clingen.app'
+genegraph_static_ip_name: clingen-ds-stage-ip
 
 # run migration job before deployment
 genegraph_run_migration: true
