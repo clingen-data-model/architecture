@@ -49,6 +49,8 @@ spec:
             {{- end }}
             - name: GENEGRAPH_RESPONSE_CACHE
               value: {{ .Values.genegraph_response_cache | quote }}
+            - name: GENEGRAPH_BATCH_EVENT_SOURCES
+              value: {{ .Values.genegraph_batch_event_sources | quote }}
             - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:

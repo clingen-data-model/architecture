@@ -76,6 +76,8 @@ spec:
             - name: GENEGRAPH_GQL_LOGGING_TOPIC
               value: {{.Values.genegraph_gql_logging_topic | quote }}
             {{- end }}
+            - name: GENEGRAPH_BATCH_EVENT_SOURCES
+              value: {{ .Values.genegraph_batch_event_sources | quote }}
             - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:

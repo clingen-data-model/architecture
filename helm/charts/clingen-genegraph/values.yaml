@@ -29,6 +29,7 @@ genegraph_liveness_probe:
   httpGet:
     path: /live
     port: genegraph-port
+genegraph_batch_event_sources: gci-express-json;gci-neo4j-archive
 
 # certificate and ingress
 genegraph_configure_ingress: true 
