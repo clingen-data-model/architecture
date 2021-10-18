@@ -97,3 +97,14 @@ module "clingen_storage_readers_iam" {
   }
 }
 
+resource "google_project_iam_member" "clingen_bigquery_prod_readers" {
+  project = "clingen-dx"
+  role    = "roles/bigquery.dataViewer"
+  member  = "group:clingen-data-read@broadinstitute.org"
+}
+
+resource "google_project_iam_member" "clingen_bigquery_dev_readers" {
+  project = "clingen-dev"
+  role    = "roles/bigquery.dataViewer"
+  member  = "group:clingen-data-read@broadinstitute.org"
+}
