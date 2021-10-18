@@ -101,11 +101,6 @@ resource "google_project_iam_member" "clingen_bigquery_prod_readers" {
   project = "clingen-dx"
   role    = "roles/bigquery.dataViewer"
   member  = "group:clingen-data-read@broadinstitute.org"
-
-  condition {
-    title      = "dataset_startswith_clinvar"
-    expression = "resource.name.startsWith(\"/projects/clingen-dx/datasets/clinvar_\")"
-  }
 }
 
 resource "google_project_iam_member" "clingen_bigquery_dev_readers" {
@@ -113,8 +108,4 @@ resource "google_project_iam_member" "clingen_bigquery_dev_readers" {
   role    = "roles/bigquery.dataViewer"
   member  = "group:clingen-data-read@broadinstitute.org"
 
-  condition {
-    title      = "dataset_startswith_clinvar"
-    expression = "resource.name.startsWith(\"/projects/clingen-dev/datasets/clinvar_\")"
-  }
 }
