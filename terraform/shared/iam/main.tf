@@ -121,3 +121,17 @@ resource "google_project_iam_member" "clingen_bigquery_dev_cxn_users" {
   role    = "roles/bigquery.jobUser"
   member  = "group:clingen-data-read@broadinstitute.org"
 }
+
+resource "google_project_iam_custom_role" "cloudfunction_unauthed_perms" {
+  project     = "clingen-dx"
+  role_id     = "cloudbuildFunctionIamManager"
+  title       = "IAM Policy Manager for CloudFunctions"
+  description = "Allows for updating the IAM policy on cloudfunctions to enable unauthenticated functions"
+  permissions = ["cloudfunctions.functions.setIamPolicy", "cloudfunctions.functions.getIamPolicy"]
+}
+
+resource "google_project_iam_member" "cloudbuild_iam_manager" {
+  project = "clingen-dx"
+  role    = google_project_iam_custom_role.cloudfunction_unauthed_perms.name
+  member  = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
+}
