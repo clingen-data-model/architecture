@@ -8,6 +8,17 @@ resource "google_service_account" "mondo_notifier_func" {
   display_name = "Cloud function for notifying on new mondo releases"
 }
 
+resource "google_service_account" "confluent_cloud_pubsub_subscriber" {
+  account_id   = "clingen-dev-mondo-subscriber"
+  display_name = "Subscriber account for consuming mondo update notifications"
+}
+
+resource "google_pubsub_subscription_iam_member" "confluent_dev_binding" {
+  subscription = google_pubsub_subscription.kafka_source_subscription.name
+  role         = "roles/pubsub.subscriber"
+  member       = "serviceAccount:${google_service_account.confluent_cloud_pubsub_subscriber.email}"
+}
+
 resource "google_pubsub_topic" "mondo_notifications" {
   name = "mondo-release-notifications"
 
@@ -16,6 +27,26 @@ resource "google_pubsub_topic" "mondo_notifications" {
     owner        = "sjahl"
     pubsub_topic = "mondo-release-notifications"
   }
+}
+
+resource "google_pubsub_subscription" "kafka_source_subscription" {
+  name  = "confluent-dev-cluster-source-subscription"
+  topic = google_pubsub_topic.mondo_notifications.name
+
+  # 20 minutes
+  message_retention_duration = "1200s"
+  retain_acked_messages      = true
+
+  ack_deadline_seconds = 20
+
+  expiration_policy {
+    ttl = "300000.5s"
+  }
+  retry_policy {
+    minimum_backoff = "10s"
+  }
+
+  enable_message_ordering = false
 }
 
 resource "google_pubsub_topic_iam_member" "mondo_function" {
