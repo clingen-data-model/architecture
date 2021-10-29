@@ -13,10 +13,14 @@ resource "google_service_account" "confluent_cloud_pubsub_subscriber" {
   display_name = "Subscriber account for consuming mondo update notifications"
 }
 
-resource "google_pubsub_subscription_iam_member" "confluent_dev_binding" {
-  subscription = google_pubsub_subscription.kafka_source_subscription.name
-  role         = "roles/pubsub.subscriber"
-  member       = "serviceAccount:${google_service_account.confluent_cloud_pubsub_subscriber.email}"
+resource "google_project_iam_member" "confluent_dev_binding" {
+  role   = "roles/pubsub.subscriber"
+  member = "serviceAccount:${google_service_account.confluent_cloud_pubsub_subscriber.email}"
+}
+
+resource "google_project_iam_member" "confluent_dev_viewer_binding" {
+  role   = "roles/pubsub.viewer"
+  member = "serviceAccount:${google_service_account.confluent_cloud_pubsub_subscriber.email}"
 }
 
 resource "google_pubsub_topic" "mondo_notifications" {
