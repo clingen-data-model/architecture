@@ -1,15 +1,10 @@
 #!/bin/zsh
-# print command trace
-set -x
-# exit on fail
-set -e
-# no unset parameters (only in calls)
-set -u
+set -xeuo pipefail
 
-#input_topic=clinvar-raw-testdata_20210302
-#output_topic=clinvar-combined-testdata_20210302
-input_topic=clinvar-raw-dev
-output_topic=clinvar-combined-dev
+input_topic=clinvar-raw-testdata_20210302
+output_topic=clinvar-combined-testdata_20210302
+#input_topic=clinvar-raw-dev
+#output_topic=clinvar-combined-dev
 
 cluster=clingen-streams-dev
 cluster_id=$(ccloud kafka cluster list | grep $cluster | awk '{print $1}')
@@ -45,8 +40,7 @@ topic_offset_to_zero $input_topic $group
 echo "Deleting and recreating output topic"
 # topic deletes are allowed to fail
 ccloud kafka topic delete --cluster $cluster_id $output_topic || true
-
-# switch -e so exits on failure
+sleep 5
 ccloud kafka topic create --cluster $cluster_id $output_topic \
   --partitions 1 \
   --config retention.ms=-1

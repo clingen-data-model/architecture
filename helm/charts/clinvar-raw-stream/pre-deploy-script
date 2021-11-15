@@ -1,8 +1,5 @@
-#!/bin/sh
-# print command trace
-set -x
-# exit on fail
-set -e
+#!/bin/zsh
+set -xeuo pipefail
 
 input_topic=broad-dsp-clinvar-dev
 output_topic=clinvar-raw-dev
