@@ -1,0 +1,46 @@
+#!/bin/zsh
+set -xeuo pipefail
+
+input_topic=clinvar-raw-testdata_20210302
+output_topic=clinvar-combined-testdata_20210302
+#input_topic=clinvar-raw-dev
+#output_topic=clinvar-combined-dev
+
+cluster=clingen-streams-dev
+cluster_id=$(ccloud kafka cluster list | grep $cluster | awk '{print $1}')
+if [[ -z "$cluster_id" ]] ; then
+    echo "Cluster $cluster not found"
+    exit 1
+fi
+
+kafka_properties_file=./kafka-dev.properties
+if [[ ! -f "$kafka_properties_file" ]]; then
+  echo "Kafka properties file not found: $kafka_properties_file "
+  exit 1
+fi
+
+# reset offset on input topic
+function topic_offset_to_zero {
+    topic=$1
+    group=$2
+    kafka-consumer-groups --command-config "$kafka_properties_file" \
+      --bootstrap-server pkc-4yyd6.us-east1.gcp.confluent.cloud:9092 \
+      --reset-offsets \
+      --to-offset 0 \
+      --group "$group" \
+      --topic "$topic" \
+      --timeout 10000 \
+      --execute
+}
+
+echo "Resetting input topic offset"
+group=clinvar-combined-dev
+topic_offset_to_zero $input_topic $group
+
+echo "Deleting and recreating output topic"
+# topic deletes are allowed to fail
+ccloud kafka topic delete --cluster $cluster_id $output_topic || true
+sleep 5
+ccloud kafka topic create --cluster $cluster_id $output_topic \
+  --partitions 1 \
+  --config retention.ms=-1
