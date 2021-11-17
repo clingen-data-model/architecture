@@ -25,8 +25,8 @@ genegraph_deployment_resources:
   limits:
     memory: 10Gi
 genegraph_image_version_envvar: true
-genegraph_data_version: "2021-11-17T1900"
-genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira-clone"
+genegraph_data_version: "2021-11-17T2000"
+genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
 genegraph_gcs_bucket: genegraph-stage
 genegraph_dx_jaas_secretname: dx-stage-jaas
 # certificate and ingress
