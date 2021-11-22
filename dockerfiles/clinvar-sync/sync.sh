@@ -8,6 +8,8 @@ sleep 10
 # associate the current shell with the service account
 gcloud auth activate-service-account clinvar-bq-updater@clingen-stage.iam.gserviceaccount.com --key-file=/var/secrets/google/key.json --project=clingen-stage
 
+sleep 5
+
 GTOKEN=`gcloud auth print-access-token --quiet`
 
 # get the most recent dataset name that exists in the clingen-stage project
