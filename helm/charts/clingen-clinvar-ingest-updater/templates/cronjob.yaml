@@ -27,5 +27,5 @@ spec:
             command:
             - /bin/sh
             - -c
-            - sleep 3600
+            - /usr/local/bin/sync.sh
           restartPolicy: OnFailure
