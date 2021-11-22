@@ -1,6 +1,14 @@
 #!/bin/bash
 
-GTOKEN=`gcloud auth application-default print-access-token --quiet`
+set -euo pipefail
+
+# wait for google cloud to wake up...
+sleep 10
+
+# associate the current shell with the service account
+gcloud auth activate-service-account clinvar-bq-updater@clingen-stage.iam.gserviceaccount.com --key-file=/var/secrets/google/key.json --project=clingen-stage
+
+GTOKEN=`gcloud auth print-access-token --quiet`
 
 # get the most recent dataset name that exists in the clingen-stage project
 max_ds=`eval "bq query --use_legacy_sql=false --quiet --format=csv \"SELECT MAX(schema_name) FROM clingen-stage.INFORMATION_SCHEMA.SCHEMATA WHERE REGEXP_CONTAINS(schema_name, r'clinvar_[0-9]{4}_[0-9]{2}_[0-9]{2}')\" | awk '{if(NR>1)print}'"`

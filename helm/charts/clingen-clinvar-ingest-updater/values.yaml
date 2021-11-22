@@ -1,0 +1,10 @@
+# Default values for clingen-clinvar-ingest-updater.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+gcp_key_secret_name: clingen-bq-updater-key
+
+image:
+  repository: gcr.io/clingen-stage/clinvar-bq-sync
+  pullPolicy: Always
+  tag: "v2"

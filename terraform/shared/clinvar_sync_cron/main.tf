@@ -16,3 +16,12 @@ resource "google_project_iam_binding" "project" {
     "serviceAccount:${google_service_account.clinvar_bigquery_updater.email}",
   ]
 }
+
+resource "google_project_iam_binding" "bq_jobuser" {
+  project = "clingen-stage"
+  role    = "roles/bigquery.jobUser"
+
+  members = [
+    "serviceAccount:${google_service_account.clinvar_bigquery_updater.email}",
+  ]
+}
