@@ -9,3 +9,6 @@ releases:
     chart: ../charts/clingen-genegraph
     values:
     - ../values/genegraph/values-stage.yaml
+  - name: clingen-clinvar-ingest-updater
+    namespace: clinvar-ingest-sync
+    chart: ../charts/clingen-clinvar-ingest-updater
