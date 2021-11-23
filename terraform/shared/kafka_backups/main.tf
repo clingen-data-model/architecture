@@ -7,6 +7,9 @@ resource "google_storage_bucket" "confluent_backups" {
   name          = "clingen-confluent-backups"
   location      = "us-east1"
   storage_class = "REGIONAL"
+  labels = {
+    "bucket" = "clingen-confluent-backups"
+  }
 }
 
 resource "google_service_account" "confluent_cloud_backups_owner" {
