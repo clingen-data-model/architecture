@@ -3,8 +3,10 @@
 # Declare variables to be passed into your templates.
 
 gcp_key_secret_name: clingen-bq-updater-key
+project_name: clingen-stage
+service_account_name: clinvar-bq-updater
 
 image:
   repository: gcr.io/clingen-stage/clinvar-bq-sync
   pullPolicy: Always
-  tag: "v4"
+  tag: "v5"

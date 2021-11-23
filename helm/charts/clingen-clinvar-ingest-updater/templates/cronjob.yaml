@@ -14,6 +14,9 @@ spec:
             - name: google-cloud-key
               secret:
                 secretName: google-account-key-{{ .Release.Name }}
+            - name: bigqueryrc
+              configMap:
+                name: bigqueryrc-{{ .Release.Name }}
           containers:
           - name: hello
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -21,11 +24,13 @@ spec:
             volumeMounts:
             - name: google-cloud-key
               mountPath: /var/secrets/google
+            - name: bigqueryrc
+              mountPath: /root/.bigqueryrc
             env:
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /var/secrets/google/key.json
             command:
             - /bin/sh
             - -c
-            - /usr/local/bin/sync.sh
+            - sleep 3600
           restartPolicy: OnFailure
