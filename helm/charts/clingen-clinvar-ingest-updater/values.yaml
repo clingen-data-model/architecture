@@ -9,4 +9,4 @@ service_account_name: clinvar-bq-updater
 image:
   repository: gcr.io/clingen-stage/clinvar-bq-sync
   pullPolicy: Always
-  tag: "v5"
+  tag: "v6"
