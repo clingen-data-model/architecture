@@ -25,3 +25,14 @@ resource "google_project_iam_binding" "bq_jobuser" {
     "serviceAccount:${google_service_account.clinvar_bigquery_updater.email}",
   ]
 }
+
+resource "google_bigquery_dataset_iam_binding" "dx_clinvar_writer" {
+  dataset_id = "clinvar_qa"
+  role       = "roles/bigquery.dataEditor"
+  project    = "clingen-dx"
+
+  members = [
+    "serviceAccount:${google_service_account.clinvar_bigquery_updater.email}",
+  ]
+}
+
