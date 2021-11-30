@@ -11,7 +11,7 @@ genegraph_image_pull_policy: Always
 genegraph_deployment_resources: {}
 genegraph_image_version_envvar: false
 genegraph_mode: production
-genegraph_gcs_bucket: 
+genegraph_gcs_bucket: fake-bucket
 genegraph_gql_cache: true
 genegraph_validate_events: false
 genegraph_response_cache: true
