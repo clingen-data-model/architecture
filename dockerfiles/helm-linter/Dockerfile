@@ -10,7 +10,7 @@ RUN apt-get update \
   && wget https://github.com/yannh/kubeconform/releases/download/v0.4.7/kubeconform-linux-amd64.tar.gz -O /tmp/kubeconform.tar.gz \
   && tar -C /usr/bin -xzf /tmp/kubeconform.tar.gz kubeconform \
   && rm /tmp/kubeconform.tar.gz \
-  && wget https://get.helm.sh/helm-v3.5.4-linux-amd64.tar.gz -O /tmp/helm.tar.gz \
+  && wget https://get.helm.sh/helm-v3.7.1-linux-amd64.tar.gz -O /tmp/helm.tar.gz \
   && tar -C /usr/bin -xzf /tmp/helm.tar.gz linux-amd64/helm --strip-components=1 \
   && rm /tmp/helm.tar.gz \
   && rm -rf /var/lib/apt/lists/*
