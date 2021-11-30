@@ -1,4 +1,5 @@
-{{- if .Values.genegraph_run_migration }}
+# Only run rsync when running a migration on stage
+{{- if and (eq .Values.genegraph_run_migration true) (eq .Values.genegraph_gcs_bucket "genegraph-stage") }}
 apiVersion: batch/v1
 kind: Job
 metadata:
