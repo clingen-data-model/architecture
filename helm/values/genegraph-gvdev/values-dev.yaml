@@ -1,35 +1,19 @@
-# in order of appearance in the helm templates
-# deployment
-genegraph_pod_affinity: {}
+# Tee see template values -
+# cd architecture/helm
+# helm template genegraph-gvdev charts/clingen-genegraph/ -f values/genegraph-gvdev/values-dev.yaml
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
 genegraph_docker_image_tag: v75
+genegraph_image_version_envvar: true
 genegraph_data_version: "2021-04-07T2006"
-genegraph_include_serveur_keypass: true
-genegraph_cg_search_topics: "gene-dosage-jira;actionability;gene-validity-raw"
+genegraph_cg_search_topics: "gene-dosage-jira-clone;actionability;gene-validity-raw"
 genegraph_gcs_bucket: genegraph-dev
 genegraph_gql_cache: false
-genegraph_validate_events: true
-genegraph_response_cache: false
-genegraph_dx_jaas_secretname: dx-dev-jaas
-genegraph_readiness_probe:
-  periodSeconds: 30
-  successThreshold: 1
-  httpGet:
-    path: /live
-    port: genegraph-port
-genegraph_liveness_probe: false
-
+genegraph_validate_events: false
+genegraph_response_cache: true
+genegraph_experimental_schema: true
 # certificate and ingress
-genegraph_tls_cert: true
 genegraph_mcrt_domains:
 - 'genegraph-gvdev.clingen.app'
-genegraph_configure_ingress: true
 genegraph_static_ip_name: global-dev-genegraph-gvdev-ip
 
-# service
-genegraph_service: true
-genegraph_service_type: NodePort
-genegraph_port: 8888
-
-# storageclass
-genegraph_configure_storageclass: false
+genegraph_run_migration: true

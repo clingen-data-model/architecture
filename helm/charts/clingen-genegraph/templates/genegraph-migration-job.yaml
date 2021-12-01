@@ -43,10 +43,8 @@ spec:
               value: {{ .Values.genegraph_gcs_bucket }}
             - name: GENEGRAPH_GQL_CACHE
               value: {{ .Values.genegraph_gql_cache | quote }}
-            {{- if .Values.genegraph_validate_events }}
             - name: GENEGRAPH_VALIDATE_EVENTS
-              value: "true"
-            {{- end }}
+              value: {{ .Values.genegraph_validate_events | quote }}
             - name: GENEGRAPH_RESPONSE_CACHE
               value: {{ .Values.genegraph_response_cache | quote }}
             - name: GENEGRAPH_BATCH_EVENT_SOURCES
