@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-genegraph-gvdev
+  namespace: argocd
+spec:
+  project: dev
+  source:
+    repoURL: https://github.com/clingen-data-model/architecture.git
+    targetRevision: HEAD
+    path: helm/charts/clingen-genegraph
+    helm:
+      releaseName: genegraph 
+      valueFiles:
+      - ../../values/genegraph-gvdev/values-dev.yaml
+  destination:
+    server: https://35.237.22.18
+    namespace: default
+  syncPolicy:
+    
