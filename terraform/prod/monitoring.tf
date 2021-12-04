@@ -55,6 +55,34 @@ resource "google_monitoring_uptime_check_config" "clinvar_submitter_website" {
   }
 }
 
+resource "google_monitoring_uptime_check_config" "genegraph_prod_tls" {
+  display_name = "genegraph.prod.clingen.app"
+  timeout      = "60s"
+  period       = "60s"
+
+  http_check {
+    path           = "/ready"
+    port           = "443"
+    request_method = "GET"
+    use_ssl        = true
+    validate_ssl   = true
+  }
+
+  monitored_resource {
+    type = "uptime_url"
+    labels = {
+      host       = "genegraph.prod.clingen.app"
+      project_id = "clingen-dx"
+    }
+  }
+
+  content_matchers {
+    content = "server is ready"
+    matcher = "CONTAINS_STRING"
+  }
+}
+
+# TODO: remove this, terraform is unable to delete it due to a bug
 resource "google_monitoring_uptime_check_config" "genegraph_prod" {
   display_name = "genegraph-prod"
   timeout      = "60s"
