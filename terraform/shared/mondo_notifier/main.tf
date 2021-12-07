@@ -3,6 +3,8 @@ provider "google" {
   project = "clingen-dx"
 }
 
+data "google_project" "current" {}
+
 resource "google_service_account" "mondo_notifier_func" {
   account_id   = "clingen-mondo-notify"
   display_name = "Cloud function for notifying on new mondo releases"
@@ -14,13 +16,15 @@ resource "google_service_account" "confluent_cloud_pubsub_subscriber" {
 }
 
 resource "google_project_iam_member" "confluent_dev_binding" {
-  role   = "roles/pubsub.subscriber"
-  member = "serviceAccount:${google_service_account.confluent_cloud_pubsub_subscriber.email}"
+  role    = "roles/pubsub.subscriber"
+  member  = "serviceAccount:${google_service_account.confluent_cloud_pubsub_subscriber.email}"
+  project = data.google_project.current.project_id
 }
 
 resource "google_project_iam_member" "confluent_dev_viewer_binding" {
-  role   = "roles/pubsub.viewer"
-  member = "serviceAccount:${google_service_account.confluent_cloud_pubsub_subscriber.email}"
+  role    = "roles/pubsub.viewer"
+  member  = "serviceAccount:${google_service_account.confluent_cloud_pubsub_subscriber.email}"
+  project = data.google_project.current.project_id
 }
 
 resource "google_pubsub_topic" "mondo_notifications" {
