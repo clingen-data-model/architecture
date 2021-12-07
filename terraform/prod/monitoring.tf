@@ -82,32 +82,6 @@ resource "google_monitoring_uptime_check_config" "genegraph_prod_tls" {
   }
 }
 
-# TODO: remove this, terraform is unable to delete it due to a bug
-resource "google_monitoring_uptime_check_config" "genegraph_prod" {
-  display_name = "genegraph-prod"
-  timeout      = "60s"
-  period       = "60s"
-
-  http_check {
-    path           = "/ready"
-    port           = "80"
-    request_method = "GET"
-  }
-
-  monitored_resource {
-    type = "uptime_url"
-    labels = {
-      host       = "34.75.154.128"
-      project_id = "clingen-dx"
-    }
-  }
-
-  content_matchers {
-    content = "server is ready"
-    matcher = "CONTAINS_STRING"
-  }
-}
-
 ####
 # Alert Policies
 ####
