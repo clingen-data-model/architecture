@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 4.3.0"
+    }
+  }
+}
+
 # The IAM role that we'll use to allow read access to all GCP secrets within the project
 resource "google_project_iam_custom_role" "external-secrets-gsa" {
   role_id     = "clingen_${var.env}_external_secrets"
@@ -24,8 +33,9 @@ resource "google_service_account" "clingen-external-secrets" {
 
 # Bind the ServiceAccount to the IAM role.
 resource "google_project_iam_member" "k8s-external-secrets-iam-membership" {
-  role   = google_project_iam_custom_role.external-secrets-gsa.name
-  member = "serviceAccount:${google_service_account.clingen-external-secrets.email}"
+  role    = google_project_iam_custom_role.external-secrets-gsa.name
+  member  = "serviceAccount:${google_service_account.clingen-external-secrets.email}"
+  project = var.project_id
 }
 
 # Generate a key for the ServiceAccount, for the controller to authenticate with

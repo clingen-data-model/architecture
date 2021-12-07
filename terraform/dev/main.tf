@@ -6,8 +6,9 @@ provider "google" {
 data "google_project" "current" {}
 
 module "external-secrets" {
-  source = "../modules/external-secrets"
-  env    = "dev"
+  source     = "../modules/external-secrets"
+  env        = "dev"
+  project_id = data.google_project.current.project_id
 }
 
 module "cloudbuild-firebase" {
