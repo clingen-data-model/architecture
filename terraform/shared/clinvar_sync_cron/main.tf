@@ -3,13 +3,15 @@ provider "google" {
   project = "clingen-stage"
 }
 
+data "google_project" "current" {}
+
 resource "google_service_account" "clinvar_bigquery_updater" {
   account_id   = "clinvar-bq-updater"
   display_name = "Cron Job for updating clinvar ingest data"
 }
 
 resource "google_project_iam_binding" "project" {
-  project = "clingen-stage"
+  project = data.google_project.current.project_id
   role    = "roles/bigquery.dataEditor"
 
   members = [
@@ -18,7 +20,7 @@ resource "google_project_iam_binding" "project" {
 }
 
 resource "google_project_iam_binding" "bq_jobuser" {
-  project = "clingen-stage"
+  project = data.google_project.current.project_id
   role    = "roles/bigquery.jobUser"
 
   members = [
