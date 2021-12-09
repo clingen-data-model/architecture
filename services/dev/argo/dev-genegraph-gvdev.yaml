@@ -10,7 +10,7 @@ spec:
     targetRevision: HEAD
     path: helm/charts/clingen-genegraph
     helm:
-      releaseName: genegraph 
+      releaseName: genegraph-gvdev
       valueFiles:
       - ../../values/genegraph-gvdev/values-dev.yaml
   destination:
