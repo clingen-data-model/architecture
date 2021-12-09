@@ -16,5 +16,4 @@ spec:
   destination:
     server: https://35.237.22.18
     namespace: default
-  syncPolicy:
     
