@@ -4,7 +4,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: faster
+  name: {{ .Release.Name }}-faster
   labels:
 {{ include "clingen-genegraph.labels" . | indent 4 }}
 provisioner: kubernetes.io/gce-pd
