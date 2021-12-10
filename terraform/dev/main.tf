@@ -3,14 +3,18 @@ provider "google" {
   region  = "us-east1"
 }
 
+data "google_project" "current" {}
+
 module "external-secrets" {
-  source = "../modules/external-secrets"
-  env    = "dev"
+  source     = "../modules/external-secrets"
+  env        = "dev"
+  project_id = data.google_project.current.project_id
 }
 
 module "cloudbuild-firebase" {
   source            = "../modules/cloudbuild-firebase"
-  project_id_number = "522856288592"
+  project_id_number = data.google_project.current.number
+  project_id        = data.google_project.current.project_id
 }
 
 module "dev-gke-cluster" {

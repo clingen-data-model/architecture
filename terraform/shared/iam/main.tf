@@ -5,7 +5,7 @@ provider "google" {
 # project-level permissions that need to be consistent across all three environments
 module "clingen_projects_iam_bindings" {
   source  = "terraform-google-modules/iam/google//modules/projects_iam"
-  version = "7.2.0"
+  version = "7.4.0"
   mode    = "additive"
 
   projects = ["clingen-dx", "clingen-stage", "clingen-dev"]
@@ -85,7 +85,7 @@ module "clingen_projects_iam_bindings" {
 # grants read access for specific storage buckets
 module "clingen_storage_readers_iam" {
   source  = "terraform-google-modules/iam/google//modules/storage_buckets_iam"
-  version = "7.2.0"
+  version = "7.4.0"
   mode    = "additive"
 
   storage_buckets = ["clinvar-reports"]
