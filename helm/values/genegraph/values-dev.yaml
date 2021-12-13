@@ -3,9 +3,9 @@
 
 # deployment
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
-genegraph_docker_image_tag: b4b514babb6bb7ae00ed0ab8a74622cb23f38ffd
+genegraph_docker_image_tag: 7b208033b537317a726d334c732ea37069af9dec
 genegraph_image_version_envvar: true
-genegraph_data_version: "2021-12-07T0900"
+genegraph_data_version: "2021-12-13T1600"
 genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira-clone;gci-legacy-dev"
 genegraph_gcs_bucket: genegraph-dev
 genegraph_gql_cache: true
