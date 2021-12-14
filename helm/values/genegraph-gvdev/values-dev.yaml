@@ -4,7 +4,7 @@
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
 genegraph_docker_image_tag: gvdev.v120
 genegraph_image_version_envvar: true
-genegraph_data_version: "2021-12-14T2030"
+genegraph_data_version: "2021-12-14T2130"
 genegraph_cg_search_topics: "gene-validity-raw"
 genegraph_gcs_bucket: genegraph-dev
 genegraph_gql_cache: false
@@ -16,3 +16,4 @@ genegraph_mcrt_domains:
   - 'genegraph-gvdev.clingen.app'
 genegraph_static_ip_name: global-dev-genegraph-gvdev-ip
 genegraph_run_migration: true
+genegraph_batch_event_sources: gci-raw-snapshot
