@@ -25,7 +25,7 @@ genegraph_deployment_resources:
   limits:
     memory: 10Gi
 genegraph_image_version_envvar: true
-genegraph_data_version: "2021-12-09T1519"
+genegraph_data_version: "2021-12-20T0000"
 genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
 genegraph_gcs_bucket: genegraph-stage
 genegraph_dx_jaas_secretname: dx-stage-jaas
@@ -35,4 +35,4 @@ genegraph_mcrt_domains:
 genegraph_static_ip_name: clingen-ds-stage-ip
 # run migration job before deployment
 genegraph_run_migration: true
-genegraph_gql_cache: false
+# genegraph_gql_cache: false
