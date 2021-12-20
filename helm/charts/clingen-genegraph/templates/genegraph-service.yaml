@@ -3,6 +3,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}
+  annotations:
+    {{- if .Values.genegraph_configure_ingress }}
+    cloud.google.com/backend-config: '{"default": "{{ .Release.Name }}-backendconfig"}'
+    {{- end }}
   labels:
     app: {{ .Release.Name }}
 {{ include "clingen-genegraph.labels" . | indent 4 }}
