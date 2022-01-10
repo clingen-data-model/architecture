@@ -49,6 +49,10 @@ spec:
               value: {{ .Values.genegraph_response_cache | quote }}
             - name: GENEGRAPH_BATCH_EVENT_SOURCES
               value: {{ .Values.genegraph_batch_event_sources | quote }}
+            {{- if .Values.genegraph_migration_data_version }}
+            - name: GENEGRAPH_MIGRATION_VERSION
+              value: {{ .Values.genegraph_migration_data_version | quote }}
+            {{- end }}
             - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:
