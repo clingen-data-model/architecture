@@ -24,6 +24,14 @@ module "clingen_projects_iam_bindings" {
       "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
+    "roles/bigquery.jobUser" = [
+      "group:clingen-data-read@broadinstitute.org",
+    ]
+
+    "roles/bigquery.dataViewer" = [
+      "group:clingen-data-read@broadinstitute.org",
+    ]
+
     "roles/cloudbuild.builds.editor" = [
       "group:clingen-gcp-admin@broadinstitute.org",
     ]
@@ -95,31 +103,6 @@ module "clingen_storage_readers_iam" {
       "group:clingen-data-read@broadinstitute.org",
     ]
   }
-}
-
-resource "google_project_iam_member" "clingen_bigquery_prod_readers" {
-  project = "clingen-dx"
-  role    = "roles/bigquery.dataViewer"
-  member  = "group:clingen-data-read@broadinstitute.org"
-}
-
-resource "google_project_iam_member" "clingen_bigquery_prod_cxn_users" {
-  project = "clingen-dx"
-  role    = "roles/bigquery.jobUser"
-  member  = "group:clingen-data-read@broadinstitute.org"
-}
-
-
-resource "google_project_iam_member" "clingen_bigquery_dev_readers" {
-  project = "clingen-dev"
-  role    = "roles/bigquery.dataViewer"
-  member  = "group:clingen-data-read@broadinstitute.org"
-}
-
-resource "google_project_iam_member" "clingen_bigquery_dev_cxn_users" {
-  project = "clingen-dev"
-  role    = "roles/bigquery.jobUser"
-  member  = "group:clingen-data-read@broadinstitute.org"
 }
 
 resource "google_project_iam_custom_role" "cloudfunction_unauthed_perms" {
