@@ -1,5 +1,5 @@
 generate "terraform" {
-  path = "terraform.tf"
+  path = "terraform_versioning.tf"
   if_exists = "overwrite_terragrunt"
   contents = <<EOF
 terraform {
