@@ -12,4 +12,6 @@ RUN apt-get update \
   && rm /tmp/gh-cli.tar.gz \
   && rm -rf /var/lib/apt/lists/*
 
+COPY genegraph_bumper.sh /usr/local/bin/genegraph_bumper.sh
+
 ENTRYPOINT ["/bin/bash"]
