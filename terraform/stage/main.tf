@@ -27,7 +27,7 @@ module "stage-gke-cluster" {
   maint_end_time            = "2021-03-24T23:00:00Z"
   maint_recurrence_sched    = "FREQ=WEEKLY;BYDAY=SA,SU"
   initial_node_count        = 0
-  default_pool_node_count   = 0 # no default node pool, see ssd-pool below
+  remove_default_node_pool  = true
   default_pool_machine_type = "n1-standard-4"
   cluster_v4_cidr           = "10.56.0.0/14"
   services_v4_cidr          = "10.0.16.0/20"
@@ -48,5 +48,20 @@ resource "google_container_node_pool" "ssd-pool" {
   node_config {
     preemptible  = false
     machine_type = "n1-standard-4"
+  }
+}
+
+resource "google_container_node_pool" "main-pool" {
+  name       = "main-pool"
+  location   = "us-east1-b"
+  cluster    = module.stage-gke-cluster-gke-cluster-name
+  node_count = 2
+
+  node_config {
+    preemptible     = false
+    machine_type    = "n2-standard-2"
+    image_type      = "COS_CONTAINERD"
+    local_ssd_count = 1
+    oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
   }
 }
