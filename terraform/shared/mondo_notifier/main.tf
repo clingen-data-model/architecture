@@ -10,6 +10,18 @@ resource "google_service_account" "mondo_notifier_func" {
   display_name = "Cloud function for notifying on new mondo releases"
 }
 
+resource "google_secret_manager_secret_iam_member" "member" {
+  secret_id = "mondo-stage-api-key"
+  role = "roles/secretmanager.secretAccessor"
+  member = google_service_account.mondo_notifier_func.email
+}
+
+resource "google_secret_manager_secret_iam_member" "member" {
+  secret_id = "mondo-stage-git-webhook_secret"
+  role = "roles/secretmanager.secretAccessor"
+  member = google_service_account.mondo_notifier_func.email
+}
+
 # allows for automated cloudbuild deployments
 resource "google_service_account_iam_member" "cloudbuild_mondo_notifier_binding" {
   service_account_id = "projects/clingen-dx/serviceAccounts/${google_service_account.mondo_notifier_func.email}"
