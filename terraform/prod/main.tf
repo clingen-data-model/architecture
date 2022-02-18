@@ -31,6 +31,22 @@ module "prod-gke-cluster" {
   }
 }
 
+resource "google_container_node_pool" "main-pool" {
+  name       = "main-pool"
+  location   = "us-east1-b"
+  cluster    = module.prod-gke-cluster.gke-cluster-name
+  node_count = 3
+
+  node_config {
+    preemptible     = false
+    machine_type    = "n2-standard-4"
+    image_type      = "COS_CONTAINERD"
+    local_ssd_count = 1
+    oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
+  }
+}
+
+
 # IAM bindings for the clinvarSCV cloud functions
 resource "google_service_account_iam_member" "cloudbuild_appspot_binding" {
   service_account_id = "projects/clingen-dx/serviceAccounts/clingen-dx@appspot.gserviceaccount.com"
