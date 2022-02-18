@@ -10,14 +10,14 @@ resource "google_service_account" "mondo_notifier_func" {
   display_name = "Cloud function for notifying on new mondo releases"
 }
 
-resource "google_secret_manager_secret_iam_member" "member" {
-  secret_id = "mondo-stage-api-key"
+resource "google_secret_manager_secret_iam_member" "kafka_creds_accessor" {
+  secret_id = "kafka_credentials"
   role = "roles/secretmanager.secretAccessor"
   member = google_service_account.mondo_notifier_func.email
 }
 
-resource "google_secret_manager_secret_iam_member" "member" {
-  secret_id = "mondo-stage-git-webhook_secret"
+resource "google_secret_manager_secret_iam_member" "mondo_git_webhook_secret_accessor" {
+  secret_id = "mondo-git-webhook_secret"
   role = "roles/secretmanager.secretAccessor"
   member = google_service_account.mondo_notifier_func.email
 }
