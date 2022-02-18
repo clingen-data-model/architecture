@@ -37,19 +37,6 @@ module "stage-gke-cluster" {
   }
 }
 
-# stage cluster has no default pool, but does have a custom ssd-pool
-resource "google_container_node_pool" "ssd-pool" {
-  name       = "ssd-pool"
-  location   = "us-east1-b"
-  cluster    = module.stage-gke-cluster.gke-cluster-name
-  node_count = 0
-
-  node_config {
-    preemptible  = false
-    machine_type = "n1-standard-4"
-  }
-}
-
 resource "google_container_node_pool" "main-pool" {
   name       = "main-pool"
   location   = "us-east1-b"
