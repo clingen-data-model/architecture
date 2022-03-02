@@ -16,5 +16,5 @@ genegraph_mcrt_domains:
   - 'genegraph-gvdev.clingen.app'
 genegraph_static_ip_name: global-dev-genegraph-gvdev-ip
 genegraph_run_migration: true
-genegraph_batch_event_sources: gci-raw-snapshot;gene-dosage-restored;gci-raw-missing-data
+genegraph_batch_event_sources: "gci-raw-snapshot;gene-dosage-restored;gci-raw-missing-data;gci-express-json;gci-neo4j-archive"
 # genegraph_migration_data_version: "2022-02-22T1737:gvdev.6bcb9fd34e0ceb82ea17d20423b5af211d60f533"
