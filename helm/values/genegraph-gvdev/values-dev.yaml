@@ -2,9 +2,9 @@
 # cd architecture/helm
 # helm template genegraph-gvdev charts/clingen-genegraph/ -f values/genegraph-gvdev/values-dev.yaml
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
-genegraph_docker_image_tag: gvdev.d6a38c538015bf6568329555de03eec63d946350
+genegraph_docker_image_tag: gvdev.fc5bc19c369d8baead7a56560e6993730ae70017
 genegraph_image_version_envvar: true
-genegraph_data_version: "2022-03-02T2029"
+genegraph_data_version: "2022-03-04T1814"
 genegraph_cg_search_topics: "gene-validity-raw;gci-legacy-report-only;actionability;gene-dosage-jira"
 genegraph_gcs_bucket: genegraph-dev
 genegraph_gql_cache: false
