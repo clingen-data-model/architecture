@@ -2,8 +2,8 @@
 # deployment
 genegraph_pod_affinity: {}
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
-genegraph_docker_image_tag: cv-latest
-genegraph_data_version: "2021-04-22T1330"
+genegraph_docker_image_tag: clinvar.620fb01eeb5e8ee16428942af6c754cbb993b704
+genegraph_data_version: "2022-03-24T1853"
 genegraph_include_serveur_keypass: true
 genegraph_cg_search_topics: "clinvar-combined"
 genegraph_gcs_bucket: genegraph-dev
@@ -20,18 +20,15 @@ genegraph_readiness_probe:
     port: genegraph-port
 genegraph_liveness_probe: false
 genegraph_local_ssd: false
-
 # certificate and ingress
 genegraph_tls_cert: true
 genegraph_mcrt_domains:
-- 'genegraph-dev.clingen.app'
+  - 'genegraph-dev.clingen.app'
 genegraph_configure_ingress: true
 genegraph_static_ip_name: genegraph-clinvar-ip
-
 # service
 genegraph_service: true
 genegraph_service_type: NodePort
 genegraph_port: 8888
-
 # storageclass
 genegraph_configure_storageclass: false
