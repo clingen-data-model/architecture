@@ -2,7 +2,8 @@
 # deployment
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
 genegraph_docker_image_tag: clinvar.620fb01eeb5e8ee16428942af6c754cbb993b704
-genegraph_data_version: "2022-03-24T1853"
+# genegraph_data_version: "2022-03-24T1853"
+genegraph_data_version: "2022-02-07T1753:25fb2b9d270ad4a7f7392b1cce0004dad4e0b21d"
 genegraph_image_version_envvar: true
 genegraph_cg_search_topics: "clinvar-raw"
 genegraph_gcs_bucket: genegraph-dev
@@ -17,5 +18,9 @@ genegraph_mcrt_domains:
   - 'genegraph-dev-clinvar.clingen.app'
 genegraph_static_ip_name: global-dev-genegraph-clinvar-ip
 
+# storage
+genegraph_local_ssd: false
+
 # run migration job before deployment
 genegraph_run_migration: false
+#genegraph_migration_data_version: "2022-02-07T1753:25fb2b9d270ad4a7f7392b1cce0004dad4e0b21d"
