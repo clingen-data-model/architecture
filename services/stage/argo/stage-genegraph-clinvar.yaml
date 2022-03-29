@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: stage-genegraph-clinvar
+  namespace: argocd
+spec:
+  project: stage
+  source:
+    repoURL: https://github.com/clingen-data-model/architecture.git
+    targetRevision: HEAD
+    path: helm/charts/clingen-genegraph
+    helm:
+      releaseName: genegraph-stage-clinvar
+      valueFiles:
+      - ../../values/genegraph-clinvar/values-stage.yaml
+  destination:
+    server: https://35.185.65.146
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
