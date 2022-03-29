@@ -12,7 +12,7 @@ spec:
     helm:
       releaseName: genegraph-stage-clinvar
       valueFiles:
-      - ../../values/genegraph-gvdev/values-stage.yaml
+      - ../../values/genegraph-clinvar/values-stage.yaml
   destination:
     server: https://35.185.65.146
     namespace: default
