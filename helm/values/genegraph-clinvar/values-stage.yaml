@@ -1,8 +1,8 @@
 # in order of appearance in the helm templates
 # deployment
 genegraph_docker_image_name: gcr.io/clingen-stage/genegraph
-genegraph_docker_image_tag: clinvar.a4c91af5fcd66fff79e9184410bf4283cef8885e
-genegraph_data_version: "2022-02-07T1753:25fb2b9d270ad4a7f7392b1cce0004dad4e0b21d"
+genegraph_docker_image_tag: clinvar.4cef87634aa2a1a499ca5b8ed3966e612c562398
+genegraph_data_version: "2022-03-29T1737"
 genegraph_image_version_envvar: true
 genegraph_cg_search_topics: "clinvar-raw"
 genegraph_gcs_bucket: genegraph-stage
@@ -11,15 +11,12 @@ genegraph_validate_events: false
 genegraph_response_cache: false
 genegraph_experimental_schema: true
 genegraph_dx_jaas_secretname: dx-stage-jaas
-
 # certificate and ingress
 genegraph_mcrt_domains:
   - 'genegraph-stage-clinvar.clingen.app'
 genegraph_static_ip_name: global-stage-genegraph-clinvar-ip
-
 # storage
 genegraph_local_ssd: true
-
 # run migration job before deployment
 genegraph_run_migration: true
 genegraph_migration_data_version: "2022-02-07T1753:25fb2b9d270ad4a7f7392b1cce0004dad4e0b21d"
