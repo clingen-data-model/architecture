@@ -10,7 +10,7 @@ genegraph_gql_cache: false
 genegraph_validate_events: false
 genegraph_response_cache: false
 genegraph_experimental_schema: true
-genegraph_dx_jaas_secretname: dx-stage-jaas
+genegraph_dx_jaas_secretname: confluent-stage-jaas
 # certificate and ingress
 genegraph_mcrt_domains:
   - 'genegraph-clinvar.stage.clingen.app'
