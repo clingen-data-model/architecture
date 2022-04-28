@@ -1,4 +1,4 @@
-terragrunt_version_constraint = "< 0.35"
+terragrunt_version_constraint = "< 0.37"
 
 generate "terraform" {
   path = "terraform_versioning.tf"
