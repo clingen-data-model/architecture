@@ -1,3 +1,5 @@
+terragrunt_version_constraint = "< 0.35"
+
 generate "terraform" {
   path = "terraform_versioning.tf"
   if_exists = "overwrite_terragrunt"
