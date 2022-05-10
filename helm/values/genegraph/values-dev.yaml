@@ -7,7 +7,8 @@ genegraph_docker_image_tag: cf1d0457fdef98e8d86c85f53639b33c090d05c9
 genegraph_image_version_envvar: true
 genegraph_data_version: "2022-05-09T1757"
 #genegraph_migration_data_version: "2022-01-24T1352:764b4fd149e0e41c54c433e22d190d131cb151af"
-genegraph_cg_search_topics: "gene-validity-raw;gci-legacy-report-only;actionability;gene-dosage-jira"
+genegraph_cg_search_topics: "gene-validity-dev;actionability;gene-dosage-jira"
+#"gene-validity-raw;gci-legacy-report-only;actionability;gene-dosage-jira"
 genegraph_gcs_bucket: genegraph-dev
 genegraph_gql_cache: true
 genegraph_response_cache: true
