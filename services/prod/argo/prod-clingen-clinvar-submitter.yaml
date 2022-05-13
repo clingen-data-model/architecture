@@ -16,8 +16,5 @@ spec:
     server: https://kubernetes.default.svc
     namespace: submitter
   syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
     syncOptions:
     - CreateNamespace=true
