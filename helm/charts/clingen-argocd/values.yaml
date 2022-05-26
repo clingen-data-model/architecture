@@ -1,3 +1,4 @@
+# TEST: add a bogus value to test a cloudbuild thing
 static_ip_name: &staticip global-prod-argocd-ip
 managed_cert_name: &certname argocd-prod-certificate
 argo_host_name: &argohost argocd.prod.clingen.app
