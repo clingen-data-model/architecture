@@ -1,8 +1,8 @@
 # in order of appearance in the helm templates
 # deployment
 genegraph_docker_image_name: gcr.io/clingen-stage/genegraph
-genegraph_docker_image_tag: clinvar.d5e0fd04eaf1d2f4f99b29f23a8778fa36b5b334
-genegraph_data_version: "2022-05-31T1336"
+genegraph_docker_image_tag: clinvar.249a78140c67a7ccaab33457091693adde7e178c
+genegraph_data_version: "2022-05-31T1513"
 genegraph_image_version_envvar: true
 genegraph_cg_search_topics: "clinvar-raw"
 genegraph_gcs_bucket: genegraph-stage
