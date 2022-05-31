@@ -10,22 +10,19 @@ resource "google_service_account" "clinvar_bigquery_updater" {
   display_name = "Cron Job for updating clinvar ingest data"
 }
 
-resource "google_project_iam_binding" "project" {
+resource "google_project_iam_member" "project" {
   project = data.google_project.current.project_id
   role    = "roles/bigquery.dataEditor"
 
-  members = [
-    "serviceAccount:${google_service_account.clinvar_bigquery_updater.email}",
-  ]
+  member = "serviceAccount:${google_service_account.clinvar_bigquery_updater.email}"
 }
 
-resource "google_project_iam_binding" "bq_jobuser" {
+resource "google_project_iam_member" "bq_jobuser" {
   project = data.google_project.current.project_id
   role    = "roles/bigquery.jobUser"
 
-  members = [
-    "serviceAccount:${google_service_account.clinvar_bigquery_updater.email}",
-  ]
+  member = "serviceAccount:${google_service_account.clinvar_bigquery_updater.email}"
+
 }
 
 resource "google_bigquery_dataset_iam_binding" "dx_clinvar_writer" {
