@@ -17,4 +17,6 @@ resource "google_cloudbuild_trigger" "clinvar_scv_prod" {
   ]
 
   filename = "gcp/function-source/cloudbuild.yaml"
+
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
 }

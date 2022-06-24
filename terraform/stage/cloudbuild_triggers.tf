@@ -12,6 +12,8 @@ resource "google_cloudbuild_trigger" "clinvar_submitter_push" {
   }
 
   filename = ".cloudbuild/docker-build.cloudbuild.yaml"
+
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
 }
 
 # clinvar-submitter pull request checks
@@ -28,6 +30,8 @@ resource "google_cloudbuild_trigger" "clinvar_submitter_pr" {
   }
 
   filename = ".cloudbuild/pull-request.cloudbuild.yaml"
+
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
 }
 
 # architecture helm chart linting
@@ -48,6 +52,8 @@ resource "google_cloudbuild_trigger" "architecture_helm_lint" {
   ]
 
   filename = "helm/cloudbuild.yaml"
+
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
 }
 
 # architecture terraform linting
@@ -69,6 +75,8 @@ resource "google_cloudbuild_trigger" "architecture_tflint" {
   ]
 
   filename = "terraform/cloudbuild.yaml"
+
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
 }
 
 # curator build
@@ -105,6 +113,8 @@ resource "google_cloudbuild_trigger" "genegraph_stage" {
   }
 
   filename = ".cloudbuild/docker-build.cloudbuild.yaml"
+
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
 }
 
 # genegraph stage clinvar build
@@ -120,6 +130,8 @@ resource "google_cloudbuild_trigger" "genegraph_stage_clinvar" {
     }
   }
   filename = ".cloudbuild/docker-build-stage-clinvar.cloudbuild.yaml"
+
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
 }
 
 # # clinvar streams build
@@ -136,4 +148,6 @@ resource "google_cloudbuild_trigger" "clinvar_streams_build" {
   }
 
   filename = "cloudbuild.yaml"
+
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
 }
