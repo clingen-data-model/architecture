@@ -2,10 +2,10 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   creationTimestamp: "2021-04-12T20:04:25Z"
-  generation: 4
+  generation: 5
   name: dev
   namespace: argocd
-  resourceVersion: "185370900"
+  resourceVersion: "314173859"
   uid: b42a4e8a-0dbc-490b-9d66-ca47aedc1f5b
 spec:
   clusterResourceWhitelist:
@@ -17,3 +17,4 @@ spec:
     server: https://35.237.22.18
   sourceRepos:
   - https://github.com/clingen-data-model/architecture.git
+  - https://charts.external-secrets.io
