@@ -131,3 +131,15 @@ resource "google_service_account_iam_member" "cloudbuild_mondo_notifier_binding"
   role               = "roles/iam.serviceAccountUser"
   member             = "serviceAccount:583560269534@cloudbuild.gserviceaccount.com"
 }
+
+resource "google_project_iam_member" "prod_cloudbuild_cloudfunc_developer" {
+  project = "clingen-dx"
+  role    = "roles/cloudfunctions.developer"
+  member  = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
+}
+
+resource "google_service_account_iam_member" "prod_cloudbuild_cloudfunc_binding" {
+  service_account_id = "projects/clingen-dx/serviceAccounts/clingen-dx@appspot.gserviceaccount.com"
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
+}
