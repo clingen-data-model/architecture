@@ -5,7 +5,7 @@ ingress:
 image:
   repository: gcr.io/clingen-stage/clinvar-submitter
   pullPolicy: Always
-  tag: "5e9ceaf1af15bcc30db8f2ad3bf57d8e005631ab"
+  tag: "e8e7bc95a51c3f5a041bfb4eb0c8fc88edede09c"
 scv_service_url: "https://us-central1-clingen-stage.cloudfunctions.net/ClinVarSCV"
 resources:
   requests:
