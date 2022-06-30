@@ -34,6 +34,29 @@ resource "google_cloudbuild_trigger" "clinvar_submitter_pr" {
   include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
 }
 
+# clinvar-submitter cloudfunction deployment
+resource "google_cloudbuild_trigger" "clinvar_submitter_repo" {
+  name        = "clinvar-scv-gcp-function-push"
+  description = "Redeploy stage ClinVarSCV cloudfunction when the source changes"
+
+  github {
+    name  = "clinvar-submitter"
+    owner = "clingen-data-model"
+    push {
+      branch = "^master$"
+    }
+  }
+
+  included_files = [
+    "gcp/function-source/**"
+  ]
+
+  filename = "gcp/function-source/cloudbuild.yaml"
+
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
+}
+
+
 # architecture helm chart linting
 resource "google_cloudbuild_trigger" "architecture_helm_lint" {
   name        = "architecture-helm-pr-lint"

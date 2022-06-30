@@ -118,3 +118,28 @@ resource "google_project_iam_member" "cloudbuild_iam_manager" {
   role    = google_project_iam_custom_role.cloudfunction_unauthed_perms.name
   member  = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
 }
+
+# grants cloudbuild the cloudfunctions developer role and allows deployments
+resource "google_project_iam_member" "stage_cloudbuild_cloudfunc_developer" {
+  project = "clingen-stage"
+  role    = "roles/cloudfunctions.developer"
+  member  = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
+}
+
+resource "google_service_account_iam_member" "stage_cloudbuild_cloudfunc_binding" {
+  service_account_id = "projects/clingen-stage/serviceAccounts/clingen-stage@appspot.gserviceaccount.com"
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:583560269534@cloudbuild.gserviceaccount.com"
+}
+
+resource "google_project_iam_member" "prod_cloudbuild_cloudfunc_developer" {
+  project = "clingen-dx"
+  role    = "roles/cloudfunctions.developer"
+  member  = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
+}
+
+resource "google_service_account_iam_member" "prod_cloudbuild_cloudfunc_binding" {
+  service_account_id = "projects/clingen-dx/serviceAccounts/clingen-dx@appspot.gserviceaccount.com"
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
+}
