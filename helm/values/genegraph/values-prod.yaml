@@ -19,7 +19,7 @@ genegraph_pod_affinity:
               values:
                 - genegraph
 genegraph_docker_image_name: gcr.io/clingen-dx/genegraph
-genegraph_docker_image_tag: 173573b9d60f61ba8cb262baa7daf30939da08ed
+genegraph_docker_image_tag: 4bbc8d6fa85afa54f9ed4e29f4cb971436b96adc
 genegraph_deployment_resources:
   requests:
     memory: 6Gi
@@ -27,7 +27,7 @@ genegraph_deployment_resources:
   limits:
     memory: 10Gi
 genegraph_image_version_envvar: true
-genegraph_data_version: "2022-07-07T1819"
+genegraph_data_version: "2022-07-11T1430"
 genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
 genegraph_gcs_bucket: genegraph-prod
 genegraph_gql_logging_topic: genegraph_logs
