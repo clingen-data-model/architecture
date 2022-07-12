@@ -69,5 +69,5 @@ resource "google_dns_record_set" "anyvar_dev_a_record" {
 
   managed_zone = data.google_dns_managed_zone.clingen_dns_zone.name
 
-  rrdatas = [google_compute_global_address.genegraph_dev_clinvar_external_ip.address]
+  rrdatas = [google_compute_global_address.anyvar_dev_external_ip.address]
 }
