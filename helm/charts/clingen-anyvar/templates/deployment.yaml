@@ -1,39 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: anyvar
+  name: {{ .Release.Name }}
   labels:
-    app: anyvar
-{{ include "clingen-anyvar.chartLabels" . | indent 4 }}
+    {{- include "clingen-anyvar.chartLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.num_deployment_replicas }}
+  {{- with .Values.anyvar_update_strategy }}
+  strategy:
+    {{- toYaml . | nindent 4}}
+  {{- end}}
   selector:
     matchLabels:
-      app: anyvar
+      {{- include "clingen-anyvar.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: anyvar
+        {{- include "clingen-anyvar.selectorLabels" . | nindent 8 }}
     spec:
-      nodeSelector:
-        cloud.google.com/gke-local-ssd: "true"
       volumes:
-        - name: local-ssd
-          hostPath:
-            path: "/mnt/disks/ssd0/seqrepo"
+        - name: {{ .Release.Name }}-vol
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-pvc
       # https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
-      initContainers:
-        # seqrepo by default will populate whatever device is at /usr/local/share/seqrepo
-        - image: biocommons/seqrepo:{{ .Values.seqrepo_docker_tag }}
-          imagePullPolicy: {{ .Values.image_pull_policy }}
-          name: seqrepo
-          resources:
-            limits:
-              memory: 256Mi
-              cpu: 0.2
-          volumeMounts:
-            - name: local-ssd
-              mountPath: "/usr/local/share/seqrepo"
+      # initContainers:
+      #   # seqrepo by default will populate whatever device is at /usr/local/share/seqrepo
+      #   - image: biocommons/seqrepo:{{ .Values.seqrepo_docker_tag }}
+      #     imagePullPolicy: {{ .Values.image_pull_policy }}
+      #     name: seqrepo
+      #     resources:
+      #       limits:
+      #         memory: 256Mi
+      #         cpu: 0.2
+      #     volumeMounts:
+      #       - name: {{ .Release.Name }}-vol
+      #         mountPath: "/usr/local/share/seqrepo"
       containers:
         - image: redis:{{ .Values.redis_docker_tag }}
           imagePullPolicy: {{ .Values.image_pull_policy }}
@@ -50,7 +51,7 @@ spec:
           name: anyvar
           ports:
             - containerPort: 5000
-              name: anyvar
+              name: anyvar-port
           resources:
             limits:
               memory: 512Mi
@@ -59,12 +60,49 @@ spec:
               memory: 128Mi
               cpu: 0.2
           volumeMounts:
-            - name: local-ssd
+            - name: {{ .Release.Name }}-vol
               mountPath: "/usr/local/share/seqrepo"
           env:
             - name: GA4GH_VRS_DATAPROXY_URI
               # Based on biocommons/seqrepo container version
-              value: "seqrepo+file:///usr/local/share/seqrepo/{{ .Values.seqrepo_version }}"
+              # value: "seqrepo+file:///usr/local/share/seqrepo/{{ .Values.seqrepo_version }}"
+              value: "seqrepo+https://services.genomicmedlab.org/seqrepo"
             - name: ANYVAR_STORAGE_URI
               # Containers in pod share network namespace
               value: "localhost:6379"
+          {{- with .Values.anyvar_readiness_probe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.anyvar_liveness_probe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+---
+# https://github.com/kubernetes/examples/blob/master/staging/persistent-volume-provisioning/README.md
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Release.Name }}-storageclass
+  labels:
+    {{- include  "clingen-anyvar.chartLabels" . | nindent 4 }}
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+  fsType: ext4
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-pvc
+  labels:
+    {{- include  "clingen-anyvar.chartLabels" . | nindent 4 }}
+spec:
+  storageClassName: {{ .Release.Name }}-storageclass
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 75Gi

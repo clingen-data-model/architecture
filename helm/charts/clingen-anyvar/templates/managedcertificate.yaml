@@ -1,0 +1,13 @@
+{{- if .Values.anyvar_tls_cert }}
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: {{ .Release.Name }}-certificate
+  labels:
+    {{- include "clingen-anyvar.chartLabels" . | nindent 4 }}
+spec:
+  domains:
+  {{- range .Values.anyvar_mcrt_domains }}
+  - {{ . | quote }}
+  {{- end }}
+{{- end }}

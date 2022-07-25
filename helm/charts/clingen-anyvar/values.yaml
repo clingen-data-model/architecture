@@ -1,3 +1,4 @@
+# Deployment
 seqrepo_version: &seqrepo_vers 2020-04-13
 seqrepo_docker_tag: *seqrepo_vers
 anyvar_docker_tag: latest
@@ -5,3 +6,28 @@ anyvar_docker_image_name: gcr.io/clingen-dev/anyvar
 redis_docker_tag: latest
 image_pull_policy: Always
 num_deployment_replicas: 1
+anyvar_readiness_probe:
+  periodSeconds: 30
+  successThreshold: 1
+  httpGet:
+    path: /ui/
+    port: anyvar-port
+anyvar_liveness_probe:
+  periodSeconds: 30
+  successThreshold: 1
+  httpGet:
+    path: /ui/
+    port: anyvar-port
+anyvar_update_strategy:
+  type: Recreate
+
+
+# Ingress
+anyvar_configure_ingress: true
+anyvar_mcrt_domains:
+  - anyvar-dev.clingen.app
+anyvar_static_ip_name: global-anyvar-dev-ip
+anyvar_tls_cert: true
+
+# Service
+anyvar_port: 80
