@@ -32,12 +32,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: "dx-creds-{{ .Release.Name }}"
-                  key: kafka_user
+                  key: user
             - name: KAFKA_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "dx-creds-{{ .Release.Name }}"
-                  key: kafka_password
+                  key: password
             - name: KAFKA_GROUP
               value: "{{ .Values.clinvar_streams_kafka_group }}"
           args:
