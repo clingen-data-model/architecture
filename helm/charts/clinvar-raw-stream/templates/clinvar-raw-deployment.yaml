@@ -1,11 +1,10 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ .Release.Name }}
   labels:
     {{- include  "clinvar-raw.chartLabels" . | nindent 4 }}
 spec:
-  serviceName: "{{ .Release.Name }}-svc"
   selector:
     matchLabels:
       {{- include "clinvar-raw.selectorLabels" . | nindent 6 }}
@@ -32,12 +31,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: "dx-creds-{{ .Release.Name }}"
-                  key: kafka_user
+                  key: user
             - name: KAFKA_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "dx-creds-{{ .Release.Name }}"
-                  key: kafka_password
+                  key: password
             - name: KAFKA_GROUP
               value: "{{ .Values.clinvar_streams_kafka_group }}"
           args:
