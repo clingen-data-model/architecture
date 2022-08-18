@@ -1,11 +1,10 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ .Release.Name }}
   labels:
     {{- include  "clinvar-raw.chartLabels" . | nindent 4 }}
 spec:
-  serviceName: "{{ .Release.Name }}-svc"
   selector:
     matchLabels:
       {{- include "clinvar-raw.selectorLabels" . | nindent 6 }}
