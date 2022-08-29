@@ -1,0 +1,11 @@
+# https://github.com/kubernetes/examples/blob/master/staging/persistent-volume-provisioning/README.md
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Release.Name }}-storageclass
+  labels:
+    {{- include  "clinvar-raw.chartLabels" . | nindent 4 }}
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+  fsType: ext4
