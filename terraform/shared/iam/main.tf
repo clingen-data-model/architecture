@@ -105,6 +105,21 @@ module "clingen_storage_readers_iam" {
   }
 }
 
+module "nwc_storage_admins_iam" {
+  source  = "terraform-google-modules/iam/google//modules/storage_buckets_iam"
+  version = "7.4.0"
+  mode    = "additive"
+
+  storage_buckets = ["ga4gh-cvc-metakb"]
+
+  bindings = {
+    "roles/storage.objectAdmin" = [
+      "user:Alex.Wagner@nationwidechildrens.org",
+      "user:kori.kuzma@nationwidechildrens.org"
+    ]
+  }
+}
+
 resource "google_project_iam_custom_role" "cloudfunction_unauthed_perms" {
   project     = "clingen-dx"
   role_id     = "cloudbuildFunctionIamManager"
