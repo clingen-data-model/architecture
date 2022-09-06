@@ -48,11 +48,6 @@ argo-cd:
           send:
           - app-sync-running
           when: app.status.operationState.phase in ['Running']
-      trigger.on-sync-status-unknown: |
-        - description: Application status is 'Unknown'
-          send:
-          - app-sync-status-unknown
-          when: app.status.sync.status == 'Unknown'
       trigger.on-sync-succeeded: |
         - description: Application syncing has succeeded
           send:
@@ -162,45 +157,6 @@ argo-cd:
               {{end}}
               ]
             }]
-      template.app-sync-status-unknown: |
-        email:
-          subject: Application {{.app.metadata.name}} sync status is 'Unknown'
-        message: |
-          {{if eq .serviceType "slack"}}:exclamation:{{end}} Application {{.app.metadata.name}} sync is 'Unknown'.
-          Application details: {{.context.argocdUrl}}/applications/{{.app.metadata.name}}.
-          {{if ne .serviceType "slack"}}
-          {{range $c := .app.status.conditions}}
-              * {{$c.message}}
-          {{end}}
-          {{end}}
-        slack:
-          attachments: |-
-            [{
-              "title": "{{ .app.metadata.name}}",
-              "title_link":"{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-              "color": "#E96D76",
-              "fields": [
-              {
-                "title": "Sync Status",
-                "value": "{{.app.status.sync.status}}",
-                "short": true
-              },
-              {
-                "title": "Repository",
-                "value": "{{.app.spec.source.repoURL}}",
-                "short": true
-              }
-              {{range $index, $c := .app.status.conditions}}
-              {{if not $index}},{{end}}
-              {{if $index}},{{end}}
-              {
-                "title": "{{$c.type}}",
-                "value": "{{$c.message}}",
-                "short": true
-              }
-              {{end}}
-              ]
-            }]
       template.app-sync-succeeded: |
         email:
           subject: Application {{.app.metadata.name}} has been successfully synced.
@@ -253,7 +209,7 @@ argo-cd:
         networking.gke.io/managed-certificates: *certname
         kubernetes.io/ingress.class: "gce"
     extraArgs:
-    - --insecure
+      - --insecure
     rbacConfig:
       policy.default: role:readonly
       policy.csv: |
