@@ -31,13 +31,9 @@ echo "Resetting input topic offset"
 topic_offset_to_zero $input_topic $group
 
 echo "Deleting and recreating output topic"
-# leave +e untoggled so topic deletes are allowed to fail
-set +e
-confluent kafka topic delete --cluster $cluster_id $output_topic
+confluent kafka topic delete --cluster $cluster_id $output_topic || true
 sleep 3
-set -e
 
-# switch -e so exits on failure
 confluent kafka topic create --cluster $cluster_id $output_topic \
   --partitions 1 \
   --config retention.ms=-1
