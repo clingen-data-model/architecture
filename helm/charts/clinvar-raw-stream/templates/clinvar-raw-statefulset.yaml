@@ -1,10 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ .Release.Name }}
   labels:
     {{- include  "clinvar-raw.chartLabels" . | nindent 4 }}
 spec:
+  serviceName: {{ .Release.Name }}-svc
   selector:
     matchLabels:
       {{- include "clinvar-raw.selectorLabels" . | nindent 6 }}
@@ -14,6 +15,10 @@ spec:
         {{- include "clinvar-raw.selectorLabels" . | nindent 8 }}
     spec:
       terminationGracePeriodSeconds: 600
+      volumes:
+        - name: {{ .Release.Name }}-vol
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-pvc
       containers:
         - image: "{{ .Values.clinvar_streams_docker_image_name }}:{{ .Values.clinvar_streams_docker_image_tag }}"
           imagePullPolicy: {{ .Values.clinvar_streams_image_pull_policy }}
@@ -22,7 +27,12 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          volumeMounts:
+            - name: {{ .Release.Name }}-vol
+              mountPath: "/data/"
           env:
+            - name: CLINVAR_STREAMS_DATA_DIR
+              value: "/data/"
             - name: DX_CV_RAW_INPUT_TOPIC
               value: {{ .Values.clinvar_raw_input_topic }}
             - name: DX_CV_RAW_OUTPUT_TOPIC
