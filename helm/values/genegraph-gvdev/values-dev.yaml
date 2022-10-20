@@ -7,7 +7,7 @@ genegraph_image_version_envvar: true
 genegraph_data_version: "2022-10-20T1332"
 genegraph_cg_search_topics: "gene-validity-raw;gci-legacy-report-only;actionability;gene-dosage-jira"
 genegraph_gcs_bucket: genegraph-dev
-genegraph_gql_cache: false
+genegraph_gql_cache: true
 genegraph_validate_events: false
 genegraph_response_cache: true
 genegraph_experimental_schema: true
