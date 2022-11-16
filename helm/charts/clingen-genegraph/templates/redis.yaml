@@ -1,0 +1,78 @@
+{{- if .Values.genegraph_start_redis }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-redis
+  labels:
+    {{- include "genegraph-redis.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ .Release.Name }}-redis-svc
+  selector:
+    matchLabels:
+      {{- include "genegraph-redis.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "genegraph-redis.selectorLabels" . | nindent 8 }}
+    spec:
+      terminationGracePeriodSeconds: 600
+      volumes:
+        - name: {{ .Release.Name }}-redis-vol
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-redis-pvc
+      containers:
+        - image: {{ .Values.genegraph_redis_image }}
+          imagePullPolicy: Always
+          name: redis
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 0.5
+          volumeMounts:
+            - name: {{ .Release.Name }}-redis-vol
+              mountPath: "/data/"
+          ports:
+            - containerPort: 6379
+              name: redis-port
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-redis-svc
+  labels:
+    {{- include "genegraph-redis.labels" . | nindent 4 }}
+spec:
+  selector:
+    {{- include "genegraph-redis.selectorLabels" . | nindent 4 }}
+  type: {{ .Values.genegraph_service_type }}
+  ports:
+    - port: {{ .Values.genegraph_redis_port }}
+      targetPort: redis-port
+      protocol: TCP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-redis-pvc
+  labels:
+    {{- include "genegraph-redis.labels" . | nindent 4 }}
+spec:
+  storageClassName: {{ .Release.Name }}-redis-storageclass
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+---
+# https://github.com/kubernetes/examples/blob/master/staging/persistent-volume-provisioning/README.md
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Release.Name }}-redis-storageclass
+  labels:
+    {{- include "genegraph-redis.labels" . | nindent 4 }}
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+  fsType: ext4
+{{- end }}

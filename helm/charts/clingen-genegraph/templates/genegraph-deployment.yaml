@@ -84,6 +84,10 @@ spec:
             {{- end }}
             - name: GENEGRAPH_BATCH_EVENT_SOURCES
               value: {{ .Values.genegraph_batch_event_sources | quote }}
+            {{- if .Values.genegraph_redis_host }}
+            - name: CACHE_REDIS_URI
+              value: redis://{{- .Values.genegraph_redis_host -}}:{{- .Values.genegraph_redis_port -}}
+            {{- end }}
             - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:
@@ -97,6 +101,10 @@ spec:
             - name: genegraph-vol
               mountPath: /data/
           {{- end }}
+          {{- if .Values.genegraph_command }}
+          # Overrides the Docker image CMD
+          command: {{ toYaml .Values.genegraph_command | nindent 12 }}
+          {{- end}}
           {{- with .Values.genegraph_readiness_probe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}

@@ -1,0 +1,35 @@
+# in order of appearance in the helm templates
+# deployment
+genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
+genegraph_docker_image_tag: 597-all-clinvar-variations
+genegraph_data_version: "2022-02-07T1753:25fb2b9d270ad4a7f7392b1cce0004dad4e0b21d"
+genegraph_image_version_envvar: true
+genegraph_cg_search_topics: "clinvar-raw"
+genegraph_gcs_bucket: genegraph-dev
+genegraph_gql_cache: false
+genegraph_validate_events: false
+genegraph_response_cache: false
+genegraph_experimental_schema: true
+genegraph_dx_jaas_secretname: dx-dev-jaas
+
+# certificate and ingress
+genegraph_configure_ingress: false
+genegraph_tls_cert: false
+
+# storage
+genegraph_local_ssd: false
+
+# run migration job before deployment
+genegraph_run_migration: false
+
+# Use Redis
+genegraph_start_redis: true
+genegraph_redis_image: redis:7.0
+# If host is defined, will pass the environment variable REDIS_CACHE_URI
+# genegraph_redis_host: vrs-cache
+genegraph_redis_host: vrs-cache.default.svc.cluster.local
+genegraph_redis_port: 6379
+
+
+# TODO
+genegraph_command: ["java", "-jar", "/app/app.jar", "vrs-cache"]

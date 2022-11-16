@@ -34,7 +34,7 @@ genegraph_liveness_probe:
 genegraph_batch_event_sources: gci-express-json;gci-neo4j-archive;gene-dosage-restored
 
 # certificate and ingress
-genegraph_configure_ingress: true 
+genegraph_configure_ingress: true
 genegraph_tls_cert: true
 genegraph_mcrt_domains:
   - 'genegraph-override-this.clingen.app'
@@ -47,9 +47,11 @@ genegraph_service_type: NodePort
 genegraph_port: 80
 
 # storage
-genegraph_local_ssd: true 
+genegraph_local_ssd: true
 genegraph_configure_storageclass: true
 
 # run migration job before deployment
 genegraph_run_migration: false
 
+# redis cache
+genegraph_use_redis: false
