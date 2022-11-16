@@ -54,4 +54,10 @@ genegraph_configure_storageclass: true
 genegraph_run_migration: false
 
 # redis cache
-genegraph_use_redis: false
+# Starts a redis instance as part of a helm chart
+genegraph_start_redis: false
+genegraph_redis_image: redis:7.0
+# If host is defined, will pass the environment variable CACHE_REDIS_URI
+# And the genegraph application will use that redis host for caching.
+# genegraph_redis_host: <>
+# genegraph_redis_port: 6379
