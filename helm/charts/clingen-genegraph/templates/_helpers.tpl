@@ -28,6 +28,6 @@ helm.sh/chart: {{ .Chart.Name }}
 {{- end }}
 
 {{- define "genegraph-redis.selectorLabels" -}}
-app.kubernetes.io/name: {{ .Release.Name }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/name: {{ .Release.Name }}-redis
+app.kubernetes.io/instance: {{ .Release.Name }}-redis
 {{- end }}
