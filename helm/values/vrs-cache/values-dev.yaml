@@ -18,6 +18,9 @@ genegraph_tls_cert: false
 
 # storage
 genegraph_local_ssd: false
+genegraph_configure_storageclass: true
+genegraph_persistent_disk:
+  size: 10Gi
 
 # run migration job before deployment
 genegraph_run_migration: false
@@ -25,9 +28,10 @@ genegraph_run_migration: false
 # Use Redis
 genegraph_start_redis: true
 genegraph_redis_image: redis:7.0
-# If host is defined, will pass the environment variable REDIS_CACHE_URI
-# genegraph_redis_host: vrs-cache
-genegraph_redis_host: vrs-cache.default.svc.cluster.local
+# If genegraph_redis_host is defined, will pass the environment variable REDIS_CACHE_URI
+# Host accepts a template. if genegraph_start_redis, the redis host
+# will be the release name plus "-redis-svc"
+genegraph_redis_host: "{{ .Release.Name }}-redis-svc"
 genegraph_redis_port: 6379
 
 
