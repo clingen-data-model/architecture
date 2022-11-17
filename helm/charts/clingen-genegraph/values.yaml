@@ -49,15 +49,19 @@ genegraph_port: 80
 # storage
 genegraph_local_ssd: true
 genegraph_configure_storageclass: true
+# If set and genegraph_local_ssd is false, will use a pv of this .size
+# genegraph_persistent_disk:
+#   size: 10Gi
 
 # run migration job before deployment
 genegraph_run_migration: false
 
 # redis cache
-# Starts a redis instance as part of a helm chart
+# Starts a redis instance as part of the helm chart
 genegraph_start_redis: false
 genegraph_redis_image: redis:7.0
-# If host is defined, will pass the environment variable CACHE_REDIS_URI
-# And the genegraph application will use that redis host for caching.
-# genegraph_redis_host: <>
+# If genegraph_redis_host is defined, will set the envvar REDIS_CACHE_URI.
+# Accepts a template and this commented example will match the generated
+# redis service name "-redis-svc".
+# genegraph_redis_host: "{{ .Release.Name }}-redis-svc"
 # genegraph_redis_port: 6379
