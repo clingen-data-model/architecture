@@ -57,11 +57,16 @@ genegraph_configure_storageclass: true
 genegraph_run_migration: false
 
 # redis cache
-# Starts a redis instance as part of the helm chart
+# An instance of this chart can start a redis instance, and/or connect to a redis instance.
+# For example an upstream cache populating instance can start a redis instance and also connect to it
+# which will put things in the cache. And a downstream genegraph instance can *not* start a redis instance,
+# but just connect to this existing redis instance that was populated by the upstream cache populator.
+# Starts a redis instance as part of the helm chart.
 genegraph_start_redis: false
 genegraph_redis_image: redis:7.0
 # If genegraph_redis_host is defined, will set the envvar REDIS_CACHE_URI.
 # Accepts a template and this commented example will match the generated
 # redis service name "-redis-svc".
+# Connect to a redis instance.
 # genegraph_redis_host: "{{ .Release.Name }}-redis-svc"
 # genegraph_redis_port: 6379

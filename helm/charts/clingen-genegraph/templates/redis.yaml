@@ -64,7 +64,6 @@ spec:
     requests:
       storage: 50Gi
 ---
-# https://github.com/kubernetes/examples/blob/master/staging/persistent-volume-provisioning/README.md
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -75,4 +74,5 @@ provisioner: kubernetes.io/gce-pd
 parameters:
   type: pd-ssd
   fsType: ext4
+allowVolumeExpansion: true
 {{- end }}
