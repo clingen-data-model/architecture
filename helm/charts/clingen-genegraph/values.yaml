@@ -70,3 +70,7 @@ genegraph_redis_image: redis:7.0
 # Connect to a redis instance.
 # genegraph_redis_host: "{{ .Release.Name }}-redis-svc"
 # genegraph_redis_port: 6379
+
+
+# Overrides the Dockerfile CMD. Can use this to modify main args.
+# genegraph_command: ["java", "-jar", "/app/app.jar"]
