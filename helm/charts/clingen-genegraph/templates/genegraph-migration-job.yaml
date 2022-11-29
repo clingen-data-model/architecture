@@ -32,7 +32,7 @@ spec:
           name: genegraph
           env:
             - name: GENEGRAPH_DATA_VERSION
-              value: "{{ .Values.genegraph_data_version }}:{{.Values.genegraph_docker_image_tag }}"
+              value: "{{ .Values.genegraph_data_version }}"
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: CG_SEARCH_TOPICS
