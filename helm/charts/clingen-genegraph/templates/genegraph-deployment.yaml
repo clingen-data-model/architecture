@@ -55,13 +55,6 @@ spec:
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
               value: "{{ .Values.genegraph_data_version }}:{{.Values.genegraph_docker_image_tag }}"
-            {{- if .Values.genegraph_include_serveur_keypass }}
-            - name: SERVEUR_KEY_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: serveur-key-pass
-                  key: password
-            {{- end }}
             - name: CG_SEARCH_TOPICS
               value: {{ .Values.genegraph_cg_search_topics | quote }}
             - name: GENEGRAPH_MODE
@@ -95,7 +88,7 @@ spec:
             - name: DX_JAAS_CONFIG
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.genegraph_dx_jaas_secretname }}
+                  name: dx-jaas-{{ .Release.Name }}
                   key: password
           ports:
             - containerPort: 8888
