@@ -54,7 +54,7 @@ spec:
             - name: GENEGRAPH_DATA_PATH
               value: "/data/"
             - name: GENEGRAPH_DATA_VERSION
-              value: "{{ .Values.genegraph_data_version }}:{{.Values.genegraph_docker_image_tag }}"
+              value: "{{ .Values.genegraph_data_version }}"
             {{- if .Values.genegraph_include_serveur_keypass }}
             - name: SERVEUR_KEY_PASS
               valueFrom:
