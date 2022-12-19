@@ -66,6 +66,12 @@ resource "google_project_iam_member" "cloudbuild_cloudfunctions_grant" {
   project = data.google_project.current.project_id
 }
 
+resource "google_project_iam_member" "cloudbuild_cloudrun_admin_grant" {
+  role    = "roles/run.admin"
+  member  = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
+  project = data.google_project.current.project_id
+}
+
 # IAM binding for allowing staging clinvarSCV function to run prod bigquery
 resource "google_bigquery_dataset_iam_member" "stage_appspot_sa" {
   dataset_id = "clinvar_qa"
