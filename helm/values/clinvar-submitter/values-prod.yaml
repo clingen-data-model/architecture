@@ -6,7 +6,7 @@ image:
   repository: gcr.io/clingen-dx/clinvar-submitter
   pullPolicy: Always
   tag: "3a9e898d4fea7e98095ac38e362894281facd592"
-scv_service_url: "https://us-central1-clingen-dx.cloudfunctions.net/ClinVarSCV"
+scv_service_url: "https://clinvarscv-wxzzxdssga-uc.a.run.app"
 resources:
   requests:
     cpu: 500m
