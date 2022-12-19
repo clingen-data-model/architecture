@@ -78,3 +78,28 @@ resource "google_bigquery_dataset_iam_member" "stage_appspot_sa" {
   role       = "roles/bigquery.dataViewer"
   member     = "serviceAccount:clingen-stage@appspot.gserviceaccount.com"
 }
+
+resource "google_bigquery_dataset_iam_member" "stage_compute_bigquery_viewer" {
+  dataset_id = "clinvar_qa"
+  role       = "roles/bigquery.dataViewer"
+  member     = "serviceAccount:583560269534-compute@developer.gserviceaccount.com"
+}
+
+resource "google_project_iam_member" "stage_compute_bq_user" {
+  role    = "roles/bigquery.jobUser"
+  member  = "serviceAccount:583560269534-compute@developer.gserviceaccount.com"
+  project = data.google_project.current.project_id
+}
+
+# IAM bindings to allow prod scv function to read the bq dataset
+resource "google_bigquery_dataset_iam_member" "prod_compute_bigquery_viewer" {
+  dataset_id = "clinvar_qa"
+  role       = "roles/bigquery.dataViewer"
+  member     = "serviceAccount:974091131481-compute@developer.gserviceaccount.com"
+}
+
+resource "google_project_iam_member" "prod_compute_bq_user" {
+  role    = "roles/bigquery.jobUser"
+  member  = "serviceAccount:974091131481-compute@developer.gserviceaccount.com"
+  project = data.google_project.current.project_id
+}
