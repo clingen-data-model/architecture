@@ -1,3 +1,10 @@
+# IAM grants for cloudbuild/cloudfunction deployments
+resource "google_service_account_iam_member" "cloudbuild_actas" {
+  service_account_id = "projects/clingen-stage/serviceAccounts/583560269534-compute@developer.gserviceaccount.com"
+  member             = "serviceAccount:583560269534@cloudbuild.gserviceaccount.com"
+  role               = "roles/iam.serviceAccountUser"
+}
+
 # clinvar-submitter build
 resource "google_cloudbuild_trigger" "clinvar_submitter_push" {
   name        = "clinvar-submitter-stage-build"
