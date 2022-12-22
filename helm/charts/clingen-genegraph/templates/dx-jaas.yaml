@@ -1,0 +1,19 @@
+{{- if .Values.genegraph_dx_jaas_secretname }}
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: dx-jaas-{{ .Release.Name }}
+  labels:
+    {{- include  "clingen-genegraph.labels" . | nindent 4 }}
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: gcpsecretsmanager-secretstore
+  data:
+    # Key name to create inside this secret
+    - secretKey: password
+      remoteRef:
+        # Name of the GCP Secret Manager secret
+        key: {{ .Values.genegraph_dx_jaas_secretname }}
+        version: latest
+{{- end }}
