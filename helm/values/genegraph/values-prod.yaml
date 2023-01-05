@@ -19,7 +19,7 @@ genegraph_pod_affinity:
               values:
                 - genegraph
 genegraph_docker_image_name: gcr.io/clingen-dx/genegraph
-genegraph_docker_image_tag: 5147b4c3d1636c612455b5b7ed42a83336598e32
+genegraph_docker_image_tag: 68bab3733ffe3537d4338d8957a2ab188de74ee5
 genegraph_deployment_resources:
   requests:
     memory: 6Gi
@@ -27,10 +27,9 @@ genegraph_deployment_resources:
   limits:
     memory: 10Gi
 genegraph_image_version_envvar: true
-genegraph_data_version: "2023-01-04T1556:5147b4c3d1636c612455b5b7ed42a83336598e32"
-genegraph_cg_search_topics: "gene-validity-raw;gci-legacy-report-only;actionability;gene-dosage-jira"
-genegraph_batch_event_sources: "gci-raw-snapshot;gene-dosage-restored;gci-raw-missing-data;gci-express-json;gci-neo4j-report-only"
-genegraph_experimental_schema: true
+genegraph_data_version: "2023-01-05T0000:68bab3733ffe3537d4338d8957a2ab188de74ee5"
+genegraph_cg_search_topics: "actionability;gci-legacy;gene-dosage-jira"
+
 genegraph_gcs_bucket: genegraph-prod
 genegraph_gql_logging_topic: genegraph_logs
 genegraph_dx_jaas_secretname: dx-stage-jaas
@@ -39,4 +38,4 @@ genegraph_mcrt_domains:
   - 'genegraph.prod.clingen.app'
 genegraph_static_ip_name: global-prod-genegraph-prod-ip
 # run migration job before deployment
-genegraph_run_migration: false
+genegraph_run_migration: true
