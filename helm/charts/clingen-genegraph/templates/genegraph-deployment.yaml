@@ -92,6 +92,14 @@ spec:
             - name: CACHE_REDIS_URI
               value: redis://{{- tpl .Values.genegraph_redis_host . -}}:{{- .Values.genegraph_redis_port -}}
             {{- end }}
+            {{- if .Values.genegraph_rocksdb_registry_uri }}
+            - name: ROCKSDB_HTTP_URI
+              value: {{ .Values.genegraph_rocksdb_registry_uri }}
+            {{- end }}
+            {{- if .Values.genegraph_vrs_cache_pool_size }}
+            - name: GENEGRAPH_VRS_CACHE_POOL_SIZE
+              value: "{{ .Values.genegraph_vrs_cache_pool_size }}"
+            {{- end }}
             {{- if .Values.genegraph_nrepl_port }}
             - name: GENEGRAPH_NREPL_PORT
               # helm needs this to explicitly be a yaml string

@@ -22,3 +22,20 @@ spec:
       targetPort: 8888
       protocol: TCP
 {{- end }}
+---
+{{- if .Values.genegraph_rocksdb_registry_uri }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-svc
+  labels:
+{{ include "clingen-genegraph.labels" . | indent 4 }}
+spec:
+  selector:
+{{ include "clingen-genegraph.selectorLabels" . | indent 4 }}
+  type: {{ .Values.genegraph_service_type }}
+  ports:
+    - port: 6381
+      targetPort: 6381
+      protocol: TCP
+{{- end }}

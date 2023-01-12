@@ -12,6 +12,13 @@ genegraph_response_cache: false
 genegraph_experimental_schema: true
 genegraph_dx_jaas_secretname: dx-dev-jaas
 
+genegraph_deployment_resources:
+  requests:
+    memory: 512Mi
+    cpu: 0.25
+  limits:
+    memory: 512Mi
+
 # certificate and ingress
 genegraph_configure_ingress: false
 genegraph_tls_cert: false
@@ -28,13 +35,17 @@ genegraph_run_migration: false
 # include nrepl
 genegraph_nrepl_port: 6000
 
+# rocksdb http
+genegraph_rocksdb_registry_uri: http://localhost:6381
+genegraph_vrs_cache_pool_size: 40
+
 # Use Redis
-genegraph_start_redis: true
-genegraph_redis_image: redis:7.0
+genegraph_start_redis: false
+# genegraph_redis_image: redis:7.0
 # If genegraph_redis_host is defined, will pass the environment variable REDIS_CACHE_URI
 # Host accepts a template. if genegraph_start_redis, the redis host
 # will be the release name plus "-redis-svc"
-genegraph_redis_host: "{{ .Release.Name }}-redis-svc"
-genegraph_redis_port: 6379
+# genegraph_redis_host: "{{ .Release.Name }}-redis-svc"
+# genegraph_redis_port: 6379
 
 genegraph_command: ["java", "-jar", "/app/app.jar", "vrs-cache"]
