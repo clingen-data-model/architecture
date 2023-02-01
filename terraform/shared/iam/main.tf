@@ -46,16 +46,19 @@ module "clingen_projects_iam_bindings" {
 
     "roles/container.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
+      "group:clingendevs@broadinstitute.org",
     ]
 
     "roles/compute.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
       "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
     ]
 
     "roles/dns.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
       "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
     ]
 
     "roles/firebase.admin" = [
@@ -64,6 +67,8 @@ module "clingen_projects_iam_bindings" {
 
     "roles/monitoring.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
+      "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
     ]
 
     "roles/pubsub.admin" = [
@@ -85,8 +90,18 @@ module "clingen_projects_iam_bindings" {
     "roles/storage.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
       "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
     ]
 
+    "roles/serviceusage.serviceUsageConsumer" = [
+      "group:clingen-geisinger-external@broadinstitute.org",
+    ]
+
+    "roles/logging.admin" = [
+      "group:clingen-gcp-admin@broadinstitute.org",
+      "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
+    ]
   }
 }
 
