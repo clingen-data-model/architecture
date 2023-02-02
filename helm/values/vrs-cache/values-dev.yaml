@@ -14,10 +14,18 @@ genegraph_dx_jaas_secretname: dx-dev-jaas
 
 genegraph_deployment_resources:
   requests:
-    memory: 512Mi
+    memory: 1Gi
     cpu: 0.25
   limits:
-    memory: 512Mi
+    memory: 1Gi
+
+# Override readiness probe to mark ready immediately
+genegraph_readiness_probe:
+  periodSeconds: 30
+  successThreshold: 1
+  httpGet:
+    path: /live
+    port: genegraph-port
 
 # certificate and ingress
 genegraph_configure_ingress: false

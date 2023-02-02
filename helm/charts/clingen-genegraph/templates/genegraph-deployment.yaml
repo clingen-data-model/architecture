@@ -113,6 +113,8 @@ spec:
           ports:
             - containerPort: 8888
               name: genegraph-port
+            - containerPort: 6381
+              name: vrs-cache-port
           volumeMounts:
           {{- if .Values.genegraph_local_ssd }}
             - name: genegraph-vol

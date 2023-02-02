@@ -1,7 +1,7 @@
 # in order of appearance in the helm templates
 # deployment
 genegraph_docker_image_name: gcr.io/clingen-dev/genegraph
-genegraph_docker_image_tag: clinvar.620fb01eeb5e8ee16428942af6c754cbb993b704
+genegraph_docker_image_tag: dev-deploy
 genegraph_data_version: "2022-02-07T1753:25fb2b9d270ad4a7f7392b1cce0004dad4e0b21d"
 genegraph_image_version_envvar: true
 genegraph_cg_search_topics: "clinvar-raw"
@@ -16,9 +16,27 @@ genegraph_mcrt_domains:
   - 'genegraph-dev-clinvar.clingen.app'
 genegraph_static_ip_name: global-dev-genegraph-clinvar-ip
 
+
+genegraph_deployment_resources:
+  requests:
+    memory: 1Gi
+    cpu: 0.25
+  limits:
+    memory: 1Gi
+
+
 # storage
 genegraph_local_ssd: false
+genegraph_configure_storageclass: true
+genegraph_persistent_disk:
+  size: 750Gi
 
 # run migration job before deployment
 genegraph_run_migration: false
 #genegraph_migration_data_version: "2022-02-07T1753:25fb2b9d270ad4a7f7392b1cce0004dad4e0b21d"
+
+# include nrepl
+genegraph_nrepl_port: 6000
+
+# rocksdb http
+genegraph_rocksdb_registry_uri: http://vrs-cache-registry-svc:6381
