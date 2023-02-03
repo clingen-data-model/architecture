@@ -1,0 +1,4 @@
+[submodule "helm/charts/clingen-vicc/docker/gene-normalizer/gene-normalization"]
+	path = helm/charts/clingen-vicc/docker/gene-normalizer/gene-normalization
+	url = https://github.com/cancervariants/gene-normalization.git
+	branch = d03a18bc28761f49d6a4f98116f85d814f7345c9

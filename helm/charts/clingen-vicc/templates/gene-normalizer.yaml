@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-gene-normalizer
+  labels:
+    app: gene-normalizer
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ .Release.Name }}-gene-normalizer-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "clingen-vicc.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "clingen-vicc.selectorLabels" . | nindent 8 }}
+    spec:
+      volumes:
+        - name: aws-credentials
+          configMap:
+            name: {{ .Release.Name }}-aws-creds-configmap
+            items:
+              - key: credentials
+                path: credentials
+      containers:
+        - name: dynamodb
+          image: gcr.io/clingen-dev/vicc-dynamodb:latest
+          imagePullPolicy: Always
+          env:
+            - name: DATA_DIR
+              value: /data
+          volumeMounts:
+            - name: dynamo-pvc-template
+              mountPath: /data
+          ports:
+            - containerPort: 8000
+              name: dynamodb-port
+        - name: gene-normalization
+          image: gcr.io/clingen-dev/cancervariants/gene-normalization:d03a18bc28761f49d6a4f98116f85d814f7345c9
+          imagePullPolicy: Always
+          env:
+            - name: GENE_NORM_DB_URL
+              value: "http://localhost:8000" # Defaults to this, but set it anyways
+          ports:
+            - containerPort: 80
+              name: gene-norm-port
+          volumeMounts:
+            - name: aws-credentials
+              mountPath: "/root/.aws/credentials"
+              subPath: "credentials"
+              readOnly: true
+
+
+  volumeClaimTemplates:
+    - metadata:
+        name: dynamo-pvc-template
+        labels:
+          {{- include "clingen-vicc.labels" . | nindent 10 }}
+      spec:
+        accessModes:
+          - ReadWriteOnce # ReadOnlyMany
+        storageClassName: {{ .Release.Name }}-gce-pd-ssd-sc
+        resources:
+          requests:
+            storage: 10Gi
+
+---
+# gene-normalizer container needs an aws creds file to exist to access the
+# local dynamodb. The values do not matter.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-aws-creds-configmap
+  labels:
+    {{ include "clingen-vicc.labels" . | nindent 4 }}
+data:
+  credentials: |
+    [default]
+    aws_access_key_id = asdf
+    aws_secret_access_key = asdf
+  config: |
+    [default]
+---
+# https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/ssd-pd
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Release.Name }}-gce-pd-ssd-sc
+  labels:
+    {{ include "clingen-vicc.labels" . | nindent 4 }}
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-gene-normalizer-svc
+  labels:
+    {{ include "clingen-vicc.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: gene-normalizer
+    {{ include "clingen-vicc.selectorLabels" . | nindent 4 }}
+  type: ClusterIP # stable cluster IP
+  ports:
+    - name: dynamodb-port
+      port: 8000                # port on service
+      targetPort: dynamodb-port # port on container
+      protocol: TCP
+    - name: gene-norm-port
+      port: 80
+      targetPort: gene-norm-port
+      protocol: TCP
