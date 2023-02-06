@@ -48,7 +48,7 @@ resource "google_container_node_pool" "main-pool" {
 
   node_config {
     preemptible     = false
-    machine_type    = "n2-standard-2"
+    machine_type    = "n2-standard-4"
     image_type      = "COS_CONTAINERD"
     local_ssd_count = 1
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
