@@ -70,7 +70,7 @@ resource "google_compute_security_policy" "argocd_cloudarmor_policy" {
 
       config {
         src_ip_ranges = [
-          "74.69.78.31/32"
+          "74.69.73.105/32"
         ]
       }
     }

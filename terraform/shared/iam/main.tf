@@ -46,16 +46,19 @@ module "clingen_projects_iam_bindings" {
 
     "roles/container.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
+      "group:clingendevs@broadinstitute.org",
     ]
 
     "roles/compute.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
       "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
     ]
 
     "roles/dns.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
       "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
     ]
 
     "roles/firebase.admin" = [
@@ -64,6 +67,8 @@ module "clingen_projects_iam_bindings" {
 
     "roles/monitoring.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
+      "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
     ]
 
     "roles/pubsub.admin" = [
@@ -85,8 +90,33 @@ module "clingen_projects_iam_bindings" {
     "roles/storage.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
       "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
     ]
 
+    "roles/serviceusage.serviceUsageConsumer" = [
+      "group:clingen-geisinger-external@broadinstitute.org",
+    ]
+
+    "roles/logging.admin" = [
+      "group:clingen-gcp-admin@broadinstitute.org",
+      "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
+    ]
+
+    "roles/iam.securityReviewer" = [
+      "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
+    ]
+
+    "roles/browser" = [
+      "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
+    ]
+
+    "roles/iap.tunnelResourceAccessor" = [
+      "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
+    ]
   }
 }
 
@@ -157,4 +187,35 @@ resource "google_service_account_iam_member" "prod_cloudbuild_cloudfunc_binding"
   service_account_id = "projects/clingen-dx/serviceAccounts/clingen-dx@appspot.gserviceaccount.com"
   role               = "roles/iam.serviceAccountUser"
   member             = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
+}
+
+data "google_compute_default_service_account" "clingen_dev_default" {
+  project = "clingen-dev"
+}
+
+data "google_compute_default_service_account" "clingen_stage_default" {
+  project = "clingen-stage"
+}
+
+data "google_compute_default_service_account" "clingen_dx_default" {
+  project = "clingen-dx"
+}
+
+# Allow groups to use the default GCE account
+resource "google_service_account_iam_member" "dev_default_account_iam" {
+  service_account_id = data.google_compute_default_service_account.clingen_dev_default.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "group:clingen-geisinger-external@broadinstitute.org"
+}
+
+resource "google_service_account_iam_member" "stage_default_account_iam" {
+  service_account_id = data.google_compute_default_service_account.clingen_stage_default.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "group:clingen-geisinger-external@broadinstitute.org"
+}
+
+resource "google_service_account_iam_member" "dx_default_account_iam" {
+  service_account_id = data.google_compute_default_service_account.clingen_dx_default.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "group:clingen-geisinger-external@broadinstitute.org"
 }
