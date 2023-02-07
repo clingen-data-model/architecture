@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-uta
+  labels:
+    app: uta
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
+spec:
+  # serviceName: {{ .Release.Name }}-uta-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uta
+      {{- include "clingen-vicc.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: uta
+        {{- include "clingen-vicc.selectorLabels" . | nindent 8 }}
+    spec:
+      volumes:
+        - name: uta-vol
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-uta-pvc
+      containers:
+        - name: uta
+          image: gcr.io/clingen-dev/uta:uta_20190928
+          imagePullPolicy: Always
+          env:
+            - name: UTA_VERSION
+              value: uta_20190928
+            - name: UTA_ADMIN_PASSWORD
+              value: uta_admin_pw
+            - name: POSTGRES_PASSWORD
+              value: pg_pw
+          volumeMounts:
+            - name: uta-vol
+              mountPath: /var/lib/postgresql/data
+              # Mount uta-vol/postgres so postgres server doesn't complain about using root of volume as data dir
+              subPath: postgres
+          ports:
+            - containerPort: 5432
+              name: postgres-port
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-uta-pvc
+  labels:
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
+spec:
+  storageClassName: {{ .Release.Name }}-gce-pd-ssd-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-uta-svc
+  labels:
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: uta
+    {{- include "clingen-vicc.selectorLabels" . | nindent 4 }}
+  type: ClusterIP # stable cluster IP
+  ports:
+    - name: postgres-port
+      port: 5432                # port on service
+      targetPort: postgres-port # port on container
+      protocol: TCP

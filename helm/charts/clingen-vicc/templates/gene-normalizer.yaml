@@ -10,10 +10,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
+      app: gene-normalizer
       {{- include "clingen-vicc.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
+        app: gene-normalizer
         {{- include "clingen-vicc.selectorLabels" . | nindent 8 }}
     spec:
       volumes:
@@ -23,6 +25,23 @@ spec:
             items:
               - key: credentials
                 path: credentials
+      initContainers:
+        - image: gcr.io/clingen-dev/vicc-seqrepo-populator:2021-01-29
+          imagePullPolicy: Always
+          name: seqrepo-populator
+          env:
+            # Directory the seqrepo release will be written into, DATA_DIR/seqrepo/<seqrepo-version>
+            - name: DATA_DIR
+              value: "/usr/local/share"
+          resources:
+            requests:
+              cpu: 0.5
+            limits:
+              memory: 512Mi
+          volumeMounts:
+            - name: seqrepo-pvc-template
+              mountPath: "/usr/local/share/seqrepo"
+
       containers:
         - name: dynamodb
           image: gcr.io/clingen-dev/vicc-dynamodb:latest
@@ -37,7 +56,7 @@ spec:
             - containerPort: 8000
               name: dynamodb-port
         - name: gene-normalization
-          image: gcr.io/clingen-dev/cancervariants/gene-normalization:d03a18bc28761f49d6a4f98116f85d814f7345c9
+          image: gcr.io/clingen-dev/cancervariants/gene-normalization:v0.1.31
           imagePullPolicy: Always
           env:
             - name: GENE_NORM_DB_URL
@@ -46,13 +65,25 @@ spec:
             - containerPort: 80
               name: gene-norm-port
           volumeMounts:
+            - name: seqrepo-pvc-template
+              mountPath: "/usr/local/share/seqrepo"
             - name: aws-credentials
               mountPath: "/root/.aws/credentials"
               subPath: "credentials"
               readOnly: true
 
-
   volumeClaimTemplates:
+    - metadata:
+        name: seqrepo-pvc-template
+        labels:
+          {{- include "clingen-vicc.labels" . | nindent 10 }}
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: {{ .Release.Name }}-gce-pd-ssd-sc
+        resources:
+          requests:
+            storage: 50Gi
     - metadata:
         name: dynamo-pvc-template
         labels:
@@ -81,17 +112,6 @@ data:
     aws_secret_access_key = asdf
   config: |
     [default]
----
-# https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/ssd-pd
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: {{ .Release.Name }}-gce-pd-ssd-sc
-  labels:
-    {{ include "clingen-vicc.labels" . | nindent 4 }}
-provisioner: kubernetes.io/gce-pd
-parameters:
-  type: pd-ssd
 
 ---
 apiVersion: v1
@@ -106,6 +126,7 @@ spec:
     {{ include "clingen-vicc.selectorLabels" . | nindent 4 }}
   type: ClusterIP # stable cluster IP
   ports:
+    # Can remove dynamodb-port, it's accessed on localhost in-pod
     - name: dynamodb-port
       port: 8000                # port on service
       targetPort: dynamodb-port # port on container

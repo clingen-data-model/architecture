@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pydantic = "*"
+fastapi = "*"
+uvicorn = "*"
+click = "*"
+boto3 = "*"
+"ga4gh.vrsatile.pydantic" = "~=0.0.11"
+"ga4gh.vrs" = {version = "~=0.8.1.dev0"}
+
+[dev-packages]
+gene = {editable = true, path = "."}
+gffutils = "*"
+"biocommons.seqrepo" = "*"
+psycopg2-binary = "*"
+pytest = "*"
+pre-commit = "*"
+flake8 = "*"
+flake8-docstrings = "*"
+pytest-cov = "*"
+mock = "*"

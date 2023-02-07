@@ -18,8 +18,14 @@ fi
 cd "${DATA_DIR}/seqrepo"
 if [ ! -d "$seqrepo_version" ]; then
     if [ ! -f "seqrepo/$seqrepo_zip" ]; then
-        gcloud storage cp "gs://clingen-dev-gke-internal-static/${seqrepo_zip}" ./
-        tar -xzf "$seqrepo_zip" -C ./
+        # cp then decompress
+        # gcloud storage cp "gs://clingen-dev-gke-internal-static/${seqrepo_zip}" ./
+        # tar -xzf "$seqrepo_zip" -C ./
+
+        # decompress stream download
+        gcloud storage cat "gs://clingen-dev-gke-internal-static/${seqrepo_zip}" \
+            | tar -xzf - -C ./
+
         # Make sure the version dir was in the zip
         if [ ! -d "$seqrepo_version" ]; then
             echo "Downloaded $seqrepo_zip but it did not contain $seqrepo_version"
