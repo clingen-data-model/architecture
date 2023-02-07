@@ -24,6 +24,11 @@ if [ ! -f "$DATA_DIR/$db_name" ]; then
     cd ..
 fi
 
+# Dynamodb stuff is in /app but that data is in DATA_DIR
+ln -s "${DATA_DIR}/${db_name}" /app/${db_name}
+
+cd /app
+
 echo "starting dynamodb jar"
 java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
 echo "dynamodb jar exited"

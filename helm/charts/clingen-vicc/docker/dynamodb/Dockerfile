@@ -7,6 +7,8 @@
 
 FROM eclipse-temurin:17
 
+WORKDIR /app
+
 RUN curl -O https://s3.us-west-2.amazonaws.com/dynamodb-local/dynamodb_local_latest.tar.gz \
     && tar -xzf dynamodb_local_latest.tar.gz \
     && rm dynamodb_local_latest.tar.gz
@@ -20,5 +22,5 @@ RUN apt-get update \
 
 RUN apt-get install -y zip
 
-COPY entrypoint.sh entrypoint.sh
+COPY entrypoint.sh /app/entrypoint.sh
 CMD ["bash", "entrypoint.sh"]

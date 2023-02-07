@@ -61,6 +61,8 @@ spec:
           env:
             - name: GENE_NORM_DB_URL
               value: "http://localhost:8000" # Defaults to this, but set it anyways
+            - name: UTA_DB_URL
+              value: "postgresql://uta_admin:{{- .Values.uta_admin_password -}}@{{- .Release.Name -}}-uta-svc:5432/uta/uta_20210129"
           ports:
             - containerPort: 80
               name: gene-norm-port

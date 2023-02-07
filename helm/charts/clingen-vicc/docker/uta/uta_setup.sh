@@ -24,5 +24,5 @@ if [ ! -f "$initialized_file" ]; then
         | psql -U uta_admin -d uta --echo-errors --single-transaction -v ON_ERROR_STOP=1
         #| psql -h localhost -U uta_admin --echo-errors --single-transaction -v ON_ERROR_STOP=1 -d uta -p 5432
 fi
-alias isodate='date -u +"%Y-%m-%dT%H:%M:%S%z"'
-echo `isodate` > "$initialized_file"
+
+echo `date -u +"%Y-%m-%dT%H:%M:%S%z"` > "$initialized_file"

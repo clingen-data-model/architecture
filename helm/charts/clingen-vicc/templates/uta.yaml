@@ -30,7 +30,7 @@ spec:
             - name: UTA_VERSION
               value: uta_20190928
             - name: UTA_ADMIN_PASSWORD
-              value: uta_admin_pw
+              value: {{ .Values.uta_admin_password }}
             - name: POSTGRES_PASSWORD
               value: pg_pw
           volumeMounts:
