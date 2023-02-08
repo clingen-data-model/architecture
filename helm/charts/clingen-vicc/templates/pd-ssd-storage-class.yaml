@@ -4,7 +4,7 @@ kind: StorageClass
 metadata:
   name: {{ .Release.Name }}-gce-pd-ssd-sc
   labels:
-    {{ include "clingen-vicc.labels" . | nindent 4 }}
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
 provisioner: kubernetes.io/gce-pd
 parameters:
   type: pd-ssd

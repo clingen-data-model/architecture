@@ -5,7 +5,7 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-aws-creds-configmap
   labels:
-    {{ include "clingen-vicc.labels" . | nindent 4 }}
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
 data:
   credentials: |
     [default]

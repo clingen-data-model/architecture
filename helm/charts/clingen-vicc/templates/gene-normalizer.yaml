@@ -39,7 +39,7 @@ spec:
             limits:
               memory: 512Mi
           volumeMounts:
-            - name: seqrepo-pvc-template
+            - name: {{ .Release.Name }}-genenorm-seqrepo-pvc
               mountPath: "/usr/local/share/seqrepo"
 
       containers:
@@ -50,7 +50,7 @@ spec:
             - name: DATA_DIR
               value: /data
           volumeMounts:
-            - name: dynamo-pvc
+            - name: {{ .Release.Name }}-dynamo-pvc
               mountPath: /data
           ports:
             - containerPort: 8000
@@ -67,7 +67,7 @@ spec:
             - containerPort: 80
               name: gene-norm-port
           volumeMounts:
-            - name: genenorm-seqrepo-pvc
+            - name: {{ .Release.Name }}-genenorm-seqrepo-pvc
               mountPath: "/usr/local/share/seqrepo"
             - name: aws-credentials
               mountPath: "/root/.aws/credentials"
@@ -76,7 +76,7 @@ spec:
 
   volumeClaimTemplates:
     - metadata:
-        name: genenorm-seqrepo-pvc
+        name: {{ .Release.Name }}-genenorm-seqrepo-pvc
         labels:
           {{- include "clingen-vicc.labels" . | nindent 10 }}
       spec:
@@ -85,9 +85,9 @@ spec:
         storageClassName: {{ .Release.Name }}-gce-pd-ssd-sc
         resources:
           requests:
-            storage: 50Gi
+            storage: 25Gi
     - metadata:
-        name: dynamo-pvc
+        name: {{ .Release.Name }}-dynamo-pvc
         labels:
           {{- include "clingen-vicc.labels" . | nindent 10 }}
       spec:
@@ -104,11 +104,11 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-gene-normalizer-svc
   labels:
-    {{ include "clingen-vicc.labels" . | nindent 4 }}
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
 spec:
   selector:
     app: gene-normalizer
-    {{ include "clingen-vicc.selectorLabels" . | nindent 4 }}
+    {{- include "clingen-vicc.selectorLabels" . | nindent 4 }}
   type: ClusterIP # stable cluster IP
   ports:
     - name: dynamodb-port

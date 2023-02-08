@@ -31,7 +31,7 @@ if [ ! -d "$seqrepo_version" ]; then
             echo "Downloaded $seqrepo_zip but it did not contain $seqrepo_version"
             exit 1
         fi
-        rm "$seqrepo_zip"
+        #rm "$seqrepo_zip"
     fi
 fi
 
