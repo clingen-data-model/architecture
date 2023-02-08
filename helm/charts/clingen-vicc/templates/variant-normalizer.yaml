@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Release.Name }}-gene-normalizer
+  name: {{ .Release.Name }}-variation-normalizer
   labels:
-    app: gene-normalizer
+    app: variation-normalizer
     {{- include "clingen-vicc.labels" . | nindent 4 }}
 spec:
-  serviceName: {{ .Release.Name }}-gene-normalizer-svc
+  serviceName: {{ .Release.Name }}-variation-normalizer-svc
   replicas: 1
   selector:
     matchLabels:
-      app: gene-normalizer
+      app: variation-normalizer
       {{- include "clingen-vicc.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: gene-normalizer
+        app: variation-normalizer
         {{- include "clingen-vicc.selectorLabels" . | nindent 8 }}
     spec:
       volumes:
@@ -43,31 +43,19 @@ spec:
               mountPath: "/usr/local/share/seqrepo"
 
       containers:
-        - name: dynamodb
-          image: gcr.io/clingen-dev/vicc-dynamodb:latest
-          imagePullPolicy: Always
-          env:
-            - name: DATA_DIR
-              value: /data
-          volumeMounts:
-            - name: dynamo-pvc
-              mountPath: /data
-          ports:
-            - containerPort: 8000
-              name: dynamodb-port
-        - name: genenorm
-          image: gcr.io/clingen-dev/cancervariants/gene-normalization:v0.1.31
+        - name: varnorm
+          image: gcr.io/clingen-dev/cancervariants/variation-normalization:5e87d846231b1e8d1e06b3cd811de6e170b5bb73
           imagePullPolicy: Always
           env:
             - name: GENE_NORM_DB_URL
-              value: "http://localhost:8000" # Defaults to this, but set it anyways
+              value: "http://{{- .Release.Name -}}-gene-normalizer-svc:8000"
             - name: UTA_DB_URL
               value: "postgresql://uta_admin:{{- .Values.uta_admin_password -}}@{{- .Release.Name -}}-uta-svc:5432/uta/uta_20210129"
           ports:
             - containerPort: 80
-              name: gene-norm-port
+              name: varnorm-port
           volumeMounts:
-            - name: genenorm-seqrepo-pvc
+            - name: varnorm-seqrepo-pvc
               mountPath: "/usr/local/share/seqrepo"
             - name: aws-credentials
               mountPath: "/root/.aws/credentials"
@@ -76,7 +64,7 @@ spec:
 
   volumeClaimTemplates:
     - metadata:
-        name: genenorm-seqrepo-pvc
+        name: varnorm-seqrepo-pvc
         labels:
           {{- include "clingen-vicc.labels" . | nindent 10 }}
       spec:
@@ -86,36 +74,21 @@ spec:
         resources:
           requests:
             storage: 50Gi
-    - metadata:
-        name: dynamo-pvc
-        labels:
-          {{- include "clingen-vicc.labels" . | nindent 10 }}
-      spec:
-        accessModes:
-          - ReadWriteOnce # ReadOnlyMany
-        storageClassName: {{ .Release.Name }}-gce-pd-ssd-sc
-        resources:
-          requests:
-            storage: 10Gi
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-gene-normalizer-svc
+  name: {{ .Release.Name }}-variation-normalizer-svc
   labels:
     {{ include "clingen-vicc.labels" . | nindent 4 }}
 spec:
   selector:
-    app: gene-normalizer
+    app: variation-normalizer
     {{ include "clingen-vicc.selectorLabels" . | nindent 4 }}
   type: ClusterIP # stable cluster IP
   ports:
-    - name: dynamodb-port
-      port: 8000                # port on service
-      targetPort: dynamodb-port # port on container
-      protocol: TCP
-    - name: gene-norm-port
+    - name: varnorm-port
       port: 80
-      targetPort: gene-norm-port
+      targetPort: varnorm-port
       protocol: TCP

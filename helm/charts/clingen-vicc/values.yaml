@@ -1,0 +1,3 @@
+
+# postgres not exposed to internet, so password secrecy doesn't matter
+uta_admin_password: uta_admin_pw
