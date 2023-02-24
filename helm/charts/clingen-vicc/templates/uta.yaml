@@ -24,11 +24,11 @@ spec:
             claimName: {{ .Release.Name }}-uta-pvc
       containers:
         - name: uta
-          image: gcr.io/clingen-dev/uta:uta_20190928
+          image: gcr.io/clingen-dev/uta:uta_20210129
           imagePullPolicy: Always
           env:
             - name: UTA_VERSION
-              value: uta_20190928
+              value: uta_20210129
             - name: UTA_ADMIN_PASSWORD
               value: {{ .Values.uta_admin_password }}
             - name: POSTGRES_PASSWORD

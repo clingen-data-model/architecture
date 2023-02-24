@@ -43,7 +43,7 @@ genegraph_run_migration: false
 # include nrepl
 genegraph_nrepl_port: 6000
 
-vrs_normalization_service: "http://variation-normalizer-variation-normalizer-svc:80/variation"
+vrs_normalization_service: "http://varnorm-variation-normalizer-svc:80/variation"
 #vrs_normalization_service: "https://normalize.cancervariants.org/variation"
 
 # rocksdb http

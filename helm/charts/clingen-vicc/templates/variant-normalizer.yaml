@@ -7,7 +7,7 @@ metadata:
     {{- include "clingen-vicc.labels" . | nindent 4 }}
 spec:
   serviceName: {{ .Release.Name }}-variation-normalizer-svc
-  replicas: 2
+  replicas: {{ .Values.varnorm_replicas }}
   selector:
     matchLabels:
       app: variation-normalizer
