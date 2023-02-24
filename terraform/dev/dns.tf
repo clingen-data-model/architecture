@@ -72,3 +72,18 @@ resource "google_dns_record_set" "anyvar_dev_a_record" {
 
   rrdatas = [google_compute_global_address.anyvar_dev_external_ip.address]
 }
+
+# Variation normalizer
+resource "google_compute_global_address" "variation_normalizer_dev_ip" {
+  name = "global-variation-normalizer-dev-ip"
+}
+
+resource "google_dns_record_set" "variation_normalization_dev_a_record" {
+  name = "normalization.${data.google_dns_managed_zone.clingen_dns_zone.dns_name}"
+  type = "A"
+  ttl  = 300
+
+  managed_zone = data.google_dns_managed_zone.clingen_dns_zone.name
+
+  rrdatas = [google_compute_global_address.variation_normalizer_dev_ip.address]
+}

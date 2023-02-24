@@ -6,7 +6,8 @@ registry_ns=gcr.io/clingen-dev
 repo_name=cancervariants/variation-normalization
 repo_dir=variation-normalization
 repo=https://github.com/${repo_name}.git
-repo_commit=5e87d846231b1e8d1e06b3cd811de6e170b5bb73
+# On staging branch
+repo_commit=1e9c53dbec4f3f0ec907cae94d9d295534b4c424
 
 if [ ! -d $repo_dir/.git ]; then
     git clone $repo $repo_dir
@@ -14,7 +15,7 @@ if [ ! -d $repo_dir/.git ]; then
     git fetch --all --tags --prune
     git checkout $repo_commit
     cd ..
-    cp replacement-Pipfile $repo_dir/Pipfile
+    # staging branch updated Pipfile
     cp replacement-Dockerfile $repo_dir/Dockerfile
 fi
 

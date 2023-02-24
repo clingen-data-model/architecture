@@ -3,9 +3,11 @@
 set -xeuo pipefail
 
 registry_ns=gcr.io/clingen-dev
-repo=https://github.com/cancervariants/gene-normalization.git
+repo_name=cancervariants/gene-normalization
 repo_dir=gene-normalization
-repo_commit=v0.1.31
+repo=https://github.com/${repo_name}.git
+# On staging branch
+repo_commit=c64a53fe305e9ec3eac51d9988385a5bc0ef3ac0
 
 if [ ! -d $repo_dir/.git ]; then
     git clone $repo
@@ -13,15 +15,7 @@ if [ ! -d $repo_dir/.git ]; then
     git fetch --all --tags --prune
     git checkout $repo_commit
     cd ..
-    cp replacement-Pipfile $repo_dir/Pipfile
 fi
 
-git_version () {
-    cd $repo_dir
-    val=`git rev-parse HEAD`
-    cd ..
-    echo $val
-}
-
-docker build -t ${registry_ns}/cancervariants/gene-normalization:${repo_commit} gene-normalization
-docker push ${registry_ns}/cancervariants/gene-normalization:${repo_commit}
+docker build -t ${registry_ns}/${repo_name}:${repo_commit} ${repo_dir}
+docker push ${registry_ns}/${repo_name}:${repo_commit}

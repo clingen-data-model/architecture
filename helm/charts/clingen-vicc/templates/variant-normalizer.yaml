@@ -7,7 +7,7 @@ metadata:
     {{- include "clingen-vicc.labels" . | nindent 4 }}
 spec:
   serviceName: {{ .Release.Name }}-variation-normalizer-svc
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: variation-normalizer
@@ -35,7 +35,7 @@ spec:
               value: "/usr/local/share"
           resources:
             requests:
-              cpu: 0.5
+              cpu: 0.1
             limits:
               memory: 512Mi
           volumeMounts:
@@ -44,7 +44,7 @@ spec:
 
       containers:
         - name: varnorm
-          image: gcr.io/clingen-dev/cancervariants/variation-normalization:5e87d846231b1e8d1e06b3cd811de6e170b5bb73
+          image: gcr.io/clingen-dev/cancervariants/variation-normalization:1e9c53dbec4f3f0ec907cae94d9d295534b4c424
           imagePullPolicy: Always
           env:
             - name: SEQREPO_DATA_PATH
@@ -54,8 +54,8 @@ spec:
             - name: UTA_DB_URL
               value: "postgresql://uta_admin:{{- .Values.uta_admin_password -}}@{{- .Release.Name -}}-uta-svc:5432/uta/uta_20210129"
           ports:
-            - containerPort: 80
-              name: varnorm-port
+            - containerPort: {{ .Values.varnorm_container_port }}
+              # name: varnorm-port
           volumeMounts:
             - name: {{ .Release.Name }}-varnorm-seqrepo-pvc
               mountPath: "/usr/local/share/seqrepo"
@@ -81,20 +81,99 @@ spec:
           requests:
             storage: 25Gi
 
+{{ if .Values.fakeval }}
+# ---
+## This is the simple internal-facing service with no loadbalancer or static ip or cert
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: {{ .Release.Name }}-variation-normalizer-svc
+#   labels:
+#     {{- include "clingen-vicc.labels" . | nindent 4 }}
+# spec:
+#   selector:
+#     app: variation-normalizer
+#     {{- include "clingen-vicc.selectorLabels" . | nindent 4 }}
+#   type: ClusterIP # stable cluster IP
+#   ports:
+#     - name: varnorm-port
+#       port: 80
+#       targetPort: varnorm-port
+#       protocol: TCP
+{{ end }}
+
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}-variation-normalizer-svc
+  annotations:
+    {{- if .Values.varnorm_external_service }}
+    cloud.google.com/backend-config: '{"default": "{{ .Release.Name }}-backendconfig"}'
+    {{- end }}
   labels:
     {{- include "clingen-vicc.labels" . | nindent 4 }}
 spec:
   selector:
     app: variation-normalizer
     {{- include "clingen-vicc.selectorLabels" . | nindent 4 }}
-  type: ClusterIP # stable cluster IP
+  type: ClusterIP
   ports:
-    - name: varnorm-port
+    - name: varnorm-svc-port
       port: 80
-      targetPort: varnorm-port
+      targetPort: {{ .Values.varnorm_container_port }}
       protocol: TCP
+
+{{- if .Values.varnorm_external_service }}
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: {{ .Release.Name }}-backendconfig
+spec:
+  timeoutSec: 1200
+  healthCheck:
+    checkIntervalSec: 15
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 1
+    type: HTTP
+    requestPath: /variation
+    port: {{ .Values.varnorm_container_port }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-ingress
+  labels:
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.varnorm_static_ip_name }}
+    networking.gke.io/managed-certificates: {{ .Release.Name }}-certificate
+    kubernetes.io/ingress.class: "gce"
+spec:
+  rules:
+    - host: {{ first .Values.varnorm_mcrt_domains }}
+      http:
+        paths:
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Release.Name }}-variation-normalizer-svc
+                port:
+                  number: 80 # matches service port service.spec.ports[].port
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: {{ .Release.Name }}-certificate
+  labels:
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
+spec:
+  domains:
+  {{- range .Values.varnorm_mcrt_domains }}
+  - {{ . | quote }}
+  {{- end }}
+{{- end }}
