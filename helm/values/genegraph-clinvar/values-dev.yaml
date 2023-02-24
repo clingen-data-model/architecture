@@ -31,6 +31,14 @@ genegraph_configure_storageclass: true
 genegraph_persistent_disk:
   size: 750Gi
 
+# Override readiness probe to mark ready immediately
+genegraph_readiness_probe:
+  periodSeconds: 30
+  successThreshold: 1
+  httpGet:
+    path: /live
+    port: genegraph-port
+
 # run migration job before deployment
 genegraph_run_migration: false
 #genegraph_migration_data_version: "2022-02-07T1753:25fb2b9d270ad4a7f7392b1cce0004dad4e0b21d"
@@ -40,3 +48,7 @@ genegraph_nrepl_port: 6000
 
 # rocksdb http
 genegraph_rocksdb_registry_uri: http://vrs-cache-registry-svc:6381
+vrs_normalization_service: "http://variation-normalizer-variation-normalizer-svc:80/variation"
+
+
+genegraph_command: ["java", "-Xmx400m", "-jar", "/app/app.jar"]

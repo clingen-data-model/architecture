@@ -96,13 +96,16 @@ spec:
             - name: ROCKSDB_HTTP_URI
               value: {{ .Values.genegraph_rocksdb_registry_uri }}
             {{- end }}
-            {{- if .Values.genegraph_vrs_cache_pool_size }}
-            - name: GENEGRAPH_VRS_CACHE_POOL_SIZE
-              value: "{{ .Values.genegraph_vrs_cache_pool_size }}"
+            {{- if .Values.genegraph_rocksdb_http_start }}
+            - name: ROCKSDB_HTTP_START
+              value: "{{ .Values.genegraph_rocksdb_http_start }}"
+            {{- end }}
+            {{- if .Values.vrs_normalization_service }}
+            - name: VARIATION_NORM_URL
+              value: "{{ .Values.vrs_normalization_service }}"
             {{- end }}
             {{- if .Values.genegraph_nrepl_port }}
             - name: GENEGRAPH_NREPL_PORT
-              # helm needs this to explicitly be a yaml string
               value: "{{ .Values.genegraph_nrepl_port }}"
             {{- end }}
             - name: DX_JAAS_CONFIG
@@ -113,8 +116,10 @@ spec:
           ports:
             - containerPort: 8888
               name: genegraph-port
+            {{- if .Values.genegraph_rocksdb_http_start }}
             - containerPort: 6381
               name: vrs-cache-port
+            {{- end }}
           volumeMounts:
           {{- if .Values.genegraph_local_ssd }}
             - name: genegraph-vol

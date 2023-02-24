@@ -17,7 +17,7 @@ genegraph_deployment_resources:
     memory: 1Gi
     cpu: 0.25
   limits:
-    memory: 1Gi
+    memory: 2Gi
 
 # Override readiness probe to mark ready immediately
 genegraph_readiness_probe:
@@ -43,9 +43,13 @@ genegraph_run_migration: false
 # include nrepl
 genegraph_nrepl_port: 6000
 
+vrs_normalization_service: "http://variation-normalizer-variation-normalizer-svc:80/variation"
+#vrs_normalization_service: "https://normalize.cancervariants.org/variation"
+
 # rocksdb http
 genegraph_rocksdb_registry_uri: http://localhost:6381
-genegraph_vrs_cache_pool_size: 40
+genegraph_vrs_cache_pool_size: 20
+genegraph_rocksdb_http_start: true
 
 # Use Redis
 genegraph_start_redis: false
@@ -56,4 +60,4 @@ genegraph_start_redis: false
 # genegraph_redis_host: "{{ .Release.Name }}-redis-svc"
 # genegraph_redis_port: 6379
 
-genegraph_command: ["java", "-jar", "/app/app.jar", "vrs-cache"]
+genegraph_command: ["java", "-Xmx512m", "-jar", "/app/app.jar", "vrs-cache"]
