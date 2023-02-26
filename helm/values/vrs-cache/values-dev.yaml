@@ -35,7 +35,7 @@ genegraph_tls_cert: false
 genegraph_local_ssd: false
 genegraph_configure_storageclass: true
 genegraph_persistent_disk:
-  size: 10Gi
+  size: 20Gi
 
 # run migration job before deployment
 genegraph_run_migration: false
