@@ -27,3 +27,6 @@ releases:
     chart: ../charts/clinvar-combined-stream
     values:
       - ../values/clinvar-combined-stream/values-dev.yaml
+  - name: clingen-vicc
+    namespace: default
+    chart: ../charts/clingen-vicc
