@@ -1,0 +1,179 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-variation-normalizer
+  labels:
+    app: variation-normalizer
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ .Release.Name }}-variation-normalizer-svc
+  replicas: {{ .Values.varnorm_replicas }}
+  selector:
+    matchLabels:
+      app: variation-normalizer
+      {{- include "clingen-vicc.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: variation-normalizer
+        {{- include "clingen-vicc.selectorLabels" . | nindent 8 }}
+    spec:
+      volumes:
+        - name: aws-credentials
+          configMap:
+            name: {{ .Release.Name }}-aws-creds-configmap
+            items:
+              - key: credentials
+                path: credentials
+      initContainers:
+        - image: gcr.io/clingen-dev/vicc-seqrepo-populator:2021-01-29
+          imagePullPolicy: Always
+          name: seqrepo-populator
+          env:
+            # Directory the seqrepo release will be written into, DATA_DIR/seqrepo/<seqrepo-version>
+            - name: DATA_DIR
+              value: "/usr/local/share"
+          resources:
+            requests:
+              cpu: 0.1
+            limits:
+              memory: 512Mi
+          volumeMounts:
+            - name: {{ .Release.Name }}-varnorm-seqrepo-pvc
+              mountPath: "/usr/local/share/seqrepo"
+
+      containers:
+        - name: varnorm
+          image: gcr.io/clingen-dev/cancervariants/variation-normalization:1e9c53dbec4f3f0ec907cae94d9d295534b4c424
+          imagePullPolicy: Always
+          env:
+            - name: SEQREPO_DATA_PATH
+              value: "/usr/local/share/seqrepo/2021-01-29"
+            - name: GENE_NORM_DB_URL
+              value: "http://{{- .Release.Name -}}-gene-normalizer-svc:8000"
+            - name: UTA_DB_URL
+              value: "postgresql://uta_admin:{{- .Values.uta_admin_password -}}@{{- .Release.Name -}}-uta-svc:5432/uta/uta_20210129"
+          ports:
+            - containerPort: {{ .Values.varnorm_container_port }}
+              # name: varnorm-port
+          volumeMounts:
+            - name: {{ .Release.Name }}-varnorm-seqrepo-pvc
+              mountPath: "/usr/local/share/seqrepo"
+            - name: aws-credentials
+              mountPath: "/root/.aws/credentials"
+              subPath: "credentials"
+              readOnly: true
+          # command:
+          #   - bash
+          #   - -c
+          #   - 'while true; do sleep 10; done'
+
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Release.Name }}-varnorm-seqrepo-pvc
+        labels:
+          {{- include "clingen-vicc.labels" . | nindent 10 }}
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: {{ .Release.Name }}-gce-pd-ssd-sc
+        resources:
+          requests:
+            storage: 25Gi
+
+{{ if .Values.fakeval }}
+# ---
+## This is the simple internal-facing service with no loadbalancer or static ip or cert
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: {{ .Release.Name }}-variation-normalizer-svc
+#   labels:
+#     {{- include "clingen-vicc.labels" . | nindent 4 }}
+# spec:
+#   selector:
+#     app: variation-normalizer
+#     {{- include "clingen-vicc.selectorLabels" . | nindent 4 }}
+#   type: ClusterIP # stable cluster IP
+#   ports:
+#     - name: varnorm-port
+#       port: 80
+#       targetPort: varnorm-port
+#       protocol: TCP
+{{ end }}
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-variation-normalizer-svc
+  annotations:
+    {{- if .Values.varnorm_external_service }}
+    cloud.google.com/backend-config: '{"default": "{{ .Release.Name }}-backendconfig"}'
+    {{- end }}
+  labels:
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: variation-normalizer
+    {{- include "clingen-vicc.selectorLabels" . | nindent 4 }}
+  type: ClusterIP
+  ports:
+    - name: varnorm-svc-port
+      port: 80
+      targetPort: {{ .Values.varnorm_container_port }}
+      protocol: TCP
+
+{{- if .Values.varnorm_external_service }}
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: {{ .Release.Name }}-backendconfig
+spec:
+  timeoutSec: 1200
+  healthCheck:
+    checkIntervalSec: 15
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 1
+    type: HTTP
+    requestPath: /variation
+    port: {{ .Values.varnorm_container_port }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-ingress
+  labels:
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.varnorm_static_ip_name }}
+    networking.gke.io/managed-certificates: {{ .Release.Name }}-certificate
+    kubernetes.io/ingress.class: "gce"
+spec:
+  rules:
+    - host: {{ first .Values.varnorm_mcrt_domains }}
+      http:
+        paths:
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Release.Name }}-variation-normalizer-svc
+                port:
+                  number: 80 # matches service port service.spec.ports[].port
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: {{ .Release.Name }}-certificate
+  labels:
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
+spec:
+  domains:
+  {{- range .Values.varnorm_mcrt_domains }}
+  - {{ . | quote }}
+  {{- end }}
+{{- end }}

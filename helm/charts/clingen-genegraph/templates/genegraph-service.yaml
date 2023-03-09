@@ -22,3 +22,20 @@ spec:
       targetPort: 8888
       protocol: TCP
 {{- end }}
+---
+{{- if .Values.genegraph_rocksdb_http_start }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-registry-svc
+  labels:
+{{ include "clingen-genegraph.labels" . | indent 4 }}
+spec:
+  selector:
+{{ include "clingen-genegraph.selectorLabels" . | indent 4 }}
+  type: ClusterIP #{{ .Values.genegraph_service_type }}
+  ports:
+    - port: 6381
+      targetPort: vrs-cache-port
+      protocol: TCP
+{{- end }}

@@ -1,0 +1,15 @@
+# gene-normalizer library needs an aws creds file to exist to access the
+# local dynamodb. The values do not matter.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-aws-creds-configmap
+  labels:
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
+data:
+  credentials: |
+    [default]
+    aws_access_key_id = asdf
+    aws_secret_access_key = asdf
+  config: |
+    [default]
