@@ -1,7 +1,14 @@
 # Populate seqrepo volume
 docker volume create seqrepo
-## todo
-...
+
+## Use the seqrepo populator image to populate it. Need to pass in a gcloud config directory that is authenticated
+docker run -it --rm -v seqrepo2:/usr/local/share/seqrepo -e DATA_DIR=/usr/local/share -e CLOUDSDK_CONFIG=/config/gcloud -v ~/.config/gcloud:/config/gcloud gcr.io/clingen-dev/vicc-seqrepo-populator:2021-01-29
+## Alternatively, remove the config environment variable and the gcloud volume and authenticate interactively
+docker run -it --rm -v seqrepo2:/usr/local/share/seqrepo -e DATA_DIR=/usr/local/share gcr.io/clingen-dev/vicc-seqrepo-populator:2021-01-29
+// Then in the container:
+gcloud auth login (will give login url and prompt for auth code that can be copied from the browser)
+// Run the container as normal now with authenticated gcloud library
+bash entrypoint.sh
 
 # Run dynamodb
 docker run -it --rm -v dynamodb:/data -e DATA_DIR=/data -p 8000:8000 gcr.io/clingen-dev/vicc-dynamodb:latest bash entrypoint.sh
