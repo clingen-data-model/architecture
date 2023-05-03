@@ -78,3 +78,15 @@ https://docs.gunicorn.org/en/stable/settings.html#max-requests
 Growth I observed was slow, and there is significant startup overhead, so a high limit is both desirable and *probably* acceptable.
 
 `gunicorn --max-requests 10000`
+
+
+
+# Removing pipenv from Variation Normalizer
+
+There's already a setup.cfg, so we can mostly just use that.
+
+- Update variation normalizer docker image base to python:3.9
+- Remove pipenv lock/sync, replace with `pip install .`
+- Add `--pre` to pip install in order to get `ga4gh.vrsatile.pydantic` pre-releases from pypi
+- Change `echo` and `pipenv run` initialization step to just `python -c 'import cool_seq_tool'`
+- Change `pipenv run gunicorn` to just `gunicorn`
