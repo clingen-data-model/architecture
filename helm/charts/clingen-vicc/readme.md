@@ -22,13 +22,12 @@ docker run -it --rm -v seqrepo:/usr/local/share/seqrepo -e DATA_DIR=/usr/local/s
 # Run dynamodb
 
 `
-docker run -it --rm -v dynamodb:/data -e DATA_DIR=/data -p 8000:8000 gcr.io/clingen-dev/vicc-dynamodb:latest bash entrypoint.sh
+docker run -it --rm -v dynamodb:/data -e DATA_DIR=/data -p 8000:8000 gcr.io/clingen-dev/vicc-dynamodb:latest
 `
 
 # Gene Normalizer
-# Uses docker-for-mac localhost hostname
 `
-docker run -it --rm -v $(pwd)/credentials:/root/.aws/credentials --net host -p 8001:8001 gcr.io/clingen-dev/cancervariants/gene-normalization:c64a53fe305e9ec3eac51d9988385a5bc0ef3ac0 pipenv run uvicorn gene.main:app --port 8001 --host 0.0.0.0
+docker run -it --rm -v $(pwd)/credentials:/root/.aws/credentials -p 8001:8001 gcr.io/clingen-dev/cancervariants/gene-normalization:c64a53fe305e9ec3eac51d9988385a5bc0ef3ac0 pipenv run uvicorn gene.main:app --port 8001 --host 0.0.0.0
 `
 
 # UTA
