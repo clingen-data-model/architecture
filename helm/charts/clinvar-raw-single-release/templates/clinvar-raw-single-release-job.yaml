@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+    {{- include  "clinvar-raw.chartLabels" . | nindent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - image: "{{ .Values.clinvar_streams_docker_image_name }}:{{ .Values.clinvar_streams_docker_image_tag }}"
+          imagePullPolicy: {{ .Values.clinvar_streams_image_pull_policy }}
+          name: clinvar-raw-single-release
+          {{- with .Values.clinvar_streams_deployment_resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: RELEASE_DATE
+              value: {{ .Values.clinvar_raw_release_date | quote }}
+            - name: RELEASE_GCP_BUCKET
+              value: {{ .Values.clinvar_raw_release_gcp_bucket | quote }}
+            - name: RELEASE_DIRECTORY
+              value: {{ .Values.clinvar_raw_release_directory | quote }}
+            - name: STORAGE_PROTOCOL
+              value: {{ .Values.clinvar_raw_storage_protocol | quote }}
+            - name: DX_CV_RAW_OUTPUT_TOPIC
+              value: {{ .Values.clinvar_raw_output_topic | quote}}
+            - name: KAFKA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "dx-creds-clinvar-raw"
+                  key: user
+            - name: KAFKA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "dx-creds-clinvar-raw"
+                  key: password
+            - name: KAFKA_GROUP
+              value: {{ .Values.clinvar_streams_kafka_group | quote }}
+      restartPolicy: "Never"
+

@@ -1,0 +1,13 @@
+project_id: clingen-dev
+clinvar_streams_docker_image_name: gcr.io/clingen-dev/clinvar-streams
+clinvar_streams_docker_image_tag: single-release
+clinvar_streams_image_pull_policy: Always
+clinvar_streams_deployment_resources:
+  requests:
+    memory: 256Mi
+    cpu: 0.2
+  limits:
+    memory: 1Gi
+    cpu: 4
+clinvar_streams_kafka_group: clinvar-raw-dev
+clinvar_raw_storage_protocol: gs://
