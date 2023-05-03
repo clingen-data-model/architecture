@@ -4,11 +4,13 @@
 
 FROM python:3.7
 RUN apt update && apt install -y rsync python3-dev
-RUN pip install pipenv uvicorn[standard]
+RUN pip install pipenv
 COPY . /app
 WORKDIR /app
 RUN if [ ! -f "Pipfile.lock" ] ; then pipenv lock ; else echo Pipfile.lock exists ; fi
 RUN pipenv sync
+# Need to install these via pipenv, not pip, to get them in the environment
+RUN pipenv install uvicorn[standard] gunicorn
 EXPOSE 80
 HEALTHCHECK --interval=5m --timeout=3s \
     CMD curl -f http://localhost/variation || exit 1
@@ -16,4 +18,5 @@ HEALTHCHECK --interval=5m --timeout=3s \
 # cool-seq-tool initialization involves writing some files and this doesn't
 # work sometimes if multiple worker processes are in that step at the same time
 # limit to 1 worker process for now
-CMD pipenv run uvicorn variation.main:app --workers 1 --port 80 --host 0.0.0.0
+# There seems to be some sort of resource leak, adding max requests = 1000 to recreate worker process
+CMD pipenv run uvicorn variation.main:app --workers 1 --limit-max-requests 1000 --port 80 --host 0.0.0.0

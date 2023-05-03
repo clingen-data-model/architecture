@@ -47,10 +47,10 @@ spec:
       containers:
         - name: varnorm
           #image: gcr.io/clingen-dev/cancervariants/variation-normalization:1e9c53dbec4f3f0ec907cae94d9d295534b4c424
-          image: gcr.io/clingen-dev/varnorm-patch:latest
+          image: gcr.io/clingen-dev/variation-normalization:mutex-patch
           imagePullPolicy: Always
           env:
-            - name: SEQREPO_DATA_PATH
+            - name: SEQREPO_ROOT_DIR
               value: "/usr/local/share/seqrepo/2021-01-29"
             - name: GENE_NORM_DB_URL
               value: "http://{{- .Release.Name -}}-gene-normalizer-svc:8000"
