@@ -1,0 +1,78 @@
+{{ if .Values.fakeval }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-dynamodb
+  labels:
+    {{- include "clingen-vicc.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ .Release.Name }}-dynamodb-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "clingen-vicc.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "clingen-vicc.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - image: gcr.io/clingen-dev/vicc-dynamodb:latest
+          imagePullPolicy: Always
+          env:
+            - name: DATA_DIR
+              value: /data
+          volumeMounts:
+            - name: dynamo-pvc-template
+              mountPath: /data
+
+
+  volumeClaimTemplates:
+    - metadata:
+        name: dynamo-pvc-template
+        labels:
+          {{- include "clingen-vicc.labels" . | nindent 14 }}
+      spec:
+        accessModes:
+          - ReadOnlyMany # ReadWriteOnce
+        storageClassName: {{ .Release.Name }}-dynamodb-sc
+        resources:
+          requests:
+            storage: 25Gi
+
+
+---
+# https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/ssd-pd
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Release.Name }}-dynamodb-sc
+  labels:
+    {{ include "clingen-vicc.labels" . | nindent 4 }}
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  annotations:
+    {{- if .Values.genegraph_configure_ingress }}
+    cloud.google.com/backend-config: '{"default": "{{ .Release.Name }}-backendconfig"}'
+    {{- end }}
+  labels:
+    app: {{ .Release.Name }}
+{{ include "clingen-vicc.labels" . | indent 4 }}
+spec:
+  selector:
+{{ include "clingen-vicc.selectorLabels" . | indent 4 }}
+  type: {{ .Values.genegraph_service_type }}
+  {{- if .Values.genegraph_service_lb_ip }}
+  loadBalancerIP: {{ .Values.genegraph_service_lb_ip }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.genegraph_port }}
+      targetPort: 8888
+      protocol: TCP
+{{ end }}
