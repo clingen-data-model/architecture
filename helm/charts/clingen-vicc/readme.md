@@ -30,13 +30,32 @@ aws_secret_access_key = asdf" > credentials
 docker run -it --rm -v seqrepo:/usr/local/share/seqrepo -v $(pwd)/credentials:/root/.aws/credentials -e DATA_DIR=/usr/local/share -e SEQREPO_ROOT_DIR=/usr/local/share/seqrepo/2021-01-29 -e GENE_NORM_DB_URL='http://docker.for.mac.host.internal:8000' -e UTA_DB_URL="postgresql://uta_admin:uta_pw@docker.for.mac.host.internal:5432/uta/uta_20210129" -p 8002:80 gcr.io/clingen-dev/variation-normalization:mutex-patch bash -c "pipenv run uvicorn variation.main:app --workers 1 --limit-max-requests 1000 --port 80 --host 0.0.0.0"
 
 ## Variation Normalizer with multiple gunicorn workers
-docker run -it --rm -v seqrepo:/usr/local/share/seqrepo -v $(pwd)/credentials:/root/.aws/credentials -e DATA_DIR=/usr/local/share -e SEQREPO_ROOT_DIR=/usr/local/share/seqrepo/2021-01-29 -e GENE_NORM_DB_URL='http://docker.for.mac.host.internal:8000' -e UTA_DB_URL="postgresql://uta_admin:uta_pw@docker.for.mac.host.internal:5432/uta/uta_20210129" -p 8002:80 gcr.io/clingen-dev/variation-normalization:mutex-patch bash -c 'echo "import cool_seq_tool" > init.py && pipenv run python init.py && pipenv run gunicorn -w 1 --bind 0.0.0.0:80 -k uvicorn.workers.UvicornWorker variation.main:app'
+
+Originally this wasn't working because an imported library does some stateful inialization on the filesystem that creates issues when multiple uvicorn/gunicorn workers (or just multiple python processes in general) import the library at the same time. But it looks like the init code doesn't run again if the resulting files are already there, so we can get around this by running a trivial initialization of the library before starting our gunicorn server.
+
+`
+docker run -it --rm -v seqrepo:/usr/local/share/seqrepo -v $(pwd)/credentials:/root/.aws/credentials -e DATA_DIR=/usr/local/share -e SEQREPO_ROOT_DIR=/usr/local/share/seqrepo/2021-01-29 -e GENE_NORM_DB_URL='http://docker.for.mac.host.internal:8000' -e UTA_DB_URL="postgresql://uta_admin:uta_pw@docker.for.mac.host.internal:5432/uta/uta_20210129" -p 8002:80 gcr.io/clingen-dev/variation-normalization:mutex-patch bash -c 'echo "import cool_seq_tool" > init.py && pipenv run python init.py && pipenv run gunicorn -w 4 --bind 0.0.0.0:80 --max-requests 10000 -k uvicorn.workers.UvicornWorker variation.main:app --limit-max-requests 10'
+`
+
+This is a combined final docker command for the components below.
 
 ### old uvicorn command
+`
 pipenv run uvicorn variation.main:app --workers 1 --limit-max-requests 1000 --port 80 --host 0.0.0.0
+`
 
 ### new gunicorn command
+`
 pipenv run gunicorn -w 1 --bind 0.0.0.0:80 -k uvicorn.workers.UvicornWorker variation.main:app
-
+`
 ### run the cool-seq-tool stateful init
-echo "import cool_seq_tool" > init.py && pipenv run python init.py && pipenv run gunicorn -w 1 --bind 0.0.0.0:80 -k uvicorn.workers.UvicornWorker variation.main:app
+`
+echo "import cool_seq_tool" > init.py && pipenv run python init.py
+`
+### limiting apparent memory growth / resource leaks
+
+https://docs.gunicorn.org/en/stable/settings.html#max-requests
+
+Growth I observed was slow, and there is significant startup overhead, so a high limit is both desirable and *probably* acceptable.
+
+`gunicorn --max-requests 10000`
