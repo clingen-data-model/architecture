@@ -1,5 +1,4 @@
-clinvar_raw_release_date: 2023-04-24/vcep_vars
+clinvar_raw_release_date: 2023-04-30/vcep_vars
 clinvar_raw_release_gcp_bucket: clinvar-releases
-clinvar_raw_release_directory: 2023-04-24
-clinvar_raw_output_topic: clinvar-raw-2023-04-24-vcep-vars
-
+clinvar_raw_release_directory: 2023-04-30
+clinvar_raw_output_topic: terry-test

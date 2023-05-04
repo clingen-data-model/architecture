@@ -6,6 +6,7 @@ metadata:
     app: {{ .Release.Name }}
     {{- include  "clinvar-raw.chartLabels" . | nindent 4 }}
 spec:
+  ttlSecondsAfterFinished: 1800
   template:
     metadata:
       labels:
