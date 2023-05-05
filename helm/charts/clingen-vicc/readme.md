@@ -45,7 +45,7 @@ aws_secret_access_key = asdf" > credentials
 
 ## Variation Normalizer with Uvicorn and a single worker
 `
-docker run -it --rm -v seqrepo:/usr/local/share/seqrepo -v $(pwd)/credentials:/root/.aws/credentials -e DATA_DIR=/usr/local/share -e SEQREPO_ROOT_DIR=/usr/local/share/seqrepo/2021-01-29 -e GENE_NORM_DB_URL='http://docker.for.mac.host.internal:8000' -e UTA_DB_URL="postgresql://uta_admin:uta_pw@docker.for.mac.host.internal:5432/uta/uta_20210129" -p 8002:80 gcr.io/clingen-dev/variation-normalization:mutex-patch bash -c "pipenv run uvicorn variation.main:app --workers 1 --port 80 --host 0.0.0.0"
+docker run -it --rm -v seqrepo:/usr/local/share/seqrepo -v $(pwd)/credentials:/root/.aws/credentials -e SEQREPO_ROOT_DIR=/usr/local/share/seqrepo/2021-01-29 -e GENE_NORM_DB_URL='http://docker.for.mac.host.internal:8000' -e UTA_DB_URL="postgresql://uta_admin:uta_pw@docker.for.mac.host.internal:5432/uta/uta_20210129" -p 8002:80 gcr.io/clingen-dev/variation-normalization:mutex-patch bash -c "pipenv run uvicorn variation.main:app --workers 1 --port 80 --host 0.0.0.0"
 `
 
 ## Variation Normalizer with Gunicorn and multiple workers and periodic worker restart
@@ -90,3 +90,37 @@ There's already a setup.cfg, so we can mostly just use that.
 - Add `--pre` to pip install in order to get `ga4gh.vrsatile.pydantic` pre-releases from pypi
 - Change `echo` and `pipenv run` initialization step to just `python -c 'import cool_seq_tool'`
 - Change `pipenv run gunicorn` to just `gunicorn`
+
+
+`
+docker run -it --rm -v seqrepo:/usr/local/share/seqrepo -v $(pwd)/credentials:/root/.aws/credentials -e DATA_DIR=/usr/local/share -e SEQREPO_ROOT_DIR=/usr/local/share/seqrepo/2021-01-29 -e GENE_NORM_DB_URL='http://docker.for.mac.host.internal:8000' -e UTA_DB_URL="postgresql://uta_admin:uta_pw@docker.for.mac.host.internal:5432/uta/uta_20210129" -p 8002:80 gcr.io/clingen-dev/variation-normalization:mutex-patch bash -c 'python -c "import cool_seq_tool" && gunicorn -w 4 --bind 0.0.0.0:80 --max-requests 10000 -k uvicorn.workers.UvicornWorker variation.main:app'
+`
+
+Unfortunately when running in Gunicorn, the Uvicorn worker cannot figure out to run with websocket support, despite the necessary pip packages being installed.
+
+```
+[2023-05-03 23:20:06 +0000] [870] [WARNING] Unsupported upgrade request.
+[2023-05-03 23:20:06 +0000] [870] [WARNING] No supported WebSocket library detected. Please use "pip install 'uvicorn[standard]'", or install 'websockets' or 'wsproto' manually.
+```
+
+Uvicorn also does not support http2. But there is a different runner called hypercorn that does, and also seems to be able to figure out how to run.
+
+daphne -b 0.0.0.0 -p 80 variation.main:app
+hypercorn -w 2 --bind 0.0.0.0:80 -k uvloop variation.main:app
+
+
+
+# Hypercorn
+`
+docker run -it --rm -v seqrepo:/usr/local/share/seqrepo -v $(pwd)/credentials:/root/.aws/credentials -e DATA_DIR=/usr/local/share -e SEQREPO_ROOT_DIR=/usr/local/share/seqrepo/2021-01-29 -e GENE_NORM_DB_URL='http://docker.for.mac.host.internal:8000' -e UTA_DB_URL="postgresql://uta_admin:uta_pw@docker.for.mac.host.internal:5432/uta/uta_20210129" -p 8002:80 gcr.io/clingen-dev/variation-normalization:mutex-patch bash -c 'python -c "import cool_seq_tool" && hypercorn -w 2 --bind 0.0.0.0:80 -k uvloop variation.main:app'
+`
+
+
+# Running out of a local venv
+
+Assumes:
+- dynamo is available on port 8000
+- seqrepo is populated in a local dir
+- uta postgres is running on port 5432
+
+SEQREPO_ROOT_DIR=/Users/kferrite/dev/biocommons.seqrepo/seqrepo/2021-01-29 GENE_NORM_DB_URL='http://localhost:8000' UTA_DB_URL="postgresql://uta_admin:uta_pw@localhost:5432/uta/uta_20210129" bash -c 'python -c "import cool_seq_tool" && uvicorn variation.main:app --workers 4 --port 8002 --host 0.0.0.0'
