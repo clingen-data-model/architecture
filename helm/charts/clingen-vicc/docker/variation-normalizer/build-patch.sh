@@ -19,7 +19,8 @@ if [ ! -d $repo_dir/.git ]; then
     cd ..
 fi
 
-cp replacement-Dockerfile $repo_dir/Dockerfile
+# replacement-Dockerfile has been incorporated into theferrit32/bioutils-large-seqs
+#cp replacement-Dockerfile $repo_dir/Dockerfile
 # main-patch-queue has been incorporated into theferrit32/bioutils-large-seqs
 #cp main-patch-queue.py $repo_dir/variation/main.py
 

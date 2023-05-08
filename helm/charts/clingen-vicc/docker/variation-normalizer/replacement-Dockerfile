@@ -18,6 +18,7 @@ HEALTHCHECK --interval=5m --timeout=3s \
 
 # cool-seq-tool initialization involves writing some files and this doesn't
 # work sometimes if multiple worker processes are in that step at the same time
-# limit to 1 worker process for now
-# There seems to be some sort of resource leak, adding max requests = 1000 to recreate worker process
+# Either need to limit to 1 worker process, or run the init code prior to starting the
+# server processes. cool-seq-tool does not re-run the files initialization if already run.
+# There seems to be some sort of slow persistent memory growth. Using gunicorn and max-requests may help
 CMD python -c "import cool_seq_tool" && uvicorn variation.main:app --workers 4 --port 80 --host 0.0.0.0
