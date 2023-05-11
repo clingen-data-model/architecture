@@ -8,6 +8,8 @@ metadata:
 spec:
   serviceName: {{ .Release.Name }}-variation-normalizer-svc
   replicas: {{ .Values.varnorm_replicas }}
+  # https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies
+  podManagementPolicy: Parallel # start/stop all replicas at the same time, don't wait
   selector:
     matchLabels:
       app: variation-normalizer
@@ -44,10 +46,11 @@ spec:
 
       containers:
         - name: varnorm
-          image: gcr.io/clingen-dev/cancervariants/variation-normalization:1e9c53dbec4f3f0ec907cae94d9d295534b4c424
+          #image: gcr.io/clingen-dev/cancervariants/variation-normalization:1e9c53dbec4f3f0ec907cae94d9d295534b4c424
+          image: gcr.io/clingen-dev/variation-normalization:clingen-updates
           imagePullPolicy: Always
           env:
-            - name: SEQREPO_DATA_PATH
+            - name: SEQREPO_ROOT_DIR
               value: "/usr/local/share/seqrepo/2021-01-29"
             - name: GENE_NORM_DB_URL
               value: "http://{{- .Release.Name -}}-gene-normalizer-svc:8000"
@@ -163,17 +166,6 @@ spec:
               service:
                 name: {{ .Release.Name }}-variation-normalizer-svc
                 port:
-                  number: 80 # matches service port service.spec.ports[].port
----
-apiVersion: networking.gke.io/v1
-kind: ManagedCertificate
-metadata:
-  name: {{ .Release.Name }}-certificate
-  labels:
-    {{- include "clingen-vicc.labels" . | nindent 4 }}
-spec:
-  domains:
-  {{- range .Values.varnorm_mcrt_domains }}
-  - {{ . | quote }}
-  {{- end }}
+                  # matches service port service.spec.ports[].port
+                  number: 80
 {{- end }}
