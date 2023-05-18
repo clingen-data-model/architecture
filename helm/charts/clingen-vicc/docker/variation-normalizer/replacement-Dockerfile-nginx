@@ -9,8 +9,8 @@ COPY . /app
 WORKDIR /app
 
 RUN pip install --pre .
-# Run a fork of bioutils
-RUN pip install git+https://github.com/theferrit32/bioutils.git@47-large-seq-normalization
+# Run a newer tag of bioutils
+RUN pip install git+https://github.com/biocommons/bioutils.git@0.5.8.pre1
 
 EXPOSE 80
 HEALTHCHECK --interval=5m --timeout=3s \
@@ -20,9 +20,9 @@ HEALTHCHECK --interval=5m --timeout=3s \
 # work sometimes if multiple worker processes are in that step at the same time
 # Either need to limit to 1 worker process, or run the init code prior to starting the
 # server processes. cool-seq-tool does not re-run the files initialization if already run.
-# There seems to be some sort of slow persistent memory growth. Using gunicorn and max-requests may help
-#CMD python -c "import cool_seq_tool" && uvicorn variation.main:app --workers 4 --port 80 --host 0.0.0.0
+# The command 'python -c "import cool_seq_tool"' needs to be run before starting the app
 
+# Default ports, also results in 4 worker processes. Can be overriden in docker run.
 ENV varnorm_ports=8010,8011,8012,8013
 
 # Could put this in a script and call that, but this works fine for now
