@@ -1,0 +1,29 @@
+# A simple container for variant-service.
+# Runs service on port 80.
+# Healthchecks service up every 5m.
+
+FROM python:3.9
+RUN apt update && apt install -y rsync python3-dev nginx
+RUN pip install uvicorn[standard] websockets
+COPY . /app
+WORKDIR /app
+
+RUN pip install --pre .
+# Run a fork of bioutils
+RUN pip install git+https://github.com/theferrit32/bioutils.git@47-large-seq-normalization
+
+EXPOSE 80
+HEALTHCHECK --interval=5m --timeout=3s \
+    CMD curl -f http://localhost/variation || exit 1
+
+# cool-seq-tool initialization involves writing some files and this doesn't
+# work sometimes if multiple worker processes are in that step at the same time
+# Either need to limit to 1 worker process, or run the init code prior to starting the
+# server processes. cool-seq-tool does not re-run the files initialization if already run.
+# There seems to be some sort of slow persistent memory growth. Using gunicorn and max-requests may help
+#CMD python -c "import cool_seq_tool" && uvicorn variation.main:app --workers 4 --port 80 --host 0.0.0.0
+
+ENV varnorm_ports=8010,8011,8012,8013
+
+# Could put this in a script and call that, but this works fine for now
+CMD python -c "import start_servers; start_servers.write_nginx_conf('varnorm-template.conf', 'varnorm-nginx-generated.conf', [{'host':'127.0.0.1', 'port': p} for p in [${varnorm_ports}]])" && nginx -p $(pwd) -c varnorm-nginx-generated.conf && python -c "import cool_seq_tool" && python start_servers.py "${varnorm_ports}" varnorm-nginx-generated.conf

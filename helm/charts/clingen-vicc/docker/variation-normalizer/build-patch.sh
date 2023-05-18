@@ -24,6 +24,10 @@ fi
 # main-patch-queue has been incorporated into theferrit32/bioutils-large-seqs
 #cp main-patch-queue.py $repo_dir/variation/main.py
 
-image=gcr.io/clingen-dev/variation-normalization:clingen-updates
-docker build -t $image $repo_dir
+#cp replacement-Dockerfile-nginx $repo_dir/Dockerfile
+cp start_servers.py $repo_dir/
+cp varnorm-template.conf $repo_dir/
+
+image=gcr.io/clingen-dev/variation-normalization:clingen-updates-nginx
+docker build -t $image -f replacement-Dockerfile-nginx $repo_dir
 docker push $image
