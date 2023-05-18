@@ -26,4 +26,4 @@ HEALTHCHECK --interval=5m --timeout=3s \
 ENV varnorm_ports=8010,8011,8012,8013
 
 # Could put this in a script and call that, but this works fine for now
-CMD python -c "import start_servers; start_servers.write_nginx_conf('varnorm-template.conf', 'varnorm-nginx-generated.conf', [{'host':'127.0.0.1', 'port': p} for p in [${varnorm_ports}]])" && nginx -p $(pwd) -c varnorm-nginx-generated.conf && python -c "import cool_seq_tool" && python start_servers.py "${varnorm_ports}" varnorm-nginx-generated.conf
+CMD python -c "import start_servers; start_servers.write_nginx_conf('varnorm-nginx-template.conf', 'varnorm-nginx-generated.conf', [{'host':'127.0.0.1', 'port': p} for p in [${varnorm_ports}]])" && nginx -p $(pwd) -c varnorm-nginx-generated.conf && python -c "import cool_seq_tool" && python start_servers.py "${varnorm_ports}" varnorm-nginx-generated.conf
