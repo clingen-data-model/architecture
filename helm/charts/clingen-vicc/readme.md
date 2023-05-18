@@ -124,3 +124,47 @@ Assumes:
 - uta postgres is running on port 5432
 
 SEQREPO_ROOT_DIR=/Users/kferrite/dev/biocommons.seqrepo/seqrepo/2021-01-29 GENE_NORM_DB_URL='http://localhost:8000' UTA_DB_URL="postgresql://uta_admin:uta_pw@localhost:5432/uta/uta_20210129" bash -c 'python -c "import cool_seq_tool" && uvicorn variation.main:app --workers 4 --port 8002 --host 0.0.0.0'
+
+
+# Using NGINX as a load balancer
+
+This is an alternateive to the opaque asyncio event loop load balancing uvicorn and gunicorn use. Instead of running a uvicorn command that starts N asyncio workers, start N uvicorn commands with 1 worker, each on a different port, and have nginx route requests to each. nginx has actual load balancing functionality, while uvicorn does not. Uvicorn seems to kind of randomly or round-robin-ish distribute requests to workers, which is not ideal when requests take significantly different amounts of time. nginx offers a `least_conn` upstream config that will make it so requests get routed to the server with the least amount of outstanding requests, so time spent on requests is evently distributed among workers.
+
+Example nginx server configuration with 5 uvicorn workers, with websockets enabled.
+
+varnorm.conf:
+```
+events {
+    worker_connections 1024;
+}
+
+http {
+    upstream varnorm_backend {
+        least_conn;
+        server 127.0.0.1:8010;
+        server 127.0.0.1:8011;
+        server 127.0.0.1:8012;
+        server 127.0.0.1:8013;
+        server 127.0.0.1:8014;
+    }
+    server {
+        listen 8100;
+        location / {
+            proxy_pass http://varnorm_backend;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "Upgrade";
+            proxy_set_header Host $host;
+        }
+    }
+}
+```
+
+I've also created a super simple process manager `start_servers.py` that will start variation normalizer uvicorn processes, and when SIGTERM is received, wait for them all to shut down. The input is a comma-separated list of ports as the first arg. It also writes a basic nginx server config with those ports set in the backend to the filename specified in the 2nd arg.
+
+```
+SEQREPO_ROOT_DIR=~/dev/biocommons.seqrepo/seqrepo/2021-01-29 \
+GENE_NORM_DB_URL='http://localhost:8000' \
+UTA_DB_URL="postgresql://uta_admin:uta_pw@localhost:5432/uta/uta_20210129" \
+python start_servers.py 8010,8011,8012,8013,8014,8015,8016,8017,8018,8019 nginx-varnorm-generated.conf
+```
