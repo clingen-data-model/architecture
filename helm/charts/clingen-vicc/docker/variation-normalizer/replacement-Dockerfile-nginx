@@ -12,7 +12,9 @@ RUN pip install --pre .
 # Run a newer tag of bioutils
 RUN pip install git+https://github.com/biocommons/bioutils.git@0.5.8.pre1
 
-EXPOSE 80
+# nginx set to run on 8100 in varnorm-nginx-template.conf
+EXPOSE 8100
+
 HEALTHCHECK --interval=5m --timeout=3s \
     CMD curl -f http://localhost/variation || exit 1
 
