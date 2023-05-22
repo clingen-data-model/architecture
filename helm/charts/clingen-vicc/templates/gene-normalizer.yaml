@@ -1,3 +1,4 @@
+{{- if .Values.run_gene_normalizer }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -41,6 +42,20 @@ spec:
           volumeMounts:
             - name: {{ .Release.Name }}-genenorm-seqrepo-pvc
               mountPath: "/usr/local/share/seqrepo"
+        - name: dynamodb-populator
+          image: gcr.io/clingen-dev/vicc-dynamodb:latest
+          imagePullPolicy: Always
+          env:
+            - name: DATA_DIR
+              value: /data
+            - name: DYNAMO_NOSTART # only populate db
+              value: "true"
+          volumeMounts:
+            - name: {{ .Release.Name }}-dynamo-pvc
+              mountPath: /data
+          ports:
+            - containerPort: 8000
+              name: dynamodb-port
 
       containers:
         - name: dynamodb
@@ -119,3 +134,4 @@ spec:
       port: 80
       targetPort: gene-norm-port
       protocol: TCP
+{{- end }}
