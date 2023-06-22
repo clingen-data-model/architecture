@@ -56,6 +56,15 @@ spec:
               value: "http://{{- .Release.Name -}}-gene-normalizer-svc:8000"
             - name: UTA_DB_URL
               value: "postgresql://uta_admin:{{- .Values.uta_admin_password -}}@{{- .Release.Name -}}-uta-svc:5432/uta/uta_20210129"
+            - name: varnorm_ports
+              value: "8010,8011,8012,8013"
+            - name: VARIATION_QUERYHANDLER_POOL_SIZE
+              value: "1"
+          resources:
+            requests:
+              cpu: 0.5
+            limits:
+              memory: 2Gi
           ports:
             - containerPort: {{ .Values.varnorm_container_port }}
               # name: varnorm-port
@@ -114,6 +123,7 @@ metadata:
   annotations:
     {{- if .Values.varnorm_external_service }}
     cloud.google.com/backend-config: '{"default": "{{ .Release.Name }}-backendconfig"}'
+    cloud.google.com/neg: '{"ingress": true}' # Creates a NEG after an Ingress is created
     {{- end }}
   labels:
     {{- include "clingen-vicc.labels" . | nindent 4 }}
@@ -143,7 +153,7 @@ spec:
     unhealthyThreshold: 1
     type: HTTP
     requestPath: /variation
-    port: {{ .Values.varnorm_container_port }}
+    port: 8100
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

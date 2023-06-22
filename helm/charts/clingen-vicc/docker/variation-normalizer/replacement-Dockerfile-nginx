@@ -1,0 +1,31 @@
+# A simple container for variant-service.
+# Runs service on port 80.
+# Healthchecks service up every 5m.
+
+FROM python:3.9
+RUN apt update && apt install -y rsync python3-dev nginx
+RUN pip install uvicorn[standard] websockets
+COPY . /app
+WORKDIR /app
+
+RUN pip install --pre .
+# Run a newer tag of bioutils
+RUN pip install git+https://github.com/biocommons/bioutils.git@0.5.8.pre1
+
+# nginx set to run on 8100 in varnorm-nginx-template.conf
+EXPOSE 8100
+
+HEALTHCHECK --interval=5m --timeout=3s \
+    CMD curl -f http://localhost/variation || exit 1
+
+# cool-seq-tool initialization involves writing some files and this doesn't
+# work sometimes if multiple worker processes are in that step at the same time
+# Either need to limit to 1 worker process, or run the init code prior to starting the
+# server processes. cool-seq-tool does not re-run the files initialization if already run.
+# The command 'python -c "import cool_seq_tool"' needs to be run before starting the app
+
+# Default ports, also results in 4 worker processes. Can be overriden in docker run.
+ENV varnorm_ports=8010,8011,8012,8013
+
+# Could put this in a script and call that, but this works fine for now
+CMD python -c "import start_servers; start_servers.write_nginx_conf('varnorm-nginx-template.conf', 'varnorm-nginx-generated.conf', [{'host':'127.0.0.1', 'port': p} for p in [${varnorm_ports}]])" && nginx -p $(pwd) -c varnorm-nginx-generated.conf && python -c "import cool_seq_tool" && python start_servers.py "${varnorm_ports}" varnorm-nginx-generated.conf

@@ -1,5 +1,5 @@
 #!/bin/env bash
-set -xeuo pipefail
+set -xeo pipefail
 
 # Set DATA_DIR
 if [ -z "$DATA_DIR" ]; then
@@ -24,11 +24,14 @@ if [ ! -f "$DATA_DIR/$db_name" ]; then
     cd ..
 fi
 
-# Dynamodb stuff is in /app but that data is in DATA_DIR
-ln -sf "${DATA_DIR}/${db_name}" /app/${db_name}
+# Can disable actually starting the server by defining a nonempty DYNAMO_NOSTART
+if [ -z "$DYNAMO_NOSTART" ]; then
+    # Dynamodb stuff is in /app but that data is in DATA_DIR
+    ln -sf "${DATA_DIR}/${db_name}" /app/${db_name}
 
-cd /app
+    cd /app
 
-echo "starting dynamodb jar"
-java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
-echo "dynamodb jar exited"
+    echo "starting dynamodb jar"
+    java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
+    echo "dynamodb jar exited"
+fi

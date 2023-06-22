@@ -19,11 +19,9 @@ if [ ! -d $repo_dir/.git ]; then
     cd ..
 fi
 
-# replacement-Dockerfile has been incorporated into theferrit32/bioutils-large-seqs
-#cp replacement-Dockerfile $repo_dir/Dockerfile
-# main-patch-queue has been incorporated into theferrit32/bioutils-large-seqs
-#cp main-patch-queue.py $repo_dir/variation/main.py
+cp start_servers.py $repo_dir/
+cp varnorm-nginx-template.conf $repo_dir/
 
 image=gcr.io/clingen-dev/variation-normalization:clingen-updates
-docker build -t $image $repo_dir
+docker build -t $image -f replacement-Dockerfile-nginx $repo_dir
 docker push $image
