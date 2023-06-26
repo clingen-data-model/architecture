@@ -122,6 +122,10 @@ module "clingen_projects_iam_bindings" {
       "group:clingendevs@broadinstitute.org",
       "group:clingen-geisinger-external@broadinstitute.org",
     ]
+
+    "roles/owner" = [
+      "group:tgg-sre-admin@broadinstitute.org",
+    ]
   }
 }
 
