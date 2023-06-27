@@ -4,9 +4,7 @@ kind: ManagedCertificate
 metadata:
   name: {{ .Release.Name }}-certificate
   labels:
-    #app: hello
     {{- include "clingen-vicc.labels" . | nindent 4 }}
-    #- include "clingen-vicc.selectorLabels" . | nindent 4 }}
 spec:
   domains:
   {{- range .Values.varnorm_mcrt_domains }}
