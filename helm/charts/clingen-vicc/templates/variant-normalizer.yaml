@@ -63,8 +63,9 @@ spec:
           resources:
             requests:
               cpu: 0.5
+              memory: 4Gi
             limits:
-              memory: 2Gi
+              memory: 4Gi
           ports:
             - containerPort: {{ .Values.varnorm_container_port }}
               # name: varnorm-port
