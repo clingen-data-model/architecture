@@ -1,0 +1,813 @@
+"""Main application for FastAPI."""
+from enum import Enum
+from typing import Dict, List, Optional, Union, Literal
+from datetime import datetime
+from urllib.parse import unquote
+import traceback
+import logging
+import os
+import queue
+from contextlib import contextmanager
+
+import pkg_resources
+from fastapi import FastAPI, Query
+from fastapi.openapi.utils import get_openapi
+from pydantic import ValidationError
+import python_jsonschema_objects
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange, VRSTypes
+from hgvs.exceptions import HGVSError
+from bioutils.exceptions import BioutilsError
+from ga4gh.vrs import models
+
+from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
+from variation.schemas.hgvs_to_copy_number_schema import \
+    HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService
+from variation.query import QueryHandler
+from variation.schemas.normalize_response_schema \
+    import HGVSDupDelMode as HGVSDupDelModeEnum, ToCanonicalVariationFmt, \
+    ToCanonicalVariationService, TranslateIdentifierService
+from variation.schemas.service_schema import AmplificationToCxVarService, \
+    ClinVarAssembly, ParsedToCnVarService, ParsedToCxVarService
+from .version import __version__
+from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
+    TranslateFromService, TranslateFromQuery, TranslateToHGVSQuery, TranslateToQuery,\
+    TranslateToService, VrsPythonMeta
+
+
+logger = logging.getLogger(__name__)
+
+
+class Tags(Enum):
+    """Define tags for endpoints"""
+
+    SEQREPO = "SeqRepo"
+    TO_PROTEIN_VARIATION = "To Protein Variation"
+    TO_CANONICAL = "To Canonical Variation"
+    VRS_PYTHON = "VRS-Python"
+    TO_COPY_NUMBER_VARIATION = "To Copy Number Variation"
+
+
+app = FastAPI(
+    docs_url="/variation",
+    openapi_url="/variation/openapi.json",
+    swagger_ui_parameters={"tryItOutEnabled": True}
+)
+# query_handler = QueryHandler()
+# QueryHandler has a reference to a seqrepo object that cannot be shared
+# by concurrent threads. ASGI executors like Uvicorn, etc, can
+# schedule multiple userspace threads to a single real thread if one thread
+# blocks for I/O, freeing up the CPU thread and for another python userspace thread.
+# This pool lets a number of userspace threads be in QueryHandler code concurrently.
+# This is only helpful if waiting for I/O is a nontrivial amount of the time a
+# thread spends in QueryHandler.
+if "query_handlers" not in globals():
+    query_handlers = queue.Queue()
+    for i in range(int(os.environ.get("VARIATION_QUERYHANDLER_POOL_SIZE", 1))):
+        query_handlers.put(QueryHandler())
+
+
+@contextmanager
+def pooled_query_handler():
+    qh = query_handlers.get()
+    try:
+        yield qh
+    finally:
+        query_handlers.put(qh)
+
+
+def custom_openapi() -> Dict:
+    """Generate custom fields for OpenAPI response."""
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title="The VICC Variation Normalizer",
+        version=__version__,
+        description="Services and guidelines for normalizing variations.",
+        routes=app.routes
+    )
+
+    openapi_schema["info"]["contact"] = {
+        "name": "Alex H. Wagner",
+        "email": "Alex.Wagner@nationwidechildrens.org",
+        "url": "https://www.nationwidechildrens.org/specialties/institute-for-genomic-medicine/research-labs/wagner-lab"  # noqa: E501
+    }
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+app.openapi = custom_openapi
+
+to_vrs_untranslatable_descr = ("`True` returns VRS Text object when unable to translate"
+                               " or normalize query. `False` returns an empty list "
+                               "when unable to translate or normalize query.")
+translate_summary = ("Translate a human readable variation description to VRS"
+                     " variation(s).")
+translate_description = ("Translate a human readable variation description to "
+                         "VRS variation(s)."
+                         " Performs fully-justified allele normalization. "
+                         " Does not do any liftover operations or make any inferences "
+                         "about the query.")
+translate_response_description = "A  response to a validly-formed query."
+q_description = "Human readable variation description on GRCh37 or GRCh38 assembly"
+
+
+@app.get("/variation/to_vrs",
+         summary=translate_summary,
+         response_description=translate_response_description,
+         response_model=ToVRSService,
+         description=translate_description
+         )
+async def to_vrs(
+    q: str = Query(..., description=q_description),
+    untranslatable_returns_text: bool = Query(False,
+                                              description=to_vrs_untranslatable_descr)
+) -> ToVRSService:
+    """Translate a human readable variation description to VRS variation(s).
+        Performs fully-justified allele normalization. Does not do any liftover
+        operations or make any inferences about the query.
+
+    :param str q: Human readable variation description on GRCh37 or GRCh38 assembly
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` returns empty list when
+        unable to translate or normalize query.
+    :return: ToVRSService model for variation
+    """
+    with pooled_query_handler() as query_handler:
+        resp = await query_handler.to_vrs_handler.to_vrs(unquote(q),
+                                                        untranslatable_returns_text)
+    return resp
+
+untranslatable_descr = ("`True` returns VRS Text object when unable to translate or "
+                        "normalize query. `False` returns `None` when unable to "
+                        "translate or normalize query.")
+
+normalize_summary = ("Normalizes and translates a human readable variation description "
+                     "to a single VRSATILE Variation Descriptor.")
+normalize_response_description = "A response to a validly-formed query."
+normalize_description = ("Normalizes and translates a human readable variation "
+                         "description to a single VRSATILE Variation Descriptor. "
+                         "Performs fully-justified allele normalization. Will liftover"
+                         " to GRCh38 and aligns to a priority transcript. Will make "
+                         "inferences about the query.")
+q_description = "Human readable variation description on GRCh37 or GRCh38 assembly"
+hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `copy_number_count`, "
+                           "`copy_number_change`, `repeated_seq_expr`, "
+                           "`literal_seq_expr`. This parameter determines how to "
+                           "interpret HGVS dup/del expressions in VRS.")
+
+
+@app.get("/variation/normalize",
+         summary=normalize_summary,
+         response_description=normalize_response_description,
+         response_model=NormalizeService,
+         description=normalize_description
+         )
+async def normalize(
+    q: str = Query(..., description=q_description),
+    hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
+        HGVSDupDelModeEnum.DEFAULT, description=hgvs_dup_del_mode_decsr),
+    baseline_copies: Optional[int] = Query(
+        None, description="Baseline copies for HGVS duplications and deletions represented as Copy Number Count Variation"),  # noqa: E501
+    copy_change: Optional[CopyChange] = Query(
+        None, description="The copy change for HGVS duplications and deletions represented as Copy Number Change Variation."),  # noqa: E501
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
+) -> NormalizeService:
+    """Normalize and translate a human readable variation description to a single
+        VRSATILE Variation Descriptor. Performs fully-justified allele normalization.
+        Will liftover to GRCh38 and aligns to a priority transcript. Will make
+        inferences about the query.
+
+    :param str q: Human readable variation description on GRCh37 or GRCh38 assembly
+    :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
+        Must be: `default`, `copy_number_count`, `copy_number_change`,
+        `repeated_seq_expr`, `literal_seq_expr`. This parameter determines how to
+        interpret HGVS dup/del expressions in VRS.
+    :param Optional[int] baseline_copies: Baseline copies for HGVS duplications and
+        deletions. Required when `hgvs_dup_del_mode` is set to `copy_number_count`.
+    :param Optional[CopyChange] copy_change: The copy change
+        for HGVS duplications and deletions represented as Copy Number Change
+        Variation. If not set, will use default `copy_change` for query.
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
+    :return: NormalizeService for variation
+    """
+    with pooled_query_handler() as query_handler:
+        normalize_resp = await query_handler.normalize_handler.normalize(
+            unquote(q), hgvs_dup_del_mode=hgvs_dup_del_mode,
+            baseline_copies=baseline_copies, copy_change=copy_change,
+            untranslatable_returns_text=untranslatable_returns_text)
+    return normalize_resp
+
+
+@app.get("/variation/translate_identifier",
+         summary="Given an identifier, use SeqRepo to return a list of aliases.",
+         response_description="A response to a validly-formed query.",
+         response_model=TranslateIdentifierService,
+         description="Return list of aliases for an identifier",
+         tags=[Tags.SEQREPO]
+         )
+def translate_identifier(
+        identifier: str = Query(..., description="The identifier to find aliases for"),
+        target_namespaces: Optional[str] = Query(None, description="The namespaces of the aliases, separated by commas")  # noqa: E501
+) -> TranslateIdentifierService:
+    """Return data containing identifier aliases.
+
+    :param str identifier: The identifier to find aliases for
+    :param Optional[str] target_namespaces: The namespaces of the aliases,
+        separated by commas
+    :return: TranslateIdentifierService data
+    """
+    aliases = []
+    warnings = None
+    identifier = identifier.strip()
+    try:
+        with pooled_query_handler() as query_handler:
+            aliases = query_handler._seqrepo_access.sr.translate_identifier(
+                identifier, target_namespaces=target_namespaces)
+    except KeyError:
+        warnings = [f"Identifier, {identifier}, does not exist in SeqRepo"]
+    except Exception as e:
+        warnings = [f"SeqRepo could not translate identifier, {identifier}:"
+                    f" {e}"]
+
+    return TranslateIdentifierService(
+        identifier_query=identifier,
+        warnings=warnings,
+        aliases=aliases,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        ))
+
+
+from_fmt_descr = "Format of input variation to translate. Must be one of `beacon`, " \
+                 "`gnomad`, `hgvs`, or `spdi`"
+
+
+@app.get("/variation/translate_from",
+         summary="Given variation as beacon, gnomad, hgvs or spdi representation, "
+                 "return VRS Allele object using vrs-python's translator class",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS Allele object",
+         response_model=TranslateFromService,
+         tags=[Tags.VRS_PYTHON])
+def vrs_python_translate_from(
+    variation: str = Query(..., description="Variation to translate to VRS object."
+                                            " Must be represented as either beacon, "
+                                            "gnomad, hgvs, or spdi."),
+    fmt: Optional[TranslateFromFormat] = Query(None, description=from_fmt_descr)
+) -> TranslateFromService:
+    """Given variation query, return VRS Allele object using vrs-python"s translator
+        class
+
+    :param str variation: Variation to translate to VRS object. Must be represented
+        as either beacon, gnomad, hgvs, or spdi
+    :param Optional[TranslateFromFormat] fmt: Format of variation. If not supplied,
+        vrs-python will infer its format.
+    :return: TranslateFromService containing VRS Allele object
+    """
+    variation_query = unquote(variation.strip())
+    warnings = list()
+    vrs_variation = None
+    try:
+        with pooled_query_handler() as query_handler:
+            resp = query_handler._tlr.translate_from(variation_query, fmt)
+    except (KeyError, ValueError, python_jsonschema_objects.validators.ValidationError) as e:  # noqa: E501
+        warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
+    except HGVSError as e:
+        warnings.append(f"hgvs raised {type(e).__name__}: {e}")
+    except BioutilsError as e:
+        warnings.append(f"bioutils raised {type(e).__name__}: {e}")
+    else:
+        vrs_variation = resp.as_dict()
+
+    return TranslateFromService(
+        query=TranslateFromQuery(variation=variation_query, fmt=fmt),
+        warnings=warnings,
+        variation=vrs_variation,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        ),
+        vrs_python_meta_=VrsPythonMeta(
+            version=pkg_resources.get_distribution("ga4gh.vrs").version
+        )
+    )
+
+
+g_to_p_summary = "Given GRCh38 gnomAD VCF, return VRSATILE object on MANE protein coordinate."  # noqa: E501
+g_to_p_response_description = "A response to a validly-formed query."
+g_to_p_description = \
+    "Return VRSATILE object on protein coordinate for variation provided."
+q_description = "GRCh38 gnomAD VCF (chr-pos-ref-alt) to normalize to MANE protein variation."  # noqa: E501
+
+
+@app.get("/variation/gnomad_vcf_to_protein",
+         summary=g_to_p_summary,
+         response_description=g_to_p_response_description,
+         description=g_to_p_description,
+         response_model=NormalizeService,
+         tags=[Tags.TO_PROTEIN_VARIATION]
+         )
+async def gnomad_vcf_to_protein(
+    q: str = Query(..., description=q_description),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
+) -> NormalizeService:
+    """Return Value Object Descriptor for variation on protein coordinate.
+
+    :param str q: gnomad VCF to normalize to protein variation.
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
+    :return: NormalizeService for variation
+    """
+    q = unquote(q.strip())
+    with pooled_query_handler() as query_handler:
+        resp = await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(
+            q, untranslatable_returns_text=untranslatable_returns_text)
+    return resp
+
+
+complement_descr = "This field indicates that a categorical variation is defined to " \
+                   "include (false) or exclude (true) variation concepts matching " \
+                   "the categorical variation."
+hgvs_dup_del_mode_decsr = "This parameter determines how to interpret HGVS dup/del "\
+                          "expressions in VRS. Must be one of: `default`, " \
+                          "`copy_number_count`, `copy_number_change`, " \
+                          "`repeated_seq_expr`, `literal_seq_expr`."
+copy_change_descr = ("The copy change. Only used when `fmt`=`hgvs` and Copy Number "
+                     "Change Variation.")
+baseline_copies_descr = "Baseline copies for duplication or deletion. Only used when "\
+                        "`fmt`=`hgvs` and Copy Number Count Variation.`"
+
+
+@app.get("/variation/to_canonical_variation",
+         summary="Given SPDI or HGVS, return VRSATILE Canonical Variation",
+         response_description="A response to a validly-formed query.",
+         description="Return VRSATILE Canonical Variation",
+         response_model=ToCanonicalVariationService,
+         tags=[Tags.TO_CANONICAL])
+async def to_canonical_variation(
+        q: str = Query(..., description="HGVS or SPDI query"),
+        fmt: ToCanonicalVariationFmt = Query(...,
+                                             description="Format of the input variation. Must be `spdi` or `hgvs`"),  # noqa: E501
+        do_liftover: bool = Query(False, description="Whether or not to liftover to "
+                                  "GRCh38 assembly."),
+        hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
+            HGVSDupDelModeEnum.DEFAULT, description=hgvs_dup_del_mode_decsr),
+        copy_change: Optional[CopyChange] = Query(
+            None, description=copy_change_descr),
+        baseline_copies: Optional[int] = Query(
+            None, description=baseline_copies_descr),
+        untranslatable_returns_text: bool = Query(
+            False, description=untranslatable_descr)
+) -> ToCanonicalVariationService:
+    """Return categorical variation for canonical SPDI
+
+    :param str q: HGVS or SPDI query
+    :param ToCanonicalVariationFmt fmt: Format of the input variation. Must be
+        `spdi` or `hgvs`.
+    :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to interpret
+        HGVS dup/del expressions in VRS. Must be one of: `default`, `copy_number_count`,
+        `copy_number_change`, `repeated_seq_expr`, `literal_seq_expr`
+    :param Optional[CopyChange] copy_change: copy change.
+        Only used when `fmt`=`hgvs` and Copy Number Change Variation.
+    :param Optional[int] baseline_copies: Baseline copies number
+        Only used when `fmt`=`hgvs` and Copy Number Count Variation
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
+    :return: ToCanonicalVariationService for variation query
+    """
+    q = unquote(q)
+    with pooled_query_handler() as query_handler:
+        resp = await query_handler.to_canonical_handler.to_canonical_variation(
+            q, fmt, do_liftover=do_liftover,
+            hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
+            copy_change=copy_change,
+            untranslatable_returns_text=untranslatable_returns_text)
+    return resp
+
+
+def _get_allele(request_body: Union[TranslateToQuery, TranslateToHGVSQuery],
+                warnings: List) -> Optional[models.Allele]:
+    """Return VRS allele object from request body. `warnings` will get updated if
+    exceptions are raised
+
+    :param Union[TranslateToQuery, TranslateToHGVSQuery] request_body: Request body
+        containing `variation`
+    :param List warnings: List of warnings
+    :return: VRS Allele object if valid
+    """
+    allele = None
+    try:
+        allele = models.Allele(**request_body["variation"])
+    except ValidationError as e:
+        warnings.append(f"`allele` is not a valid VRS Allele: {e}")
+    except python_jsonschema_objects.ValidationError as e:
+        warnings.append(str(e))
+    return allele
+
+
+@app.post("/variation/translate_to",
+          summary="Given VRS Allele object as a dict, return variation expressed as "
+                  "queried format using vrs-python's translator class",
+          response_description="A response to a validly-formed query.",
+          description="Return variation in queried format representation. "
+                      "Request body must contain `variation` and `fmt`. `variation` is"
+                      " a VRS Allele object represented as a dict. `fmt` must be either"
+                      " `spdi` or `hgvs`",
+          response_model=TranslateToService,
+          tags=[Tags.VRS_PYTHON])
+async def vrs_python_translate_to(
+        request_body: TranslateToQuery) -> TranslateToService:
+    """Given VRS Allele object as a dict, return variation expressed as queried
+    format using vrs-python's translator class
+
+    :param TranslateToQuery request_body: Request body. `variation` is a VRS Allele
+        object represented as a dict. `fmt` must be either `spdi` or `hgvs`
+    :return: TranslateToService containing variation represented as fmt representation
+        if valid VRS Allele, and warnings if found
+    """
+    query = request_body
+    request_body = request_body.dict(by_alias=True)
+    warnings = list()
+
+    allele = _get_allele(request_body, warnings)
+
+    variations = list()
+    if allele:
+        try:
+            with pooled_query_handler() as query_handler:
+                variations = query_handler._tlr.translate_to(allele, request_body["fmt"])
+        except ValueError as e:
+            warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
+
+    return TranslateToService(
+        query=query,
+        warnings=warnings,
+        variations=variations,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        ),
+        vrs_python_meta_=VrsPythonMeta(
+            version=pkg_resources.get_distribution("ga4gh.vrs").version
+        )
+    )
+
+
+to_hgvs_descr = "Return variation as HGVS expressions. Request body must"\
+                " contain `variation`, a VRS Allele object represented as a dict. "\
+                "Can include optional parameter `namespace`. If `namespace` is not"\
+                " None, returns HGVS strings for the specified namespace. If "\
+                "`namespace` is None, returns HGVS strings for all alias translations."
+
+
+@app.post("/variation/vrs_allele_to_hgvs",
+          summary="Given VRS Allele object as a dict, return HGVS expression(s)",
+          response_description="A response to a validly-formed query.",
+          description=to_hgvs_descr,
+          response_model=TranslateToService,
+          tags=[Tags.VRS_PYTHON])
+async def vrs_python_to_hgvs(
+        request_body: TranslateToHGVSQuery) -> TranslateToService:
+    """Given VRS Allele object as a dict, return variation expressed as HGVS
+        expression(s)
+
+    :param TranslateToHGVSQuery request_body: Request body. `variation` is a VRS Allele
+        object represented as a dict. Can provide optional parameter `namespace`.
+        If `namespace` is not None, returns HGVS strings for the specified namespace.
+        If `namespace` is None, returns HGVS strings for all alias translations.
+    :return: TranslateToService containing variation represented as HGVS representation
+        if valid VRS Allele, and warnings if found
+    """
+    query = request_body
+    request_body = request_body.dict(by_alias=True)
+    warnings = list()
+
+    allele = _get_allele(request_body, warnings)
+
+    variations = list()
+    if allele:
+        try:
+            with pooled_query_handler() as query_handler:
+                variations = query_handler._tlr._to_hgvs(
+                    allele, namespace=request_body.get("namespace") or "refseq")
+        except ValueError as e:
+            warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
+
+    return TranslateToService(
+        query=query,
+        warnings=warnings,
+        variations=variations,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        ),
+        vrs_python_meta_=VrsPythonMeta(
+            version=pkg_resources.get_distribution("ga4gh.vrs").version
+        )
+    )
+
+
+@app.get("/variation/hgvs_to_copy_number_count",
+         summary="Given HGVS expression, return VRS Copy Number Count Variation",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS Copy Number Count Variation",
+         response_model=HgvsToCopyNumberCountService,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION])
+async def hgvs_to_copy_number_count(
+    hgvs_expr: str = Query(..., description="Variation query"),
+    baseline_copies: Optional[int] = Query(
+        None, description="Baseline copies for duplication"),
+    do_liftover: bool = Query(False, description="Whether or not to liftover "
+                              "to GRCh38 assembly."),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
+) -> HgvsToCopyNumberCountService:
+    """Given hgvs expression, return copy number count variation
+
+    :param str hgvs_expr: HGVS expression
+    :param Optional[int] baseline_copies: Baseline copies number
+    :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
+    :return: HgvsToCopyNumberCountService
+    """
+    with pooled_query_handler() as query_handler:
+        resp = await query_handler.to_copy_number_handler.hgvs_to_copy_number_count(
+            unquote(hgvs_expr.strip()), baseline_copies, do_liftover,
+            untranslatable_returns_text=untranslatable_returns_text)
+    return resp
+
+
+@app.get("/variation/hgvs_to_copy_number_change",
+         summary="Given HGVS expression, return VRS Copy Number Change Variation",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS Copy Number Change Variation",
+         response_model=HgvsToCopyNumberChangeService,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION])
+async def hgvs_to_copy_number_change(
+    hgvs_expr: str = Query(..., description="Variation query"),
+    copy_change: CopyChange = Query(
+        ..., description="The copy change"),
+    do_liftover: bool = Query(False, description="Whether or not to liftover "
+                              "to GRCh38 assembly."),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
+) -> HgvsToCopyNumberChangeService:
+    """Given hgvs expression, return copy number change variation
+
+    :param str hgvs_expr: HGVS expression
+    :param CopyChange copy_change: copy change
+    :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
+    :return: HgvsToCopyNumberChangeService
+    """
+    with pooled_query_handler() as query_handler:
+        resp = await query_handler.to_copy_number_handler.hgvs_to_copy_number_change(
+            unquote(hgvs_expr.strip()), copy_change, do_liftover,
+            untranslatable_returns_text=untranslatable_returns_text)
+    return resp
+
+
+start0_descr = ("Start position (residue coords). If start is a definite range, this "
+                "will be the min start position")
+start1_descr = ("Only set when start is a definite range, this will be the max start "
+                "position")
+end0_descr = ("End position (residue coords). If end is a definite range, this will be "
+              "the min end position")
+end1_descr = ("Only set when end is a definite range, this will be the max end "
+              "position")
+start_pos_type = "Type of the start value in VRS Sequence Location"
+end_pos_type = "Type of the end value in VRS Sequence Location"
+assembly_descr = ("Assembly. Ignored, along with `chr`, if `accession` is set. If "
+                  "`accession` is not set, must provide both `assembly` and `chr`.")
+chr_descr = "Chromosome. Must set when `assembly` is set."
+accession_descr = ("Genomic accession. If `accession` is set, will ignore `assembly` "
+                   "and `chr`. If `accession` not set, must provide both `assembly` "
+                   "and `chr`.")
+total_copies_descr = "Total copies for Copy Number Count variation object"
+
+
+@app.get("/variation/parsed_to_cn_var",
+         summary="Given parsed genomic components, return VRS Copy Number Count "
+         "Variation",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS Copy Number Count Variation",
+         response_model=ParsedToCnVarService,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION]
+         )
+def parsed_to_cn_var(
+    start0: int = Query(..., description=start0_descr),
+    end0: int = Query(..., description=end0_descr),
+    total_copies: int = Query(..., description=total_copies_descr),
+    assembly: Optional[ClinVarAssembly] = Query(None, description=assembly_descr),
+    chr: Optional[str] = Query(None, description=chr_descr),
+    accession: Optional[str] = Query(None, description=accession_descr),
+    start_pos_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ] = Query(VRSTypes.NUMBER, description=start_pos_type),
+    end_pos_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ] = Query(VRSTypes.NUMBER, description=end_pos_type),
+    start1: Optional[int] = Query(None, description=start1_descr),
+    end1: Optional[int] = Query(None, description=end1_descr),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
+) -> ParsedToCnVarService:
+    """Given parsed genomic components, return Copy Number Count Variation.
+
+    :param start0: Start position (residue coords). If start is a definite range,
+        this will be the min start position
+    :param end0: End position (residue coords). If end is a definite range, this
+        will be the min end position
+    :param total_copies: Total copies for Copy Number Count variation object
+    :param assembly: Assembly. Ignored, along with `chr`, if `accession` is set.
+        If `accession` not set, must provide both `assembly` and `chr`.
+    :param chr: Chromosome. Must set when `assembly` is set.
+    :param accession: Genomic accession. If `accession` is set, will ignore `assembly`
+        and `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+    :param start_pos_type: Type of the start value in VRS Sequence Location
+    :param end_pos_type: Type of the end value in VRS Sequence Location
+    :param start1: Only set when start is a definite range, this will be the max
+        start position
+    :param end1: Only set when end is a definite range, this will be the max end
+        position
+    :param untranslatable_returns_text: `True` return VRS Text Object when unable to
+        translate or normalize query. `False` return `None` when unable to translate or
+        normalize query.
+    :return: ParsedToCnVarService containing Copy Number Count variation and list of
+        warnings
+    """
+    try:
+        with pooled_query_handler() as query_handler:
+            resp = query_handler.to_copy_number_handler.parsed_to_copy_number(
+                start0=start0, end0=end0, copy_number_type=VRSTypes.COPY_NUMBER_COUNT,
+                assembly=assembly, chr=chr, accession=accession,
+                total_copies=total_copies, start_pos_type=start_pos_type,
+                end_pos_type=end_pos_type, start1=start1, end1=end1,
+                untranslatable_returns_text=untranslatable_returns_text
+            )
+    except Exception:
+        traceback_resp = traceback.format_exc().splitlines()
+        logger.exception(traceback_resp)
+
+        og_query = {
+            "assembly": assembly,
+            "chr": chr,
+            "accession": accession,
+            "start0": start0,
+            "end0": end0,
+            "total_copies": total_copies,
+            "start_pos_type": start_pos_type,
+            "end_pos_type": end_pos_type,
+            "start1": start1,
+            "end1": end1
+        }
+        return ParsedToCnVarService(
+            query=og_query,
+            copy_number_count=None,
+            warnings=["Unhandled exception. See logs for more details."],
+            service_meta_=ServiceMeta(
+                version=__version__,
+                response_datetime=datetime.now()
+            )
+        )
+    else:
+        return resp
+
+
+@app.get("/variation/parsed_to_cx_var",
+         summary="Given parsed genomic components, return VRS Copy Number Change "
+         "Variation",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS Copy Number Change Variation",
+         response_model=ParsedToCxVarService,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION]
+         )
+def parsed_to_cx_var(
+    start0: int = Query(..., description=start0_descr),
+    end0: int = Query(..., description=end0_descr),
+    copy_change: CopyChange = Query(..., description="The copy change"),
+    assembly: Optional[ClinVarAssembly] = Query(None, description=assembly_descr),
+    chr: Optional[str] = Query(None, description=chr_descr),
+    accession: Optional[str] = Query(None, description=accession_descr),
+    start_pos_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ] = Query(VRSTypes.NUMBER, description=start_pos_type),
+    end_pos_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ] = Query(VRSTypes.NUMBER, description=end_pos_type),
+    start1: Optional[int] = Query(None, description=start1_descr),
+    end1: Optional[int] = Query(None, description=end1_descr),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
+) -> ParsedToCxVarService:
+    """Given parsed genomic components, return Copy Number Change Variation
+
+    :param start0: Start position (residue coords). If start is a definite range,
+        this will be the min start position
+    :param end0: End position (residue coords). If end is a definite range, this
+        will be the min end position
+    :param copy_change: Copy Change
+    :param assembly: Assembly. If `accession` is set, will ignore `assembly` and `chr`.
+        If `accession` not set, must provide both `assembly` and `chr`.
+    :param chr: Chromosome. Must set when `assembly` is set.
+    :param accession: Accession. If `accession` is set, will ignore `assembly` and
+        `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+    :param start_pos_type: Type of the start value in VRS Sequence Location
+    :param end_pos_type: Type of the end value in VRS Sequence Location
+    :param start1: Only set when start is a definite range, this will be the max
+        start position
+    :param end1: Only set when end is a definite range, this will be the max end
+        position
+    :param untranslatable_returns_text: `True` return VRS Text Object when unable to
+        translate or normalize query. `False` return `None` when unable to translate or
+        normalize query.
+    :return: ParsedToCxVarService containing Copy Number Change variation and list of
+        warnings
+    """
+    try:
+        with pooled_query_handler() as query_handler:
+            resp = query_handler.to_copy_number_handler.parsed_to_copy_number(
+                start0=start0, end0=end0, copy_number_type=VRSTypes.COPY_NUMBER_CHANGE,
+                assembly=assembly, chr=chr, accession=accession,
+                copy_change=copy_change, start_pos_type=start_pos_type,
+                end_pos_type=end_pos_type, start1=start1, end1=end1,
+                untranslatable_returns_text=untranslatable_returns_text
+            )
+    except Exception:
+        traceback_resp = traceback.format_exc().splitlines()
+        logger.exception(traceback_resp)
+
+        og_query = {
+            "assembly": assembly,
+            "chr": chr,
+            "accession": accession,
+            "start0": start0,
+            "end0": end0,
+            "copy_change": copy_change,
+            "start_pos_type": start_pos_type,
+            "end_pos_type": end_pos_type,
+            "start1": start1,
+            "end1": end1
+        }
+        return ParsedToCxVarService(
+            query=og_query,
+            copy_number_count=None,
+            warnings=["Unhandled exception. See logs for more details."],
+            service_meta_=ServiceMeta(
+                version=__version__,
+                response_datetime=datetime.now()
+            )
+        )
+    else:
+        return resp
+
+
+amplification_to_cx_var_descr = ("Translate amplification to VRS Copy Number Change "
+                                 "Variation. If `sequence_id`, `start`, and `end` are "
+                                 "all provided, will return a SequenceLocation with "
+                                 "those properties. Else, gene-normalizer will be "
+                                 "used to retrieve the SequenceLocation.")
+
+
+@app.get("/variation/amplification_to_cx_var",
+         summary="Given amplification query, return VRS Copy Number Change Variation",
+         response_description="A response to a validly-formed query.",
+         description=amplification_to_cx_var_descr,
+         response_model=AmplificationToCxVarService,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION])
+def amplification_to_cx_var(
+    gene: str = Query(..., description="Gene query"),
+    sequence_id: Optional[str] = Query(None, description="Sequence identifier"),
+    start: Optional[int] = Query(None,
+                                 description="Start position as residue coordinate"),
+    end: Optional[int] = Query(None, description="End position as residue coordinate"),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
+) -> AmplificationToCxVarService:
+    """Given amplification query, return Copy Number Change Variation
+    Parameter priority:
+        1. sequence_id, start, end (must provide ALL)
+        2. use the gene-normalizer to get the SequenceLocation
+
+    :param str gene: Gene query
+    :param Optional[str] sequence_id: Sequence ID for the location. If set,
+        must also provide `start` and `end`
+    :param Optional[int] start: Start position as residue coordinate for the sequence
+        location. If set, must also provide `sequence_id` and `end`
+    :param Optional[int] end: End position as residue coordinate for the sequence
+        location. If set, must also provide `sequence_id` and `start`
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
+    :return: AmplificationToCxVarService containing Copy Number Change and
+        list of warnings
+    """
+    with pooled_query_handler() as query_handler:
+        resp = query_handler.to_copy_number_handler.amplification_to_cx_var(
+            gene=gene, sequence_id=sequence_id, start=start, end=end,
+            untranslatable_returns_text=untranslatable_returns_text)
+    return resp

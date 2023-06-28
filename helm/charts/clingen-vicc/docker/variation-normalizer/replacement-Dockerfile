@@ -10,7 +10,8 @@ WORKDIR /app
 
 RUN pip install --pre .
 # Run a fork of bioutils
-RUN pip install git+https://github.com/theferrit32/bioutils.git@47-large-seq-normalization
+#RUN pip install git+https://github.com/theferrit32/bioutils.git@47-large-seq-normalization
+RUN pip install git+https://github.com/biocommons/bioutils.git@0.5.8.pre1
 
 EXPOSE 80
 HEALTHCHECK --interval=5m --timeout=3s \
