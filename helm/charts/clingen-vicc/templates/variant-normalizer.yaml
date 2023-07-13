@@ -57,7 +57,7 @@ spec:
             - name: UTA_DB_URL
               value: "postgresql://uta_admin:{{- .Values.uta_admin_password -}}@{{- .Release.Name -}}-uta-svc:5432/uta/uta_20210129"
             - name: varnorm_ports
-              value: "8010,8011,8012,8013"
+              value: "8010,8011,8012,8013,8014,8015"
             - name: VARIATION_QUERYHANDLER_POOL_SIZE
               value: "1"
           resources:
