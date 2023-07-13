@@ -78,7 +78,10 @@ def main(argv):
         print(f"sp: {sp}")
         start_on_port(**sp)
 
-    while len([p for p in processes if p["process"].returncode is None]) > 0:
+    while not SIGINT_received:
+        not_stopped = [p for p in processes if p["process"].returncode is None]
+        print(f"{len(not_stopped)} processes still running: " +
+              str([f"[{p['process'].pid}]{p['host']}:{p['port']}" for p in not_stopped]))
         need_to_restart = []
         for p in processes:
             proc = p["process"]
@@ -86,42 +89,53 @@ def main(argv):
             port = p["port"]
             if proc.returncode is None:
                 # Still running
-                print("All processes still running")
+                pass
             else:
                 print(("Process {proc.pid} on {host}:{port} has terminated "
                        "with status code {proc.returncode}"))
                 # Remove P, and start again. start_on_port appends it back
                 need_to_restart.append(p)
-        for p in need_to_restart:
-            host = p["host"]
-            port = p["port"]
-            print(f"Restarting dead worker on {host}:{port}")
-            processes.remove(p)
-            start_on_port(port, host)
+        # only restart if no terminate signal received
+        if not SIGINT_received:
+            for p in need_to_restart:
+                host = p["host"]
+                port = p["port"]
+                print(f"Restarting dead worker on {host}:{port}")
+                processes.remove(p)
+                start_on_port(port, host)
         time.sleep(5)
+    print("Terminating main loop")
 
 
 def sigint_handler(sig, frame):
+    global SIGINT_received
+    global SIGINT_received_lock
     print("SIGINT handler")
-    not_stopped = [p for p in processes if p["process"].returncode is None]
-    while len(not_stopped) > 0:
-        print("Waiting for ({}/{}) processes: {}".format(
-            len(not_stopped), len(processes),
-            str([p["process"].pid for p in not_stopped])))
-        for p in not_stopped:
-            try:
-                p["process"].wait(timeout=1)
-            except subprocess.TimeoutExpired:
-                print(f"Process {p['process'].pid} not yet finished")
-            if p["process"].returncode:
-                print(f"Process on {p['host']}:{p['port']} terminated")
-        not_stopped = [p for p in processes if p["process"].returncode is None]
-        time.sleep(5)
-        print()
+    with SIGINT_received_lock:
+        if not SIGINT_received:
+            SIGINT_received = True
+            not_stopped = [p for p in processes if p["process"].returncode is None]
+            while len(not_stopped) > 0:
+                print("Waiting for ({}/{}) processes: {}".format(
+                    len(not_stopped), len(processes),
+                    str([p["process"].pid for p in not_stopped])))
+                for p in not_stopped:
+                    try:
+                        p["process"].wait(timeout=1)
+                    except subprocess.TimeoutExpired:
+                        print(f"Process {p['process'].pid} not yet finished")
+                    if p["process"].returncode:
+                        print(f"Process on {p['host']}:{p['port']} terminated")
+                not_stopped = [p for p in processes if p["process"].returncode is None]
+                time.sleep(5)
+                print()
 
 
 signal.signal(signal.SIGINT, sigint_handler)
 
-
+import threading
+SIGINT_received = False
+SIGINT_received_lock = threading.Lock()
 if __name__ == "__main__":
+    SIGINT_received = False
     main(sys.argv)
