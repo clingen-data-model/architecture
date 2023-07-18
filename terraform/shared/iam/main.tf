@@ -22,6 +22,7 @@ module "clingen_projects_iam_bindings" {
 
     "roles/bigquery.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
+      "group:clingendevs@broadinstitute.org",
     ]
 
     "roles/bigquery.jobUser" = [
