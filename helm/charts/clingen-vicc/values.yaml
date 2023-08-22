@@ -7,7 +7,8 @@
 # postgres not exposed to internet, so password secrecy doesn't matter
 uta_admin_password: uta_admin_pw
 
-varnorm_container_port: 8100
+# varnorm_container_port: 8100
+varnorm_container_port: 80
 
 varnorm_replicas: 1
 
