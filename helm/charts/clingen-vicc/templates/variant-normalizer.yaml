@@ -46,8 +46,9 @@ spec:
 
       containers:
         - name: varnorm
-          #image: gcr.io/clingen-dev/cancervariants/variation-normalization:1e9c53dbec4f3f0ec907cae94d9d295534b4c424
-          image: gcr.io/clingen-dev/variation-normalization:clingen-updates
+          # image: gcr.io/clingen-dev/cancervariants/variation-normalization:1e9c53dbec4f3f0ec907cae94d9d295534b4c424
+          # image: gcr.io/clingen-dev/cancervariants/variation-normalization:0b299fe4dc8d4732d62a23bdd215ec13022130d0
+          image: gcr.io/clingen-dev/cancervariants/variation-normalization:58b9bc33073478bcf572cad34be896fea536dedd
           imagePullPolicy: Always
           env:
             - name: SEQREPO_ROOT_DIR
@@ -56,8 +57,8 @@ spec:
               value: "http://{{- .Release.Name -}}-gene-normalizer-svc:8000"
             - name: UTA_DB_URL
               value: "postgresql://uta_admin:{{- .Values.uta_admin_password -}}@{{- .Release.Name -}}-uta-svc:5432/uta/uta_20210129"
-            - name: varnorm_ports
-              value: "8010,8011,8012,8013"
+            # - name: varnorm_ports
+            #   value: "8010,8011,8012,8013"
             - name: VARIATION_QUERYHANDLER_POOL_SIZE
               value: "1"
           resources:
@@ -154,7 +155,7 @@ spec:
     unhealthyThreshold: 1
     type: HTTP
     requestPath: /variation
-    port: 8100
+    port: 80
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
