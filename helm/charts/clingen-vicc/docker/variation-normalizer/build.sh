@@ -23,6 +23,7 @@ if [ ! -d $repo_dir/.git ]; then
     cp replacement-Dockerfile $repo_dir/Dockerfile
 fi
 
+cp replacement-Dockerfile $repo_dir/Dockerfile
 cp main_new.py $repo_dir/variation/main.py
 
 # Add version limit to pydantic
