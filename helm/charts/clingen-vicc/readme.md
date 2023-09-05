@@ -30,6 +30,11 @@ docker run -it --rm -v dynamodb:/data -e DATA_DIR=/data -p 8000:8000 gcr.io/clin
 docker run -it --rm -v $(pwd)/credentials:/root/.aws/credentials -p 8001:8001 gcr.io/clingen-dev/cancervariants/gene-normalization:c64a53fe305e9ec3eac51d9988385a5bc0ef3ac0 pipenv run uvicorn gene.main:app --port 8001 --host 0.0.0.0
 `
 
+If running in docker on mac, the dynamodb can be referred to inside the gene-normalization docker container using the docker for mac localhost address:
+
+`-e GENE_NORM_DB_URL='http://docker.for.mac.host.internal:8000'`
+
+
 # UTA
 `
 docker run -it --rm -e UTA_VERSION=uta_20210129 -e UTA_ADMIN_PASSWORD=uta_pw -e POSTGRES_PASSWORD=pg_pw -p 5432:5432 gcr.io/clingen-dev/uta:uta_20210129
