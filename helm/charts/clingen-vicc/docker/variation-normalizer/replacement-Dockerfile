@@ -9,9 +9,9 @@ COPY . /app
 WORKDIR /app
 
 RUN pip install --pre .
-# Run a fork of bioutils
-#RUN pip install git+https://github.com/theferrit32/bioutils.git@47-large-seq-normalization
+# Run a prerelease of bioutils
 RUN pip install git+https://github.com/biocommons/bioutils.git@0.5.8.pre1
+# Run a fork of seqrepo that fixes concurrency issues
 RUN pip install git+https://github.com/theferrit32/biocommons.seqrepo.git@112-fasta-thread-safety
 
 EXPOSE 80
