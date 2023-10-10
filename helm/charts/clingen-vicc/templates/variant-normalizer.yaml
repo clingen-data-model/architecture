@@ -46,7 +46,8 @@ spec:
 
       containers:
         - name: varnorm
-          image: gcr.io/clingen-dev/cancervariants/variation-normalization:043285a388910b31a1ba522cad51125bec666a29
+          # image: gcr.io/clingen-dev/cancervariants/variation-normalization:043285a388910b31a1ba522cad51125bec666a29
+          image: gcr.io/clingen-dev/cancervariants/variation-normalization:3cadb5b
           imagePullPolicy: Always
           env:
             - name: SEQREPO_ROOT_DIR

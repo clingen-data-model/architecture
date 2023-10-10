@@ -8,7 +8,8 @@ repo_dir=variation-normalization
 repo=https://github.com/${repo_name}.git
 
 # On issue-492 branch
-repo_commit=043285a388910b31a1ba522cad51125bec666a29
+# repo_commit=043285a388910b31a1ba522cad51125bec666a29
+repo_commit=3cadb5b
 
 if [ ! -d $repo_dir/.git ]; then
     git clone $repo $repo_dir
@@ -21,7 +22,7 @@ fi
 cp replacement-Dockerfile-nginx $repo_dir/Dockerfile
 cp start_servers.py $repo_dir/
 cp varnorm-nginx-template.conf $repo_dir/
-cp requirements.txt $repo_dir/
+# cp requirements.txt $repo_dir/
 
 # cp main_new.py $repo_dir/variation/main.py
 # # Add version limit to pydantic
