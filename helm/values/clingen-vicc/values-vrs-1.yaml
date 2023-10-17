@@ -8,9 +8,9 @@ varnorm_replicas: 1
 
 # External service
 varnorm_external_service: true
-varnorm_static_ip_name: global-variation-normalizer-dev-ip
+varnorm_static_ip_name: global-variation-normalizer-ip
 varnorm_mcrt_domains:
-  - normalization-dev.clingen.app
+  - normalization.clingen.app
 
 
 # gene normalizer manifest is required at the moment because it creates the local dynamodb
