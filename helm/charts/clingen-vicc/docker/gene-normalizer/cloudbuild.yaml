@@ -6,7 +6,7 @@ steps:
 
 - name: 'gcr.io/cloud-builders/git'
   args: ['checkout', '$_GENENORM_REVISION']
-  dir: 'variation-normalization'
+  dir: 'gene-normalization'
 
 - name: 'gcr.io/cloud-builders/docker'
   args: [
