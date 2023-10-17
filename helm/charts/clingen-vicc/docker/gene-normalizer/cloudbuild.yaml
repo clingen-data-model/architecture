@@ -8,6 +8,15 @@ steps:
   args: ['checkout', '$_GENENORM_REVISION']
   dir: 'gene-normalization'
 
+# Patch Dockerfile to python 3.8
+- name: 'ubuntu'
+  args:
+  - bash
+  - '-c'
+  - |
+    echo $(pwd) && cat Dockerfile | sed 's/python:3.7/python:3.8/g' > Dockerfile.new && mv Dockerfile.new Dockerfile
+  dir: 'gene-normalization'
+
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
