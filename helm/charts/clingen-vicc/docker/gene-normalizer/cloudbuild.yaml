@@ -17,6 +17,14 @@ steps:
     cat Dockerfile | sed 's/python:3.7/python:3.8/g' > Dockerfile.new && mv Dockerfile.new Dockerfile
   dir: 'gene-normalization'
 
+# Replace dockerfile
+- name: 'ubuntu'
+  args:
+  - bash
+  - '-c'
+  - |
+    cp helm/charts/clingen-vicc/docker/gene-normalizer/replacement-Dockerfile gene-normalization/Dockerfile
+
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
@@ -26,8 +34,16 @@ steps:
   ]
   dir: 'gene-normalization'
 
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'tag',
+    'gcr.io/$PROJECT_ID/cancervariants/gene-normalization:$_GENENORM_REVISION',
+    'gcr.io/clingen-dev/cancervariants/gene-normalization:$_GENENORM_REVISION'
+  ]
+
 images:
 - 'gcr.io/$PROJECT_ID/cancervariants/gene-normalization:$_GENENORM_REVISION'
+- 'gcr.io/clingen-dev/cancervariants/gene-normalization:$_GENENORM_REVISION'
 
 substitutions:
   # _GENENORM_REVISION: c64a53f

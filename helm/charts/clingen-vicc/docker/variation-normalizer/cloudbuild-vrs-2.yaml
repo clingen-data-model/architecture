@@ -20,7 +20,7 @@ steps:
 
 - name: 'gcr.io/cloud-builders/docker'
   args: [
-    'build', 
+    'build',
     '-t', 'gcr.io/$PROJECT_ID/cancervariants/variation-normalization:$_VARNORM_REVISION',
     '-f', 'Dockerfile',
     '.'
@@ -30,5 +30,5 @@ steps:
 images:
 - 'gcr.io/$PROJECT_ID/cancervariants/variation-normalization:$_VARNORM_REVISION'
 
-substitutions: 
+substitutions:
   _VARNORM_REVISION: 3cadb5b
