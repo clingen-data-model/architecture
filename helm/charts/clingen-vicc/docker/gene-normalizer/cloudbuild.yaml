@@ -21,4 +21,5 @@ images:
 - 'gcr.io/$PROJECT_ID/cancervariants/gene-normalization:$_GENENORM_REVISION'
 
 substitutions:
-  _GENENORM_REVISION: c64a53f
+  # _GENENORM_REVISION: c64a53f
+  _GENENORM_REVISION: 1a1ec10
