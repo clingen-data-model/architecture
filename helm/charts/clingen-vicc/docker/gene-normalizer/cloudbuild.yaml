@@ -1,0 +1,24 @@
+steps:
+
+# Gene Normalizer
+- name: 'gcr.io/cloud-builders/git'
+  args: ['clone', 'https://github.com/cancervariants/gene-normalization.git']
+
+- name: 'gcr.io/cloud-builders/git'
+  args: ['checkout', '$_GENENORM_REVISION']
+  dir: 'variation-normalization'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-t', 'gcr.io/$PROJECT_ID/cancervariants/gene-normalization:$_GENENORM_REVISION',
+    '-f', 'Dockerfile',
+    '.'
+  ]
+  dir: 'gene-normalization'
+
+images:
+- 'gcr.io/$PROJECT_ID/cancervariants/gene-normalization:$_GENENORM_REVISION'
+
+substitutions:
+  _GENENORM_REVISION: c64a53f
