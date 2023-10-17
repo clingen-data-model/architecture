@@ -27,8 +27,16 @@ steps:
   ]
   dir: 'variation-normalization'
 
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'tag',
+    'gcr.io/$PROJECT_ID/cancervariants/variation-normalization:$_VARNORM_REVISION',
+    'gcr.io/clingen-dev/cancervariants/variation-normalization:$_VARNORM_REVISION'
+  ]
+
 images:
 - 'gcr.io/$PROJECT_ID/cancervariants/variation-normalization:$_VARNORM_REVISION'
+- 'gcr.io/clingen-dev/cancervariants/variation-normalization:$_VARNORM_REVISION'
 
 substitutions:
   _VARNORM_REVISION: 3cadb5b
