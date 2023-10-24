@@ -39,4 +39,4 @@ images:
 - 'gcr.io/clingen-dev/cancervariants/variation-normalization:$_VARNORM_REVISION'
 
 substitutions:
-  _VARNORM_REVISION: 3cadb5b
+  _VARNORM_REVISION: a39364d
