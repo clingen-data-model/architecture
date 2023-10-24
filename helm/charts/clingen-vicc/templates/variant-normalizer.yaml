@@ -123,7 +123,7 @@ metadata:
   annotations:
     {{- if .Values.varnorm_external_service }}
     cloud.google.com/backend-config: '{"default": "{{ .Release.Name }}-backendconfig"}'
-    #cloud.google.com/neg: '{"ingress": true}' # Creates a NEG after an Ingress is created
+    cloud.google.com/neg: '{"ingress": true}' # Creates a NEG after an Ingress is created
     {{- end }}
   labels:
     {{- include "clingen-vicc.labels" . | nindent 4 }}
