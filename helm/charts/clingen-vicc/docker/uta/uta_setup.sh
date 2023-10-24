@@ -18,7 +18,7 @@ if [ ! -f "$initialized_file" ]; then
     createdb -U postgres -O uta_admin uta
     psql -U postgres -c "ALTER USER uta_admin WITH PASSWORD '$UTA_ADMIN_PASSWORD'"
 
-    curl -s "http://dl.biocommons.org/uta/${UTA_VERSION}.pgd.gz" \
+    curl -sL "https://dl.biocommons.org/uta/${UTA_VERSION}.pgd.gz" \
         | gzip -cdq  \
         | grep -v "^REFRESH MATERIALIZED VIEW" \
         | psql -U uta_admin -d uta --echo-errors --single-transaction -v ON_ERROR_STOP=1
