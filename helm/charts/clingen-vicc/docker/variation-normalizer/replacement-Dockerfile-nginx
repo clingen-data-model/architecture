@@ -6,13 +6,13 @@ FROM python:3.9
 RUN apt update && apt install -y rsync python3-dev nginx
 RUN pip install uvicorn[standard] websockets
 
-# COPY . /app
-COPY start_servers.py /app/start_servers.py
-COPY varnorm-nginx-template.conf /app/varnorm-nginx-template.conf
+COPY . /app
+# COPY start_servers.py /app/start_servers.py
+# COPY varnorm-nginx-template.conf /app/varnorm-nginx-template.conf
 WORKDIR /app
 
-# RUN pip install --pre .
-RUN pip install git+https://github.com/cancervariants/variation-normalization.git@3cadb5b
+RUN pip install .
+# RUN pip install git+https://github.com/cancervariants/variation-normalization.git@3cadb5b
 # Run a prerelease of bioutils
 RUN pip install git+https://github.com/biocommons/bioutils.git@0.5.8.pre1
 # Run a fork of seqrepo that fixes concurrency issues
