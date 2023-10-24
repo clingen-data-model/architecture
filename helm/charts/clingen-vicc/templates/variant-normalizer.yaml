@@ -131,7 +131,7 @@ spec:
   selector:
     app: variation-normalizer
     {{- include "clingen-vicc.selectorLabels" . | nindent 4 }}
-  type: ClusterIP
+  type: NodePort
   ports:
     - name: varnorm-svc-port
       port: 80
