@@ -17,4 +17,4 @@ varnorm_mcrt_domains:
 run_gene_normalizer: true
 
 
-varnorm_docker_image: gcr.io/clingen-dev/cancervariants/variation-normalization:a39364d
+varnorm_docker_image: gcr.io/clingen-dev/cancervariants/variation-normalization:066ab4b
