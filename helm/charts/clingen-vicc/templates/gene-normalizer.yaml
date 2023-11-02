@@ -71,7 +71,7 @@ spec:
             - containerPort: 8000
               name: dynamodb-port
         - name: genenorm
-          image: gcr.io/clingen-dev/cancervariants/gene-normalization:c64a53fe305e9ec3eac51d9988385a5bc0ef3ac0
+          image: gcr.io/clingen-dev/cancervariants/gene-normalization:1a1ec10
           imagePullPolicy: Always
           env:
             - name: GENE_NORM_DB_URL

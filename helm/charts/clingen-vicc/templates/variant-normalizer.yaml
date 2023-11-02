@@ -46,8 +46,7 @@ spec:
 
       containers:
         - name: varnorm
-          # image: gcr.io/clingen-dev/cancervariants/variation-normalization:043285a388910b31a1ba522cad51125bec666a29
-          image: gcr.io/clingen-dev/cancervariants/variation-normalization:3cadb5b
+          image: {{ .Values.varnorm_docker_image }}
           imagePullPolicy: Always
           env:
             - name: SEQREPO_ROOT_DIR
@@ -57,7 +56,7 @@ spec:
             - name: UTA_DB_URL
               value: "postgresql://uta_admin:{{- .Values.uta_admin_password -}}@{{- .Release.Name -}}-uta-svc:5432/uta/uta_20210129"
             - name: varnorm_ports
-              value: "8010,8011,8012,8013"
+              value: "{{ .Values.varnorm_ports }}"
             - name: VARIATION_QUERYHANDLER_POOL_SIZE
               value: "1"
           resources:
@@ -124,7 +123,7 @@ metadata:
   annotations:
     {{- if .Values.varnorm_external_service }}
     cloud.google.com/backend-config: '{"default": "{{ .Release.Name }}-backendconfig"}'
-    #cloud.google.com/neg: '{"ingress": true}' # Creates a NEG after an Ingress is created
+    cloud.google.com/neg: '{"ingress": true}' # Creates a NEG after an Ingress is created
     {{- end }}
   labels:
     {{- include "clingen-vicc.labels" . | nindent 4 }}
@@ -132,7 +131,7 @@ spec:
   selector:
     app: variation-normalizer
     {{- include "clingen-vicc.selectorLabels" . | nindent 4 }}
-  type: ClusterIP
+  type: NodePort
   ports:
     - name: varnorm-svc-port
       port: 80
