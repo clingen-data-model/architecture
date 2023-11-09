@@ -79,6 +79,9 @@ def main(argv):
         print(f"sp: {sp}")
         start_on_port(**sp)
 
+    last_printed_success_time = time.time()
+    printed_this_time = False
+
     while len([p for p in processes if p["process"].returncode is None]) > 0:
         need_to_restart = []
         for p in processes:
@@ -88,7 +91,10 @@ def main(argv):
             returncode = proc.poll()
             if returncode is None:
                 # Still running
-                print(f"Process {proc.pid} on {host}:{port} still running")
+                # print still running status only after 5 min
+                if time.time() - last_printed_success_time >= 60*5:
+                    printed_this_time = True
+                    print(f"Process {proc.pid} on {host}:{port} still running")
             else:
                 print(f"Process {proc.pid} on {host}:{port} has terminated "
                       f"with status code {returncode}")
@@ -100,6 +106,9 @@ def main(argv):
             print(f"Restarting dead worker on {host}:{port}")
             processes.remove(p)
             start_on_port(port, host)
+        if printed_this_time:
+            last_printed_success_time = time.time()
+            printed_this_time = False
         time.sleep(5)
 
 
