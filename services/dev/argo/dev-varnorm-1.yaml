@@ -7,7 +7,7 @@ spec:
   project: dev
   source:
     repoURL: https://github.com/clingen-data-model/architecture.git
-    targetRevision: 586-variation-normalizer-builds
+    targetRevision: master
     path: helm/charts/clingen-vicc
     helm:
       releaseName: varnorm-vrs-1
