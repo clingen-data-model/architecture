@@ -57,6 +57,7 @@ def write_nginx_conf(template_filename: str,
     with open(output_filename, "w", encoding="UTF-8") as fout:
         fout.write(generate_nginx_conf(template_filename, start_params))
 
+
 def main(argv):
     """
     ./start_servers.py 1000,1001,1002 output-nginx-filename.conf
@@ -84,12 +85,13 @@ def main(argv):
             proc = p["process"]
             host = p["host"]
             port = p["port"]
-            if proc.returncode is None:
+            returncode = proc.poll()
+            if returncode is None:
                 # Still running
-                print("All processes still running")
+                print(f"Process {proc.pid} on {host}:{port} still running")
             else:
-                print(("Process {proc.pid} on {host}:{port} has terminated "
-                       "with status code {proc.returncode}"))
+                print(f"Process {proc.pid} on {host}:{port} has terminated "
+                      f"with status code {returncode}")
                 # Remove P, and start again. start_on_port appends it back
                 need_to_restart.append(p)
         for p in need_to_restart:
