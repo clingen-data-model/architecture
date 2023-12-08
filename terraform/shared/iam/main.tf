@@ -247,6 +247,12 @@ resource "google_storage_bucket_iam_member" "clinvar-ingest-build-logs" {
   bucket = "clinvar-ingest"
 }
 
+resource "google_storage_bucket_iam_member" "clinvar-ingest-cloudbuild-storage" {
+  role = "roles/storage.legacyBucketWriter"
+  member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  bucket = "clingen-dev_cloudbuild"
+}
+
 resource "google_cloud_run_service_iam_member" "clinvar-ingest-cloudrun-editor" {
   role = "roles/run.developer"
   member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
