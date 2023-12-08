@@ -252,6 +252,7 @@ resource "google_cloud_run_service_iam_member" "clinvar-ingest-cloudrun-editor" 
   member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
   service = "clinvar-ingest"
   project = "clingen-dev"
+  location = "us-central1"
 }
 
 module "gh_oidc" {
