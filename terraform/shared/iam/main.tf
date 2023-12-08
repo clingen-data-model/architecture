@@ -216,7 +216,7 @@ resource "google_project_iam_member" "clinvar-ingest-cloudbuild" {
   project = "clingen-dev"
 }
 
-resource "google_storage_bucket_iam_member" "member" {
+resource "google_storage_bucket_iam_member" "clinvar-ingest-build-logs" {
   role = "roles/storage.objectViewer"
   member = google_service_account.clinvar-ingest-deployment.member
   bucket = "clinvar-ingest"
