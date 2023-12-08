@@ -220,7 +220,7 @@ resource "google_project_iam_member" "clinvar-ingest-cloudbuild" {
 resource "google_storage_bucket_iam_member" "member" {
   role = "roles/storage.objectViewer"
   member = google_service_account.clinvar-ingest-deployment.member
-  bucket = "gs://clinvar-ingest"
+  bucket = "clinvar-ingest"
 }
 
 module "gh_oidc" {
