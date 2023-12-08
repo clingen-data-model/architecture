@@ -199,7 +199,6 @@ resource "google_service_account_iam_member" "prod_cloudbuild_cloudfunc_binding"
   member             = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
 }
 
-# The ServiceAccount that the external-secrets controller will use to identify itself to the GCP API.
 resource "google_service_account" "clinvar-ingest-deployment" {
   account_id   = "clinvar-ingest-deployment"
   display_name = "Clinvar Ingest Deployment"
