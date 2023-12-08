@@ -235,6 +235,12 @@ resource "google_project_iam_member" "clinvar-ingest-cloudbuild" {
   project = "clingen-dev"
 }
 
+resource "google_project_iam_member" "clinvar-ingest-workflows" {
+  role   = "roles/workflows.editor"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  project = "clingen-dev"
+}
+
 resource "google_storage_bucket_iam_member" "clinvar-ingest-build-logs" {
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
@@ -244,7 +250,8 @@ resource "google_storage_bucket_iam_member" "clinvar-ingest-build-logs" {
 resource "google_cloud_run_service_iam_member" "clinvar-ingest-cloudrun-editor" {
   role = "roles/run.developer"
   member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
-  bucket = "clinvar-ingest"
+  service = "clinvar-ingest"
+  project = "clingen-dev"
 }
 
 module "gh_oidc" {
