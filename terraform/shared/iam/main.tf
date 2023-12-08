@@ -207,19 +207,19 @@ resource "google_service_account" "clinvar-ingest-deployment" {
 
 resource "google_project_iam_member" "clinvar-ingest-service-usage" {
   role    = "roles/serviceusage.serviceUsageConsumer"
-  member  = google_service_account.clinvar-ingest-deployment.member
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
   project = "clingen-dev"
 }
 
 resource "google_project_iam_member" "clinvar-ingest-cloudbuild" {
   role    = "roles/cloudbuild.builds.editor"
-  member  = google_service_account.clinvar-ingest-deployment.member
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
   project = "clingen-dev"
 }
 
 resource "google_storage_bucket_iam_member" "clinvar-ingest-build-logs" {
   role = "roles/storage.objectViewer"
-  member = google_service_account.clinvar-ingest-deployment.member
+  member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
   bucket = "clinvar-ingest"
 }
 
