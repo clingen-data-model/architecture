@@ -37,8 +37,16 @@ module "clingen_projects_iam_bindings" {
       "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
+    "roles/cloudbuild.connectionAdmin" = [
+      "group:clingendevs@broadinstitute.org",
+    ]
+
     "roles/cloudfunctions.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
+    ]
+
+    "roles/run.invoker" = [
+      "group:clingendevs@broadinstitute.org",
     ]
 
     "roles/cloudscheduler.admin" = [
@@ -74,6 +82,7 @@ module "clingen_projects_iam_bindings" {
 
     "roles/pubsub.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
+      "group:clingendevs@broadinstitute.org",
     ]
 
     "roles/run.admin" = [
@@ -114,6 +123,11 @@ module "clingen_projects_iam_bindings" {
       "group:clingen-geisinger-external@broadinstitute.org",
     ]
 
+    # beta, applied via GCP Console
+    # "roles/iam.workloadIdentityPoolAdmin" = [
+    #   "group:clingendevs@broadinstitute.org",
+    # ]
+
     "roles/browser" = [
       "group:clingendevs@broadinstitute.org",
       "group:clingen-geisinger-external@broadinstitute.org",
@@ -126,6 +140,10 @@ module "clingen_projects_iam_bindings" {
 
     "roles/owner" = [
       "group:tgg-sre-admin@broadinstitute.org",
+    ]
+
+    "roles/workflows.admin" = [
+      "group:clingendevs@broadinstitute.org",
     ]
   }
 }
@@ -202,7 +220,7 @@ resource "google_service_account_iam_member" "prod_cloudbuild_cloudfunc_binding"
 resource "google_service_account" "clinvar-ingest-deployment" {
   account_id   = "clinvar-ingest-deployment"
   display_name = "Clinvar Ingest Deployment"
-  project = "clingen-dev"
+  project      = "clingen-dev"
 }
 
 resource "google_project_iam_member" "clinvar-ingest-service-usage" {
@@ -218,7 +236,7 @@ resource "google_project_iam_member" "clinvar-ingest-cloudbuild" {
 }
 
 resource "google_storage_bucket_iam_member" "clinvar-ingest-build-logs" {
-  role = "roles/storage.objectViewer"
+  role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
   bucket = "clinvar-ingest"
 }
