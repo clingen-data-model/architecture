@@ -202,6 +202,7 @@ resource "google_service_account_iam_member" "prod_cloudbuild_cloudfunc_binding"
 resource "google_service_account" "clinvar-ingest-deployment" {
   account_id   = "clinvar-ingest-deployment"
   display_name = "Clinvar Ingest Deployment"
+  project = "clingen-dev"
 }
 
 resource "google_project_iam_member" "clinvar-ingest-service-usage" {
