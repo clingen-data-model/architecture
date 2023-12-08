@@ -237,8 +237,8 @@ module "gh_oidc" {
   }
   attribute_condition = "assertion.ref=='refs/heads/main'"
   sa_mapping = {
-    "${google_service_account.clinvar_ingest_deployment.account_id}" = {
-      sa_name   = google_service_account.clinvar_ingest_deployment.id
+    "${google_service_account.clinvar-ingest-deployment.account_id}" = {
+      sa_name   = google_service_account.clinvar-ingest-deployment.id
       attribute = "attribute.repository/clingen-data-model/clinvar-ingest"
     }
   }
