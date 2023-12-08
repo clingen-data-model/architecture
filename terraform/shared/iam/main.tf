@@ -241,6 +241,12 @@ resource "google_storage_bucket_iam_member" "clinvar-ingest-build-logs" {
   bucket = "clinvar-ingest"
 }
 
+resource "google_cloud_run_service_iam_member" "clinvar-ingest-cloudrun-editor" {
+  role = "roles/run.developer"
+  member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  bucket = "clinvar-ingest"
+}
+
 module "gh_oidc" {
   source      = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
   version     = "3.1.0"
