@@ -241,6 +241,12 @@ resource "google_project_iam_member" "clinvar-ingest-workflows" {
   project = "clingen-dev"
 }
 
+resource "google_project_iam_member" "clinvar-ingest-storage-list" {
+  role    = "roles/storage.objectViewer"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  project = "clingen-dev"
+}
+
 resource "google_storage_bucket_iam_member" "clinvar-ingest-build-logs" {
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
