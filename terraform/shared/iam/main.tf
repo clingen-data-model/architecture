@@ -198,3 +198,49 @@ resource "google_service_account_iam_member" "prod_cloudbuild_cloudfunc_binding"
   role               = "roles/iam.serviceAccountUser"
   member             = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
 }
+
+# The ServiceAccount that the external-secrets controller will use to identify itself to the GCP API.
+resource "google_service_account" "clinvar-ingest-deployment" {
+  account_id   = "clinvar-ingest-deployment"
+  display_name = "Clinvar Ingest Deployment"
+}
+
+resource "google_project_iam_member" "clinvar-ingest-service-usage" {
+  role    = "roles/serviceusage.serviceUsageConsumer"
+  member  = google_service_account.clinvar-ingest-deployment.member
+  project = "clingen-dev"
+}
+
+resource "google_project_iam_member" "clinvar-ingest-cloudbuild" {
+  role    = "roles/cloudbuild.builds.editor"
+  member  = google_service_account.clinvar-ingest-deployment.member
+  project = "clingen-dev"
+}
+
+resource "google_storage_bucket_iam_member" "member" {
+  role = "roles/storage.objectViewer"
+  member = google_service_account.clinvar-ingest-deployment.member
+  bucket = "gs://clinvar-ingest"
+}
+
+module "gh_oidc" {
+  source      = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
+  version     = "3.1.0"
+  project_id  = "clingen-dev"
+  pool_id     = "clingen-actions-pool"
+  provider_id = "clingen-github-actions"
+  attribute_mapping = {
+    "google.subject"       = "assertion.sub"
+    "attribute.actor"      = "assertion.actor"
+    "attribute.aud"        = "assertion.aud"
+    "attribute.repository" = "assertion.repository"
+    "attribute.ref"        = "assertion.ref"
+  }
+  attribute_condition = "assertion.ref=='refs/heads/main'"
+  sa_mapping = {
+    "${google_service_account.clinvar_ingest_deployment.account_id}" = {
+      sa_name   = google_service_account.clinvar_ingest_deployment.id
+      attribute = "attribute.repository/clingen-data-model/clinvar-ingest"
+    }
+  }
+}
