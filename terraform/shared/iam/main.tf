@@ -223,6 +223,14 @@ resource "google_service_account" "clinvar-ingest-deployment" {
   project      = "clingen-dev"
 }
 
+resource "google_project_iam_custom_role" "custom-bucket-list-role" {
+  role_id     = "BucketList"
+  title       = "Custom Role for listing buckets"
+  description = "A role that allows for listing buckets"
+  permissions = ["storage.buckets.list"]
+  project = "clingen-dev"
+}
+
 resource "google_project_iam_member" "clinvar-ingest-service-usage" {
   role    = "roles/serviceusage.serviceUsageConsumer"
   member  = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
@@ -241,8 +249,8 @@ resource "google_project_iam_member" "clinvar-ingest-workflows" {
   project = "clingen-dev"
 }
 
-resource "google_project_iam_member" "clinvar-ingest-storage-list" {
-  role    = "roles/storage.objectViewer"
+resource "google_project_iam_member" "clinvar-ingest-bucket-list" {
+  role    = "${google_project_iam_custom_role.custom-bucket-list-role.id}"
   member  = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
   project = "clingen-dev"
 }
