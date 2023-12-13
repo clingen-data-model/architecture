@@ -275,6 +275,12 @@ resource "google_cloud_run_service_iam_member" "clinvar-ingest-cloudrun-editor" 
   location = "us-central1"
 }
 
+resource "google_service_account_iam_member" "clinvar-ingest-service-account-user" {
+  service_account_id  = "projects/clingen-dev/serviceAccounts/522856288592-compute@developer.gserviceaccount.com"
+  role                = "roles/iam.serviceAccountUser"
+  member              = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+}
+
 module "gh_oidc" {
   source      = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
   version     = "3.1.0"
