@@ -123,6 +123,11 @@ module "clingen_projects_iam_bindings" {
       "group:clingendevs@broadinstitute.org",
       "group:clingen-geisinger-external@broadinstitute.org",
     ]
+
+    "roles/oauthconfig.editor" = [
+      "group:clingendevs@broadinstitute.org",
+      "group:clingen-geisinger-external@broadinstitute.org",
+    ]
   }
 }
 
