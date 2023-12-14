@@ -37,8 +37,16 @@ module "clingen_projects_iam_bindings" {
       "group:clingen-gcp-admin@broadinstitute.org",
     ]
 
+    "roles/cloudbuild.connectionAdmin" = [
+      "group:clingendevs@broadinstitute.org",
+    ]
+
     "roles/cloudfunctions.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
+    ]
+
+    "roles/run.invoker" = [
+      "group:clingendevs@broadinstitute.org",
     ]
 
     "roles/cloudscheduler.admin" = [
@@ -74,6 +82,7 @@ module "clingen_projects_iam_bindings" {
 
     "roles/pubsub.admin" = [
       "group:clingen-gcp-admin@broadinstitute.org",
+      "group:clingendevs@broadinstitute.org",
     ]
 
     "roles/run.admin" = [
@@ -114,6 +123,11 @@ module "clingen_projects_iam_bindings" {
       "group:clingen-geisinger-external@broadinstitute.org",
     ]
 
+    # beta, applied via GCP Console
+    # "roles/iam.workloadIdentityPoolAdmin" = [
+    #   "group:clingendevs@broadinstitute.org",
+    # ]
+
     "roles/browser" = [
       "group:clingendevs@broadinstitute.org",
       "group:clingen-geisinger-external@broadinstitute.org",
@@ -126,6 +140,10 @@ module "clingen_projects_iam_bindings" {
 
     "roles/owner" = [
       "group:tgg-sre-admin@broadinstitute.org",
+    ]
+
+    "roles/workflows.admin" = [
+      "group:clingendevs@broadinstitute.org",
     ]
   }
 }
@@ -197,4 +215,50 @@ resource "google_service_account_iam_member" "prod_cloudbuild_cloudfunc_binding"
   service_account_id = "projects/clingen-dx/serviceAccounts/clingen-dx@appspot.gserviceaccount.com"
   role               = "roles/iam.serviceAccountUser"
   member             = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
+}
+
+resource "google_service_account" "clinvar-ingest-deployment" {
+  account_id   = "clinvar-ingest-deployment"
+  display_name = "Clinvar Ingest Deployment"
+  project      = "clingen-dev"
+}
+
+resource "google_project_iam_member" "clinvar-ingest-service-usage" {
+  role    = "roles/serviceusage.serviceUsageConsumer"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  project = "clingen-dev"
+}
+
+resource "google_project_iam_member" "clinvar-ingest-cloudbuild" {
+  role    = "roles/cloudbuild.builds.editor"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  project = "clingen-dev"
+}
+
+resource "google_storage_bucket_iam_member" "clinvar-ingest-build-logs" {
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  bucket = "clinvar-ingest"
+}
+
+module "gh_oidc" {
+  source      = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
+  version     = "3.1.0"
+  project_id  = "clingen-dev"
+  pool_id     = "clingen-actions-pool"
+  provider_id = "clingen-github-actions"
+  attribute_mapping = {
+    "google.subject"       = "assertion.sub"
+    "attribute.actor"      = "assertion.actor"
+    "attribute.aud"        = "assertion.aud"
+    "attribute.repository" = "assertion.repository"
+    "attribute.ref"        = "assertion.ref"
+  }
+  attribute_condition = "assertion.ref=='refs/heads/main'"
+  sa_mapping = {
+    "${google_service_account.clinvar-ingest-deployment.account_id}" = {
+      sa_name   = google_service_account.clinvar-ingest-deployment.id
+      attribute = "attribute.repository/clingen-data-model/clinvar-ingest"
+    }
+  }
 }
