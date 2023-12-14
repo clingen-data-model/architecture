@@ -223,6 +223,14 @@ resource "google_service_account" "clinvar-ingest-deployment" {
   project      = "clingen-dev"
 }
 
+resource "google_project_iam_custom_role" "custom-bucket-list-role" {
+  role_id     = "BucketList"
+  title       = "Custom Role for listing buckets"
+  description = "A role that allows for listing buckets"
+  permissions = ["storage.buckets.list"]
+  project = "clingen-dev"
+}
+
 resource "google_project_iam_member" "clinvar-ingest-service-usage" {
   role    = "roles/serviceusage.serviceUsageConsumer"
   member  = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
@@ -235,10 +243,42 @@ resource "google_project_iam_member" "clinvar-ingest-cloudbuild" {
   project = "clingen-dev"
 }
 
+resource "google_project_iam_member" "clinvar-ingest-workflows" {
+  role   = "roles/workflows.editor"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  project = "clingen-dev"
+}
+
+resource "google_project_iam_member" "clinvar-ingest-bucket-list" {
+  role    = "${google_project_iam_custom_role.custom-bucket-list-role.id}"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  project = "clingen-dev"
+}
+
 resource "google_storage_bucket_iam_member" "clinvar-ingest-build-logs" {
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
   bucket = "clinvar-ingest"
+}
+
+resource "google_storage_bucket_iam_member" "clinvar-ingest-cloudbuild-storage" {
+  role = "roles/storage.legacyBucketWriter"
+  member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  bucket = "clingen-dev_cloudbuild"
+}
+
+resource "google_cloud_run_service_iam_member" "clinvar-ingest-cloudrun-editor" {
+  role = "roles/run.developer"
+  member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  service = "clinvar-ingest"
+  project = "clingen-dev"
+  location = "us-central1"
+}
+
+resource "google_service_account_iam_member" "clinvar-ingest-service-account-user" {
+  service_account_id  = "projects/clingen-dev/serviceAccounts/522856288592-compute@developer.gserviceaccount.com"
+  role                = "roles/iam.serviceAccountUser"
+  member              = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
 }
 
 module "gh_oidc" {
