@@ -69,8 +69,8 @@ resource "google_compute_security_policy" "argocd_cloudarmor_policy" {
       versioned_expr = "SRC_IPS_V1"
 
       config {
-        src_ip_ranges = [
-          "74.69.73.105/32"
+	src_ip_ranges = [
+	  "66.66.143.92/32"
         ]
       }
     }
