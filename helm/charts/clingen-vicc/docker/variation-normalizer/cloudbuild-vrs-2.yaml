@@ -40,4 +40,4 @@ images:
 
 substitutions:
   # This is on branch staging
-  _VARNORM_REVISION: af9fde6
+  _VARNORM_REVISION: 8fbbe9c
