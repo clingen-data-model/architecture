@@ -11,22 +11,22 @@ COPY . /app
 # COPY varnorm-nginx-template.conf /app/varnorm-nginx-template.conf
 WORKDIR /app
 
-# RUN pip install .
+RUN pip install .
 # RUN pip install git+https://github.com/cancervariants/variation-normalization.git@3cadb5b
 # Run a prerelease of bioutils
-# RUN pip install git+https://github.com/biocommons/bioutils.git@0.5.8.pre1
-RUN patch-bioutils-build.sh
+RUN pip install git+https://github.com/biocommons/bioutils.git
 
 # Run a fork of seqrepo that fixes concurrency issues
-RUN pip install git+https://github.com/theferrit32/biocommons.seqrepo.git@112-fasta-thread-safety
+# RUN pip install git+https://github.com/theferrit32/biocommons.seqrepo.git
+# RUN pip install git+https://github.com/biocommons/biocommons.seqrepo.git
+RUN bash patch-dynamic-build.sh
 
 EXPOSE 80
-# HEALTHCHECK --interval=5m --timeout=3s \
-#     CMD curl -f http://localhost/variation || exit 1
+HEALTHCHECK --interval=5m --timeout=3s \
+    CMD curl -f http://localhost/variation || exit 1
 
 # # Default ports, also results in 4 worker processes. Can be overriden in docker run.
-# ENV varnorm_ports=8010,8011,8012,8013
+ENV varnorm_ports=8010,8011,8012,8013
 
 # # Could put this in a script and call that, but this works fine for now
-# CMD python -c "import start_servers; start_servers.write_nginx_conf('varnorm-nginx-template.conf', 'varnorm-nginx-generated.conf', [{'host':'127.0.0.1', 'port': p} for p in [${varnorm_ports}]])" && nginx -p $(pwd) -c varnorm-nginx-generated.conf && python -c "import cool_seq_tool" && python -u start_servers.py "${varnorm_ports}" varnorm-nginx-generated.conf
-CMD bash
+CMD python -c "import start_servers; start_servers.write_nginx_conf('varnorm-nginx-template.conf', 'varnorm-nginx-generated.conf', [{'host':'127.0.0.1', 'port': p} for p in [${varnorm_ports}]])" && nginx -p $(pwd) -c varnorm-nginx-generated.conf && python -c "import cool_seq_tool" && python -u start_servers.py "${varnorm_ports}" varnorm-nginx-generated.conf
