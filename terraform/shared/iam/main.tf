@@ -302,3 +302,35 @@ module "gh_oidc" {
     }
   }
 }
+
+# clinvar-ingest-pipeline service account configuration
+resource "google_service_account" "clinvar-ingest-pipeline" {
+  project = "clingen-dx"
+  account_id   = "clinvar-ingest-pipeline"
+  display_name = "Service account for clinvar-ingest pipeline components"
+}
+resource "google_project_iam_member" "clinvar-ingest-pipeline-bigquery-admin" {
+  role    = "roles/bigquery.admin"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline.email}"
+  project = "clingen-dev"
+}
+resource "google_project_iam_member" "clinvar-ingest-pipeline-cloudrun-invoker" {
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline.email}"
+  project = "clingen-dev"
+}
+resource "google_project_iam_member" "clinvar-ingest-pipeline-workflows-invoker" {
+  role    = "roles/workflows.invoker"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline.email}"
+  project = "clingen-dev"
+}
+resource "google_project_iam_member" "clinvar-ingest-pipeline-storage-object-creator" {
+  role    = "roles/storage.objectCreator"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline.email}"
+  project = "clingen-dev"
+}
+resource "google_project_iam_member" "clinvar-ingest-pipeline-storage-object-viewer" {
+  role    = "roles/storage.objectViewer"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline.email}"
+  project = "clingen-dev"
+}
