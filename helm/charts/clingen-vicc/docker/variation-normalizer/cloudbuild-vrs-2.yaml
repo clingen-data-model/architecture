@@ -16,6 +16,8 @@ steps:
       && cp helm/charts/clingen-vicc/docker/variation-normalizer/start_servers.py \
           variation-normalization/ \
       && cp helm/charts/clingen-vicc/docker/variation-normalizer/varnorm-nginx-template.conf \
+          variation-normalization/ \
+      && cp helm/charts/clingen-vicc/docker/variation-normalizer/patch-dynamic-build.sh \
           variation-normalization/
 
 - name: 'gcr.io/cloud-builders/docker'
@@ -40,4 +42,4 @@ images:
 
 substitutions:
   # This is on branch staging
-  _VARNORM_REVISION: af9fde6
+  _VARNORM_REVISION: e0a7709

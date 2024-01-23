@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = "~> 4.26.0"
-    }
-  }
-}
-
 # The IAM role that we'll use to allow read access to all GCP secrets within the project
 resource "google_project_iam_custom_role" "external-secrets-gsa" {
   role_id     = "clingen_${var.env}_external_secrets"
@@ -48,7 +39,7 @@ resource "google_secret_manager_secret" "external_secrets_sa_key_secret" {
   secret_id = "external-secrets-serviceaccount-key"
 
   replication {
-    automatic = true
+    auto {}
   }
 }
 
