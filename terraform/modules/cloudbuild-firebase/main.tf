@@ -1,11 +1,3 @@
-terraform {
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = "~> 4.26.0"
-    }
-  }
-}
 # Grant the firebase roles to the cloudbuild serviceaccount
 resource "google_project_iam_member" "cloudbuild_firebase_binding" {
   role    = "roles/firebase.admin"
