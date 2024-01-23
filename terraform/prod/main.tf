@@ -11,6 +11,14 @@ module "external-secrets" {
   project_id = data.google_project.current.project_id
 }
 
+data "google_compute_default_service_account" "default_compute" {}
+
+resource "google_project_iam_member" "default_compute_ar_read" {
+  project = data.google_project.current.project_id
+  role    = "roles/artifactregistry.reader"
+  member  = data.google_compute_default_service_account.default_compute.member
+}
+
 module "prod-gke-cluster" {
   source                   = "github.com/broadinstitute/tgg-terraform-modules//imported-gke-cluster?ref=1679ea8bb0fedfb879bca581624c6c51df6efbfa"
   cluster_name             = "prod-cluster"
