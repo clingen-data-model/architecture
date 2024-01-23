@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: genegraph-gene-validity
+  template:
+    metadata:
+      labels:
+        app: genegraph-gene-validity
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-local-ssd: "true"
+      containers:
+        - name: genegraph-gene-validity
+          image: "us-east1-docker.pkg.dev/clingen-dev/genegraph-docker-repo/genegraph-gene-validity:{{ .Values.docker_image_tag }}"
+          ports:
+            - containerPort: 8888
+          resources:
+            requests:
+              memory: "3Gi"
+              cpu: "1000m"
+            limits:
+              memory: "10Gi"
