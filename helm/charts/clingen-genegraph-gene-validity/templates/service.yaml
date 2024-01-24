@@ -4,7 +4,8 @@ metadata:
   name: {{ .Release.Name }}
 spec:
   selector:
-    app.kubernetes.io/name: {{ .Release.Name }}
+    app: {{ .Release.Name }}
+  type: NodePort
   ports:
     - protocol: TCP
       port: 80

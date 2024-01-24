@@ -45,13 +45,13 @@ module "dev-gke-cluster" {
   }
 }
 
-resource "google_container_node_pool" "main-pool" {
-  name       = "main-pool"
+resource "google_container_node_pool" "main-node-pool" {
+  name       = "main-node-pool"
   location   = "us-east1-b"
   cluster    = module.dev-gke-cluster.gke-cluster-name
   node_count = 2
   node_locations = [
-    "us-east1-c"
+    "us-east1-b"
   ]
 
   node_config {
