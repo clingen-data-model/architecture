@@ -17,7 +17,18 @@ spec:
         - name: genegraph-gene-validity
           image: "us-east1-docker.pkg.dev/clingen-dev/genegraph-docker-repo/genegraph-gene-validity:{{ .Values.docker_image_tag }}"
           ports:
-            - containerPort: 8888
+            - name: genegraph-port
+              containerPort: 8888
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: genegraph-port
+          startupProbe:
+            httpGet:
+              path: /ready
+              port: genegraph-port
+            failureThreshold: 30
+            periodSeconds: 10
           resources:
             requests:
               memory: "3Gi"
