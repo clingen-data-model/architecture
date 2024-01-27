@@ -58,7 +58,9 @@ resource "google_container_node_pool" "main-node-pool" {
     preemptible     = false
     machine_type    = "n2-standard-4"
     image_type      = "COS_CONTAINERD"
-    local_ssd_count = 1
+    ephemeral_storage_local_ssd_config {
+      local_ssd_count = 1
+    }
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
   }
 }

@@ -11,11 +11,16 @@ spec:
       labels:
         app: genegraph-gene-validity
     spec:
-      nodeSelector:
-        cloud.google.com/gke-local-ssd: "true"
+      volumes:
+        - name: tdb-volume
+          emptyDir:
+            sizeLimit: 50Gi
       containers:
         - name: genegraph-gene-validity
           image: "us-east1-docker.pkg.dev/clingen-dev/genegraph-docker-repo/genegraph-gene-validity:{{ .Values.docker_image_tag }}"
+          volumeMounts:
+            - mountPath: /data
+              name: tdb-volume
           ports:
             - name: genegraph-port
               containerPort: 8888
@@ -23,12 +28,6 @@ spec:
             httpGet:
               path: /ready
               port: genegraph-port
-          startupProbe:
-            httpGet:
-              path: /ready
-              port: genegraph-port
-            failureThreshold: 30
-            periodSeconds: 10
           resources:
             requests:
               memory: "3Gi"
