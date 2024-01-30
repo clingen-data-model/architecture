@@ -25,6 +25,12 @@ resource "google_project_iam_member" "default_compute_ar_read" {
   member  = data.google_compute_default_service_account.default_compute.member
 }
 
+resource "google_project_iam_member" "default_compute_sm_read" {
+  project = data.google_project.current.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = data.google_compute_default_service_account.default_compute.member
+}
+
 module "dev-gke-cluster" {
   source                   = "github.com/broadinstitute/tgg-terraform-modules//imported-gke-cluster?ref=1679ea8bb0fedfb879bca581624c6c51df6efbfa"
   cluster_name             = "genegraph-dev"
