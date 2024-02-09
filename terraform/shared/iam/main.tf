@@ -309,34 +309,66 @@ module "gh_oidc" {
   }
 }
 
-# clinvar-ingest-pipeline service account configuration
-resource "google_service_account" "clinvar-ingest-pipeline" {
+# PROD clinvar-ingest-pipeline service account configuration
+resource "google_service_account" "clinvar-ingest-pipeline-prod" {
   project = "clingen-dx"
   account_id   = "clinvar-ingest-pipeline"
   display_name = "Service account for clinvar-ingest pipeline components"
 }
-resource "google_project_iam_member" "clinvar-ingest-pipeline-bigquery-admin" {
+resource "google_project_iam_member" "clinvar-ingest-pipeline-prod-bigquery-admin" {
   role    = "roles/bigquery.admin"
-  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline.email}"
-  project = "clingen-dev"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-prod.email}"
+  project = "clingen-dx"
 }
-resource "google_project_iam_member" "clinvar-ingest-pipeline-cloudrun-invoker" {
+resource "google_project_iam_member" "clinvar-ingest-pipeline-prod-cloudrun-invoker" {
   role    = "roles/run.invoker"
-  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline.email}"
-  project = "clingen-dev"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-prod.email}"
+  project = "clingen-dx"
 }
-resource "google_project_iam_member" "clinvar-ingest-pipeline-workflows-invoker" {
+resource "google_project_iam_member" "clinvar-ingest-pipeline-prod-workflows-invoker" {
   role    = "roles/workflows.invoker"
-  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline.email}"
-  project = "clingen-dev"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-prod.email}"
+  project = "clingen-dx"
 }
-resource "google_project_iam_member" "clinvar-ingest-pipeline-storage-object-creator" {
+resource "google_project_iam_member" "clinvar-ingest-pipeline-prod-storage-object-creator" {
   role    = "roles/storage.objectCreator"
-  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline.email}"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-prod.email}"
+  project = "clingen-dx"
+}
+resource "google_project_iam_member" "clinvar-ingest-pipeline-prod-storage-object-viewer" {
+  role    = "roles/storage.objectViewer"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-prod.email}"
+  project = "clingen-dx"
+}
+
+# DEV clinvar-ingest-pipeline service account configuration
+resource "google_service_account" "clinvar-ingest-pipeline-dev" {
+  project = "clingen-dev"
+  account_id   = "clinvar-ingest-pipeline"
+  display_name = "Service account for clinvar-ingest pipeline components"
+}
+resource "google_project_iam_member" "clinvar-ingest-pipeline-dev-bigquery-admin" {
+  role    = "roles/bigquery.admin"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-dev.email}"
   project = "clingen-dev"
 }
-resource "google_project_iam_member" "clinvar-ingest-pipeline-storage-object-viewer" {
+resource "google_project_iam_member" "clinvar-ingest-pipeline-dev-cloudrun-invoker" {
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-dev.email}"
+  project = "clingen-dev"
+}
+resource "google_project_iam_member" "clinvar-ingest-pipeline-dev-workflows-invoker" {
+  role    = "roles/workflows.invoker"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-dev.email}"
+  project = "clingen-dev"
+}
+resource "google_project_iam_member" "clinvar-ingest-pipeline-dev-storage-object-creator" {
+  role    = "roles/storage.objectCreator"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-dev.email}"
+  project = "clingen-dev"
+}
+resource "google_project_iam_member" "clinvar-ingest-pipeline-dev-storage-object-viewer" {
   role    = "roles/storage.objectViewer"
-  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline.email}"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-dev.email}"
   project = "clingen-dev"
 }
