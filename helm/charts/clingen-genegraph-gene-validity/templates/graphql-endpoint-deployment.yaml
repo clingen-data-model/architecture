@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-graphql-endpoint
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-graphql-endpoint
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-graphql-endpoint
+    spec:
+      volumes:
+        - name: local-volume
+          emptyDir:
+            sizeLimit: 50Gi
+      containers:
+        - name: {{ .Release.Name }}-graphql-endpoint
+          image: "us-east1-docker.pkg.dev/clingen-dev/genegraph-docker-repo/genegraph-gene-validity:{{ .Values.docker_image_tag }}"
+          env:
+            - name: GENEGRAPH_PLATFORM
+              value: gcp
+            - name: GENEGRAPH_FUNCTION
+              value: graphql-endpoint
+          volumeMounts:
+            - mountPath: /data
+              name: local-volume
+          ports:
+            - name: genegraph-port
+              containerPort: 8888
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: genegraph-port
+          resources:
+            requests:
+              memory: "4Gi"
+              cpu: "1000m"
+            limits:
+              memory: "10Gi"

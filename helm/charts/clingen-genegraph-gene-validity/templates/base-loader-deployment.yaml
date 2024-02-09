@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-base
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-base
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-base
+    spec:
+      volumes:
+        - name: tdb-volume
+          emptyDir:
+            sizeLimit: 50Gi
+      containers:
+        - name: {{ .Release.Name }}-base
+          image: "us-east1-docker.pkg.dev/clingen-dev/genegraph-docker-repo/genegraph-gene-validity:{{ .Values.docker_image_tag }}"
+          env:
+            - name: GENEGRAPH_PLATFORM
+              value: gcp
+            - name: GENEGRAPH_FUNCTION
+              value: fetch-base
+          volumeMounts:
+            - mountPath: /data
+              name: tdb-volume
+          ports:
+            - name: genegraph-port
+              containerPort: 8888
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: genegraph-port
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "1000m"
+            limits:
+              memory: "2Gi"
