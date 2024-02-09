@@ -372,3 +372,11 @@ resource "google_project_iam_member" "clinvar-ingest-pipeline-dev-storage-object
   member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-dev.email}"
   project = "clingen-dev"
 }
+
+resource "google_service_account_iam_member" "clinvar-ingest-pipeline-deployment-iam" {
+  # service_account_id = google_service_account.clinvar-ingest-deployment.id
+  service_account_id = google_service_account.clinvar-ingest-pipeline-dev.id
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  # member             = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-dev.email}"
+}
