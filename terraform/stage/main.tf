@@ -25,6 +25,13 @@ resource "google_project_iam_member" "default_compute_ar_read" {
   member  = data.google_compute_default_service_account.default_compute.member
 }
 
+resource "google_artifact_registry_repository" "genegraph-stage" {
+  location      = "us-east1"
+  repository_id = "genegraph-stage"
+  description   = "repository for Genegraph containers"
+  format        = "DOCKER"
+}
+
 module "stage-gke-cluster" {
   source                   = "github.com/broadinstitute/tgg-terraform-modules//imported-gke-cluster?ref=1679ea8bb0fedfb879bca581624c6c51df6efbfa"
   cluster_name             = "stage-cluster"
