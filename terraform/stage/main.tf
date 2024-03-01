@@ -52,8 +52,8 @@ module "stage-gke-cluster" {
   }
 }
 
-resource "google_container_node_pool" "main-pool" {
-  name       = "main-pool"
+resource "google_container_node_pool" "main-node-pool" {
+  name       = "main-node-pool"
   location   = "us-east1-b"
   cluster    = module.stage-gke-cluster.gke-cluster-name
   node_count = 2
@@ -62,7 +62,15 @@ resource "google_container_node_pool" "main-pool" {
     preemptible     = false
     machine_type    = "n2-standard-4"
     image_type      = "COS_CONTAINERD"
-    local_ssd_count = 1
+    ephemeral_storage_local_ssd_config {    
+      local_ssd_count = 1
+    }
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
   }
+}
+
+resource "google_project_iam_member" "default_compute_sm_read" {
+  project = data.google_project.current.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = data.google_compute_default_service_account.default_compute.member
 }
