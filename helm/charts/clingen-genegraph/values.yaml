@@ -47,7 +47,7 @@ genegraph_service_type: NodePort
 genegraph_port: 80
 
 # storage
-genegraph_local_ssd: true
+# genegraph_local_ssd: true
 genegraph_configure_storageclass: true
 # If set and genegraph_local_ssd is false, will use a pv of this .size
 # genegraph_persistent_disk:
