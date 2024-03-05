@@ -17,10 +17,10 @@ spec:
             sizeLimit: 50Gi
       containers:
         - name: {{ .Release.Name }}-transformer
-          image: "us-east1-docker.pkg.dev/clingen-dev/genegraph-docker-repo/genegraph-gene-validity:{{ .Values.docker_image_tag }}"
+          image: "{{ .Values.docker_image_location }}:{{ .Values.docker_image_tag }}"
           env:
             - name: GENEGRAPH_PLATFORM
-              value: gcp
+              value: {{ .Values.platform }}
             - name: GENEGRAPH_FUNCTION
               value: transform-curations
           volumeMounts:
