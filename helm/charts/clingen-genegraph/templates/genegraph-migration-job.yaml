@@ -18,13 +18,13 @@ spec:
     spec:
       nodeSelector:
         {{- if .Values.genegraph_local_ssd }}
-        cloud.google.com/gke-local-ssd: "true"
+        cloud.google.com/gke-ephemeral-storage-local-ssd: "true"
         {{- end }}
       volumes:
         {{- if .Values.genegraph_local_ssd }}
         - name: genegraph-vol
-          hostPath:
-            path: "/mnt/disks/ssd0/{{ .Release.Name }}-migration"
+          emptyDir:
+            sizeLimit: 120Gi
         {{- end }}
       containers:
         - image: {{ .Values.genegraph_docker_image_name }}:{{ .Values.genegraph_docker_image_tag }}
