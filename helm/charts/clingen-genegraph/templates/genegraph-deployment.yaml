@@ -24,11 +24,15 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      nodeSelector:
+        {{- if .Values.genegraph_local_ssd }}
+        cloud.google.com/gke-ephemeral-storage-local-ssd: "true"
+        {{- end }}
       volumes:
         {{- if .Values.genegraph_local_ssd }}
         - name: genegraph-vol
-          hostPath:
-            path: "/mnt/disks/ssd0/{{ .Release.Name }}"
+          emptyDir:
+            sizeLimit: 100Gi
         {{- else if .Values.genegraph_persistent_disk }}
         - name: genegraph-vol
           persistentVolumeClaim:
