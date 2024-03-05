@@ -32,7 +32,7 @@ spec:
         {{- if .Values.genegraph_local_ssd }}
         - name: genegraph-vol
           emptyDir:
-            sizeLimit: 100Gi
+            sizeLimit: 120Gi
         {{- else if .Values.genegraph_persistent_disk }}
         - name: genegraph-vol
           persistentVolumeClaim:
