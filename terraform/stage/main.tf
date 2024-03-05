@@ -56,7 +56,7 @@ resource "google_container_node_pool" "main-node-pool" {
   name       = "main-node-pool"
   location   = "us-east1-b"
   cluster    = module.stage-gke-cluster.gke-cluster-name
-  node_count = 2
+  node_count = 4
 
   node_config {
     preemptible     = false
