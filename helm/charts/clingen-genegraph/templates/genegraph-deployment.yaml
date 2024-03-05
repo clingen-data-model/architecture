@@ -24,10 +24,6 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      nodeSelector:
-        {{- if .Values.genegraph_local_ssd }}
-        cloud.google.com/gke-local-ssd: "true"
-        {{- end }}
       volumes:
         {{- if .Values.genegraph_local_ssd }}
         - name: genegraph-vol
