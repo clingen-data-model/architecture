@@ -35,7 +35,7 @@ spec:
               port: genegraph-port
           resources:
             requests:
-              memory: "1Gi"
-              cpu: "1000m"
+              memory: "2Gi"
+              cpu: "250m"
             limits:
               memory: "2Gi"

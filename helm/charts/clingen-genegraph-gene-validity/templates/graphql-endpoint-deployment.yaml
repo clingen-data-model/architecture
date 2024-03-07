@@ -14,7 +14,7 @@ spec:
       volumes:
         - name: local-volume
           emptyDir:
-            sizeLimit: 50Gi
+            sizeLimit: 100Gi
       containers:
         - name: {{ .Release.Name }}-graphql-endpoint
           image: "{{ .Values.docker_image_location }}:{{ .Values.docker_image_tag }}"
@@ -35,7 +35,7 @@ spec:
               port: genegraph-port
           resources:
             requests:
-              memory: "4Gi"
+              memory: "10Gi"
               cpu: "1000m"
             limits:
               memory: "10Gi"
