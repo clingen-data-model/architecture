@@ -38,22 +38,6 @@ module "prod-gke-cluster" {
   }
 }
 
-resource "google_container_node_pool" "main-pool" {
-  name       = "main-pool"
-  location   = "us-east1-b"
-  cluster    = module.prod-gke-cluster.gke-cluster-name
-  node_count = 3
-
-  node_config {
-    preemptible     = false
-    machine_type    = "n2-standard-4"
-    image_type      = "COS_CONTAINERD"
-    disk_type       = "pd-ssd"
-    local_ssd_count = 1
-    oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
-  }
-}
-
 resource "google_container_node_pool" "main-node-pool" {
   name       = "main-node-pool"
   location   = "us-east1-b"
