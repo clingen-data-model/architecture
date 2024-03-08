@@ -287,6 +287,68 @@ resource "google_service_account_iam_member" "clinvar-ingest-service-account-use
   member              = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
 }
 
+resource "google_service_account" "clinvar-ftp-watcher-deployment" {
+  account_id   = "clinvar-ftp-watcher-deployment"
+  display_name = "Clinvar Ftp-Watcher Deployment"
+  project      = "clingen-dev"
+}
+
+resource "google_project_iam_member" "clinvar-ftp-watcher-service-usage" {
+  role    = "roles/serviceusage.serviceUsageConsumer"
+  member  = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
+  project = "clingen-dev"
+}
+
+resource "google_project_iam_member" "clinvar-ftp-watcher-cloudbuild" {
+  role    = "roles/cloudbuild.builds.editor"
+  member  = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
+  project = "clingen-dev"
+}
+
+resource "google_project_iam_member" "clinvar-ftp-watcher-workflows" {
+  role   = "roles/workflows.editor"
+  member  = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
+  project = "clingen-dev"
+}
+
+resource "google_project_iam_member" "clinvar-ftp-watcher-bucket-list" {
+  role    = "${google_project_iam_custom_role.custom-bucket-list-role.id}"
+  member  = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
+  project = "clingen-dev"
+}
+
+resource "google_storage_bucket_iam_member" "clinvar-ftp-watcher-build-logs" {
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
+  bucket = "clinvar-ftp-watcher"
+}
+
+resource "google_storage_bucket_iam_member" "clinvar-ftp-watcher-cloudbuild-storage" {
+  role = "roles/storage.legacyBucketWriter"
+  member = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
+  bucket = "clingen-dev_cloudbuild"
+}
+
+resource "google_cloud_run_v2_job_iam_member" "clinvar-ftp-watcher-cloudrun-editor" {
+  role = "roles/run.developer"
+  member = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
+  name  = "clinvar-ftp-watcher"
+  project = "clingen-dev"
+  location = "us-central1"
+}
+
+resource "google_project_iam_member" "clinvar-ftp-watcher-cloudrun-editor" {
+  role = "roles/run.developer"
+  member = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
+  project = "clingen-dev"
+}
+
+resource "google_service_account_iam_member" "clinvar-ftp-watcher-service-account-user" {
+  service_account_id  = "projects/clingen-dev/serviceAccounts/522856288592-compute@developer.gserviceaccount.com"
+  role                = "roles/iam.serviceAccountUser"
+  member              = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
+}
+
 module "gh_oidc" {
   source      = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
   version     = "3.1.0"
@@ -305,6 +367,10 @@ module "gh_oidc" {
     "${google_service_account.clinvar-ingest-deployment.account_id}" = {
       sa_name   = google_service_account.clinvar-ingest-deployment.id
       attribute = "attribute.repository/clingen-data-model/clinvar-ingest"
+    }
+    "${google_service_account.clinvar-ftp-watcher-deployment.account_id}" = {
+      sa_name   = google_service_account.clinvar-ftp-watcher-deployment.id
+      attribute = "attribute.repository/clingen-data-model/clinvar-ftp-watcher"
     }
   }
 }
