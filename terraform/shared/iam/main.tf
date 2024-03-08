@@ -317,6 +317,12 @@ resource "google_project_iam_member" "clinvar-ftp-watcher-bucket-list" {
   project = "clingen-dev"
 }
 
+resource "google_project_iam_member" "clinvar-ftp-watcher-secret-accessor" {
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
+  project = "clingen-dev"
+}
+
 resource "google_storage_bucket_iam_member" "clinvar-ftp-watcher-build-logs" {
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
