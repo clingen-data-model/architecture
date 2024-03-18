@@ -350,7 +350,7 @@ resource "google_project_iam_member" "clinvar-ftp-watcher-cloudrun-editor" {
 }
 
 resource "google_service_account_iam_member" "clinvar-ftp-watcher-service-account-user" {
-  service_account_id  = "projects/clingen-dev/serviceAccounts/522856288592-compute@developer.gserviceaccount.com"
+  service_account_id  = google_service_account.clinvar-ftp-watcher-deployment.id
   role                = "roles/iam.serviceAccountUser"
   member              = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
 }
