@@ -414,7 +414,7 @@ resource "google_project_iam_member" "clinvar-ingest-pipeline-prod-storage-objec
 }
 resource "google_project_iam_member" "clinvar-ingest-pipeline-prod-log-writer" {
   role    = "roles/logging.logWriter"
-  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-dev.email}"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-prod.email}"
   project = "clingen-dx"
 }
 resource "google_project_iam_member" "clinvar-ingest-pipeline-prod-secret-accessor" {
@@ -456,6 +456,11 @@ resource "google_project_iam_member" "clinvar-ingest-pipeline-dev-storage-object
 }
 resource "google_project_iam_member" "clinvar-ingest-pipeline-dev-log-writer" {
   role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-dev.email}"
+  project = "clingen-dev"
+}
+resource "google_project_iam_member" "clinvar-ingest-pipeline-dev-secret-accessor" {
+  role    = "roles/secretmanager.secretAccessor"
   member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-dev.email}"
   project = "clingen-dev"
 }
