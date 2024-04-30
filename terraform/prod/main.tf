@@ -19,6 +19,13 @@ resource "google_project_iam_member" "default_compute_ar_read" {
   member  = data.google_compute_default_service_account.default_compute.member
 }
 
+resource "google_artifact_registry_repository" "genegraph-prod" {
+  location      = "us-east1"
+  repository_id = "genegraph-prod"
+  description   = "repository for Genegraph containers"
+  format        = "DOCKER"
+}
+
 module "prod-gke-cluster" {
   source                   = "github.com/broadinstitute/tgg-terraform-modules//imported-gke-cluster?ref=1679ea8bb0fedfb879bca581624c6c51df6efbfa"
   cluster_name             = "prod-cluster"
