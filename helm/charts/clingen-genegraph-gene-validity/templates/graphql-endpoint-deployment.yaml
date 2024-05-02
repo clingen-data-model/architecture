@@ -3,6 +3,12 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-graphql-endpoint
 spec:
+  replicas: {{ .Values.graphql_endpoint_replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
   selector:
     matchLabels:
       app: {{ .Release.Name }}-graphql-endpoint
