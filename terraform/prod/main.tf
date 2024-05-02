@@ -119,3 +119,15 @@ resource "google_project_iam_member" "prod_compute_bq_user" {
   member  = "serviceAccount:974091131481-compute@developer.gserviceaccount.com"
   project = data.google_project.current.project_id
 }
+
+resource "google_project_iam_member" "default_compute_sm_read" {
+  project = data.google_project.current.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = data.google_compute_default_service_account.default_compute.member
+}
+
+resource "google_project_iam_member" "cloudbuild_sm_read" {
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:974091131481@cloudbuild.gserviceaccount.com"
+  project = data.google_project.current.project_id
+}
