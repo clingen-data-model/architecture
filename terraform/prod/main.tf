@@ -49,7 +49,7 @@ resource "google_container_node_pool" "main-node-pool" {
   name       = "main-node-pool"
   location   = "us-east1-b"
   cluster    = module.prod-gke-cluster.gke-cluster-name
-  node_count = 3
+  node_count = 4
 
   node_config {
     preemptible     = false

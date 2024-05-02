@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-genegraph-gene-validity
+  namespace: argocd
+spec:
+  project: prod
+  source:
+    repoURL: https://github.com/clingen-data-model/architecture.git
+    targetRevision: HEAD
+    path: helm/charts/clingen-genegraph-gene-validity
+    helm:
+      releaseName: genegraph-gene-validity
+      valueFiles:
+      - ../../values/genegraph-gene-validity/values-prod.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
