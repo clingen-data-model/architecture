@@ -1,3 +1,3 @@
-docker_image_tag: 83e790b6be4913567f42cfc3b393d85c30c05eba
+docker_image_tag: cf3dd9e6a80edc3c4975b13b6b046b8d47344cb4
 docker_image_location: "us-east1-docker.pkg.dev/clingen-dx/genegraph-prod/kafka-topic-appender"
 platform: "prod"
