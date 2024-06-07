@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-kafka-topic-appender
+  namespace: argocd
+spec:
+  project: prod
+  source:
+    repoURL: https://github.com/clingen-data-model/architecture.git
+    targetRevision: HEAD
+    path: helm/charts/clingen-kafka-topic-appender
+    helm:
+      releaseName: kafka-topic-appender
+      valueFiles:
+      - ../../values/kafka-topic-appender/values-prod.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
