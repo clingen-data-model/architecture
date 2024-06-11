@@ -25,7 +25,7 @@ genegraph_deployment_resources:
   limits:
     memory: 10Gi
 genegraph_image_version_envvar: true
-genegraph_data_version: "2024-04-12T1220:232035468a1d3e9d683d71bf5fcd574ae98fabce"
+genegraph_data_version: "2024-06-11T2320:232035468a1d3e9d683d71bf5fcd574ae98fabce"
 genegraph_cg_search_topics: "gene-validity-raw;gci-legacy-report-only;actionability;gene-dosage-jira"
 genegraph_batch_event_sources: "gci-raw-snapshot;gene-dosage-restored;gci-raw-missing-data;gci-express-json;gci-neo4j-report-only"
 genegraph_experimental_schema: true
