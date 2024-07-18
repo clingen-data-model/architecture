@@ -261,19 +261,41 @@ resource "google_storage_bucket_iam_member" "clinvar-ingest-build-logs" {
   bucket = "clinvar-ingest"
 }
 
+resource "google_storage_bucket_iam_member" "clinvar-ingest-dev-build-logs" {
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  bucket = "clinvar-ingest-dev"
+}
+
 resource "google_storage_bucket_iam_member" "clinvar-ingest-cloudbuild-storage" {
   role = "roles/storage.legacyBucketWriter"
   member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
   bucket = "clingen-dev_cloudbuild"
 }
 
-resource "google_cloud_run_service_iam_member" "clinvar-ingest-cloudrun-editor" {
-  role = "roles/run.developer"
-  member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
-  service = "clinvar-ingest"
-  project = "clingen-dev"
-  location = "us-central1"
-}
+# resource "google_cloud_run_service_iam_member" "clinvar-ingest-cloudrun-editor" {
+#   role = "roles/run.developer"
+#   member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+#   service = "clinvar-ingest"
+#   project = "clingen-dev"
+#   location = "us-central1"
+# }
+
+# resource "google_cloud_run_service_iam_member" "clinvar-vcv-ingest-cloudrun-editor" {
+#   role = "roles/run.developer"
+#   member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+#   service = "clinvar-vcv-ingest"
+#   project = "clingen-dev"
+#   location = "us-east1"
+# }
+
+# resource "google_cloud_run_service_iam_member" "clinvar-rcv-ingest-cloudrun-editor" {
+#   role = "roles/run.developer"
+#   member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+#   service = "clinvar-rcv-ingest"
+#   project = "clingen-dev"
+#   location = "us-east1"
+# }
 
 resource "google_project_iam_member" "clinvar-ingest-cloudrun-editor" {
   role = "roles/run.developer"
@@ -361,6 +383,7 @@ module "gh_oidc" {
   project_id  = "clingen-dev"
   pool_id     = "clingen-actions-pool"
   provider_id = "clingen-github-actions"
+  provider_display_name = "clingen-github-actions"
   attribute_mapping = {
     "google.subject"       = "assertion.sub"
     "attribute.actor"      = "assertion.actor"
@@ -368,7 +391,7 @@ module "gh_oidc" {
     "attribute.repository" = "assertion.repository"
     "attribute.ref"        = "assertion.ref"
   }
-  attribute_condition = "assertion.ref=='refs/heads/main'"
+  # attribute_condition = "assertion.ref=='refs/heads/main'"
   sa_mapping = {
     "${google_service_account.clinvar-ingest-deployment.account_id}" = {
       sa_name   = google_service_account.clinvar-ingest-deployment.id
