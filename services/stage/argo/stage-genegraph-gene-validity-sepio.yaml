@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: stage-genegraph-gene-validity-sepio
+  namespace: argocd
+spec:
+  project: stage
+  source:
+    repoURL: https://github.com/clingen-data-model/architecture.git
+    targetRevision: HEAD
+    path: helm/charts/clingen-genegraph-gene-validity-sepio
+    helm:
+      releaseName: genegraph-gene-validity-sepio
+      valueFiles:
+      - ../../values/genegraph-gene-validity-sepio/values-stage.yaml
+  destination:
+    server: https://35.185.65.146
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false

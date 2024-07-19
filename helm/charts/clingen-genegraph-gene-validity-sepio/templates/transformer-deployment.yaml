@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      volumes:
+        - name: local-volume
+          emptyDir:
+            sizeLimit: 50Gi
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.docker_image_location }}:{{ .Values.docker_image_tag }}"
+          env:
+            - name: GENEGRAPH_PLATFORM
+              value: {{ .Values.platform }}
+          volumeMounts:
+            - mountPath: /data
+              name: local-volume
+          ports:
+            - name: genegraph-port
+              containerPort: 8888
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: genegraph-port
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1000m"
+            limits:
+              memory: "2Gi"
