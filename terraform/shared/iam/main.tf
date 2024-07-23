@@ -327,7 +327,7 @@ resource "google_project_iam_member" "clinvar-ftp-watcher-cloudbuild" {
   project = "clingen-dev"
 }
 
-resource "google_project_iam_member" "clinvar-ftp-watcher-scheduler" {
+resource "google_project_iam_member" "clinvar-ftp-watcher-cloud-scheduler" {
   role    = "roles/cloudscheduler.admin"
   member  = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
   project = "clingen-dev"
@@ -368,7 +368,6 @@ resource "google_cloud_run_v2_job_iam_member" "clinvar-ftp-watcher-cloudrun-edit
   member = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
   name  = "clinvar-ftp-watcher"
   project = "clingen-dev"
-  location = "us-central1"
 }
 
 resource "google_project_iam_member" "clinvar-ftp-watcher-cloudrun-editor" {
