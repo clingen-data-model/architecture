@@ -498,6 +498,11 @@ resource "google_project_iam_member" "clinvar-ingest-pipeline-dev-secret-accesso
   member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-dev.email}"
   project = "clingen-dev"
 }
+resource "google_project_iam_member" "clinvar-ingest-pipeline-cloud-scheduler" {
+  role    = "roles/cloudscheduler.admin"
+  member  = "serviceAccount:${google_service_account.clinvar-ingest-pipeline-dev.email}"
+  project = "clingen-dev"
+}
 
 resource "google_service_account_iam_member" "clinvar-ingest-pipeline-deployment-iam" {
   # service_account_id = google_service_account.clinvar-ingest-deployment.id
