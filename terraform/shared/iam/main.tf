@@ -303,6 +303,12 @@ resource "google_project_iam_member" "clinvar-ingest-cloudrun-editor" {
   project = "clingen-dev"
 }
 
+resource "google_project_iam_member" "clinvar-ingest-cloud-scheduler" {
+  role = "roles/cloudscheduler.admin"
+  member = "serviceAccount:${google_service_account.clinvar-ingest-deployment.email}"
+  project = "clingen-dev"
+}
+
 resource "google_service_account_iam_member" "clinvar-ingest-service-account-user" {
   service_account_id  = "projects/clingen-dev/serviceAccounts/522856288592-compute@developer.gserviceaccount.com"
   role                = "roles/iam.serviceAccountUser"
@@ -363,12 +369,12 @@ resource "google_storage_bucket_iam_member" "clinvar-ftp-watcher-cloudbuild-stor
   bucket = "clingen-dev_cloudbuild"
 }
 
-resource "google_cloud_run_v2_job_iam_member" "clinvar-ftp-watcher-cloudrun-editor" {
-  role = "roles/run.developer"
-  member = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
-  name  = "clinvar-ftp-watcher"
-  project = "clingen-dev"
-}
+#resource "google_cloud_run_v2_job_iam_member" "clinvar-ftp-watcher-cloudrun-editor" {
+#  role = "roles/run.developer"
+#  member = "serviceAccount:${google_service_account.clinvar-ftp-watcher-deployment.email}"
+#  name  = "clinvar-ftp-watcher"
+#  project = "clingen-dev"
+#}
 
 resource "google_project_iam_member" "clinvar-ftp-watcher-cloudrun-editor" {
   role = "roles/run.developer"
