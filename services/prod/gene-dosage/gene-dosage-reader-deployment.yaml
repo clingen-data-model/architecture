@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: jira-reader
-        image: gcr.io/clingen-dx/jira-reader:v2
+        image: gcr.io/clingen-dx/jira-reader:v3
         resources:
           requests:
             cpu: 100m
