@@ -4,3 +4,4 @@ mcrt_domain: replace-me
 static_ip_name: replace-me
 platform: replace-me
 graphql_endpoint_replicas: 1
+genegraph_namespace: genegraph-prod
