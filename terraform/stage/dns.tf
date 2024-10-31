@@ -38,6 +38,10 @@ resource "google_compute_global_address" "genegraph_gene_validity_stage_external
   name = "global-stage-genegraph-gene-validity-ip"
 }
 
+resource "google_compute_global_address" "genegraph_api_stage_external_ip" {
+  name = "global-stage-genegraph-api-ip"
+}
+
 # DNS Records in the stage.clingen.app zone
 resource "google_dns_record_set" "clinvar_submitter_a_record" {
   name = "clinvar-submitter.${google_dns_managed_zone.clingen_stage_dns_zone.dns_name}"
@@ -77,6 +81,17 @@ resource "google_dns_record_set" "genegraph_gene_validity_stage_a_record" {
   managed_zone = google_dns_managed_zone.clingen_stage_dns_zone.name
 
   rrdatas = [google_compute_global_address.genegraph_gene_validity_stage_external_ip.address]
+}
+
+
+resource "google_dns_record_set" "genegraph_api_stage_a_record" {
+  name = "genegraph-api.${google_dns_managed_zone.clingen_stage_dns_zone.dns_name}"
+  type = "A"
+  ttl  = 300
+
+  managed_zone = google_dns_managed_zone.clingen_stage_dns_zone.name
+
+  rrdatas = [google_compute_global_address.genegraph_api_stage_external_ip.address]
 }
 
 

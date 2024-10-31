@@ -52,15 +52,32 @@ module "stage-gke-cluster" {
   }
 }
 
-resource "google_container_node_pool" "main-node-pool" {
-  name       = "main-node-pool"
+# resource "google_container_node_pool" "main-node-pool" {
+#   name       = "main-node-pool"
+#   location   = "us-east1-b"
+#   cluster    = module.stage-gke-cluster.gke-cluster-name
+#   node_count = 4
+
+#   node_config {
+#     preemptible     = false
+#     machine_type    = "n2-standard-4"
+#     image_type      = "COS_CONTAINERD"
+#     ephemeral_storage_local_ssd_config {    
+#       local_ssd_count = 1
+#     }
+#     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
+#   }
+# }
+
+resource "google_container_node_pool" "himem-node-pool" {
+  name       = "himem-node-pool"
   location   = "us-east1-b"
   cluster    = module.stage-gke-cluster.gke-cluster-name
-  node_count = 4
+  node_count = 3
 
   node_config {
     preemptible     = false
-    machine_type    = "n2-standard-4"
+    machine_type    = "n2-highmem-4"
     image_type      = "COS_CONTAINERD"
     ephemeral_storage_local_ssd_config {    
       local_ssd_count = 1

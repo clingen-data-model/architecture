@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-api-base
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-api-base
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-api-base
+    spec:
+      volumes:
+        - name: tdb-volume
+          emptyDir:
+            sizeLimit: 50Gi
+      containers:
+        - name: {{ .Release.Name }}-api-base
+          image: "{{ .Values.docker_image_location }}:{{ .Values.docker_image_tag }}"
+          env:
+            - name: GENEGRAPH_PLATFORM
+              value: {{ .Values.platform }}
+            - name: GENEGRAPH_FUNCTION
+              value: fetch-base
+          volumeMounts:
+            - mountPath: /data
+              name: tdb-volume
+          ports:
+            - name: gg-api-port
+              containerPort: 8888
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: gg-api-port
+          resources:
+            requests:
+              memory: "400Mi"
+              cpu: "50m"
+            limits:
+              memory: "600Mi"

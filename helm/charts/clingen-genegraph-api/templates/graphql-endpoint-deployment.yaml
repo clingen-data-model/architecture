@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-api-ep
+spec:
+  replicas: {{ .Values.graphql_endpoint_replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-api-ep
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-api-ep
+    spec:
+      volumes:
+        - name: local-volume
+          emptyDir:
+            sizeLimit: 100Gi
+      containers:
+        - name: {{ .Release.Name }}-api-ep
+          image: "{{ .Values.docker_image_location }}:{{ .Values.docker_image_tag }}"
+          env:
+            - name: GENEGRAPH_PLATFORM
+              value: {{ .Values.platform }}
+            - name: GENEGRAPH_FUNCTION
+              value: graphql-endpoint
+          volumeMounts:
+            - mountPath: /data
+              name: local-volume
+          ports:
+            - name: gg-api-port
+              containerPort: 8888
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: gg-api-port
+          resources:
+            requests:
+              memory: "8Gi"
+              cpu: "1000m"
+            limits:
+              memory: "8Gi"
