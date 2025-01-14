@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-api-frontend
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-api-frontend
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-api-frontend
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-api-frontend
+          image: "{{ .Values.frontend_image_location }}:{{ .Values.frontend_image_tag }}"
+          ports:
+            - name: gg-fe-port
+              containerPort: 80
+          resources:
+            requests:
+              memory: "400Mi"
+              cpu: "50m"
+            limits:
+              memory: "600Mi"

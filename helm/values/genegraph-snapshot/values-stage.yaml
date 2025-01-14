@@ -1,0 +1,4 @@
+docker_image_tag: v2
+docker_image_location: "us-east1-docker.pkg.dev/clingen-stage/genegraph-stage/genegraph-snapshot"
+platform: stage
+

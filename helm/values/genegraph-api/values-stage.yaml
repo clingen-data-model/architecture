@@ -1,6 +1,8 @@
-docker_image_tag: v11
+docker_image_tag: v13
+frontend_image_tag: v6
 mcrt_domain: genegraph-api.stage.clingen.app
 static_ip_name: global-stage-genegraph-api-ip
 docker_image_location: "us-east1-docker.pkg.dev/clingen-stage/genegraph-stage/genegraph-api"
+frontend_image_location: "us-east1-docker.pkg.dev/clingen-stage/genegraph-stage/genegraph-frontend"
 platform: stage
 graphql_endpoint_replicas: 1

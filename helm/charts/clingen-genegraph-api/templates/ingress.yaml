@@ -11,10 +11,18 @@ spec:
     - host: {{ .Values.mcrt_domain }}
       http:
         paths:
-          - path: /*
+          - path: /api
             pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ .Release.Name }}-api-ep
                 port:
                   number: 80
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Release.Name }}-api-frontend
+                port:
+                  number: 80
+
