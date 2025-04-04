@@ -1,4 +1,4 @@
-docker_image_tag: 7d9aeacd50b5d67e89c29d749b700dbd5dda4a7a
+docker_image_tag: e5330c2d86e198715c22a656867c42b8eaa6c872
 mcrt_domain: genegraph-gene-validity.stage.clingen.app
 static_ip_name: global-stage-genegraph-gene-validity-ip
 docker_image_location: "us-east1-docker.pkg.dev/clingen-stage/genegraph-stage/genegraph-gene-validity"
