@@ -14,7 +14,7 @@ spec:
       valueFiles:
       - ../../values/genegraph-gene-validity-sepio/values-stage.yaml
   destination:
-    server: https://35.185.65.146
+    server: https://35.229.71.111
     namespace: default
   syncPolicy:
     automated:
