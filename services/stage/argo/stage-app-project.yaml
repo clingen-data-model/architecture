@@ -20,6 +20,6 @@ spec:
   description: staging environment
   destinations:
   - namespace: '*'
-    server: https://35.185.65.146
+    server: https://35.229.71.111
   sourceRepos:
   - https://github.com/clingen-data-model/architecture.git
