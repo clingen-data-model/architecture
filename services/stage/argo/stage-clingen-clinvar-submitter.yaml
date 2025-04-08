@@ -13,7 +13,7 @@ spec:
       valueFiles:
       - ../../values/clinvar-submitter/values-stage.yaml
   destination:
-    server: https://35.185.65.146
+    server: https://35.229.71.111
     namespace: submitter
   syncPolicy:
     automated:

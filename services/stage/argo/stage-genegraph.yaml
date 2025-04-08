@@ -10,11 +10,11 @@ spec:
     targetRevision: HEAD
     path: helm/charts/clingen-genegraph
     helm:
-      releaseName: genegraph 
+      releaseName: genegraph
       valueFiles:
       - ../../values/genegraph/values-stage.yaml
   destination:
-    server: https://35.185.65.146
+    server: https://35.229.71.111
     namespace: default
   syncPolicy:
     automated:
