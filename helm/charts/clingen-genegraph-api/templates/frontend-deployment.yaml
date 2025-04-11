@@ -11,6 +11,11 @@ spec:
       labels:
         app: {{ .Release.Name }}-api-frontend
     spec:
+      tolerations:
+        - key: "kubernetes.io/arch"
+          operator: "Equal"
+          value: "arm64"
+          effect: "NoSchedule"
       containers:
         - name: {{ .Release.Name }}-api-frontend
           image: "{{ .Values.frontend_image_location }}:{{ .Values.frontend_image_tag }}"

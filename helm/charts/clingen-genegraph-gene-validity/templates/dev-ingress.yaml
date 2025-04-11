@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-dev-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.dev_static_ip_name }}
+    networking.gke.io/managed-certificates: {{ .Release.Name }}-dev-certificate
+    kubernetes.io/ingress.class: "gce"
+spec:
+  rules:
+    - host: {{ .Values.dev_mcrt_domain }}
+      http:
+        paths:
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Release.Name }}-dev-graphql-endpoint
+                port:
+                  number: 80

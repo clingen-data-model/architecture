@@ -1,46 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-api-base
+  name: {{ .Release.Name }}-dev-transformer
 spec:
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-api-base
+      app: {{ .Release.Name }}-dev-transformer
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-api-base
+        app: {{ .Release.Name }}-dev-transformer
     spec:
-      tolerations:
-        - key: "kubernetes.io/arch"
-          operator: "Equal"
-          value: "arm64"
-          effect: "NoSchedule"
       volumes:
-        - name: tdb-volume
+        - name: local-volume
           emptyDir:
             sizeLimit: 50Gi
       containers:
-        - name: {{ .Release.Name }}-api-base
+        - name: {{ .Release.Name }}-dev-transformer
           image: "{{ .Values.docker_image_location }}:{{ .Values.docker_image_tag }}"
           env:
             - name: GENEGRAPH_PLATFORM
               value: {{ .Values.platform }}
             - name: GENEGRAPH_FUNCTION
-              value: fetch-base
+              value: dev-transform-curations
           volumeMounts:
             - mountPath: /data
-              name: tdb-volume
+              name: local-volume
           ports:
-            - name: gg-api-port
+            - name: genegraph-port
               containerPort: 8888
           readinessProbe:
             httpGet:
               path: /ready
-              port: gg-api-port
+              port: genegraph-port
           resources:
             requests:
-              memory: "400Mi"
-              cpu: "50m"
+              memory: "2Gi"
+              cpu: "200m"
             limits:
-              memory: "600Mi"
+              memory: "2Gi"
