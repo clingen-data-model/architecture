@@ -62,6 +62,20 @@ resource "google_container_node_pool" "main-node-pool" {
   }
 }
 
+resource "google_container_node_pool" "prod-arm-ssd-node-pool" {
+  name       = "prod-arm-ssd-node-pool"
+  location   = "us-east1-b"
+  cluster    = module.prod-gke-cluster.gke-cluster-name
+  node_count = 1
+  node_config {
+    preemptible     = false
+    machine_type    = "c4a-highmem-4-lssd"
+    image_type      = "COS_CONTAINERD"
+    oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
+  }
+}
+
+
 
 # IAM bindings for the clinvarSCV cloud functions
 resource "google_service_account_iam_member" "cloudbuild_appspot_binding" {
