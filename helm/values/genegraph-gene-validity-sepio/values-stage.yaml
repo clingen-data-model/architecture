@@ -1,3 +1,3 @@
-docker_image_tag: b5ab6eb4c68f49faa072e3d6d329e92fe7e2ceea
+docker_image_tag: 677ff9a92996ae37cb8be3f4f526cafef5d38b5c
 docker_image_location: "us-east1-docker.pkg.dev/clingen-stage/genegraph-stage/genegraph-gene-validity-sepio"
 platform: stage
