@@ -66,12 +66,25 @@ resource "google_container_node_pool" "prod-arm-ssd-node-pool" {
   name       = "prod-arm-ssd-node-pool"
   location   = "us-east1-b"
   cluster    = module.prod-gke-cluster.gke-cluster-name
-  node_count = 1
+  node_count = 3
   node_config {
     preemptible     = false
     machine_type    = "c4a-highmem-4-lssd"
     image_type      = "COS_CONTAINERD"
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
+    ephemeral_storage_local_ssd_config {
+      local_ssd_count = 1
+    }
+    resource_labels = {
+      "goog-gke-node-pool-provisioning-model" = "on-demand"
+    }
+    
+    # Keep the kubelet config explicitly
+    kubelet_config {
+      cpu_manager_policy = "none"
+      cpu_cfs_quota  = false
+      pod_pids_limit = 10000
+    }
   }
 }
 
