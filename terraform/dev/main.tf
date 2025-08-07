@@ -30,3 +30,9 @@ resource "google_project_iam_member" "default_compute_sm_read" {
   role    = "roles/secretmanager.secretAccessor"
   member  = data.google_compute_default_service_account.default_compute.member
 }
+
+resource "google_project_iam_member" "bigquery_dev_read_miscast" {
+  project = data.google_project.current.project_id
+  role    = "roles/bigquery.dataViewer"
+  member  = "serviceAccount:clinvar-update-sa@miscast.iam.gserviceaccount.com"
+}
