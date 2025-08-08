@@ -5,14 +5,20 @@ releases:
   - name: genegraph
     namespace: default
     chart: ../charts/clingen-genegraph
+    labels:
+      chart: clingen-genegraph
     values:
     - ../values/genegraph/values-prod.yaml
   - name: prod-clingen-clinvar-submitter
     namespace: submitter
     chart: ../charts/clingen-clinvar-submitter
+    labels:
+      chart: clingen-clinvar-submitter
     values:
       - ../values/clinvar-submitter/values-prod.yaml
   - name: clingen-argocd
     namespace: argocd
     chart: ../charts/clingen-argocd
+    labels:
+      chart: clingen-argocd
 

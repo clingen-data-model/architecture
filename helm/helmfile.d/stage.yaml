@@ -2,18 +2,26 @@ releases:
   - name: stage-clingen-clinvar-submitter
     namespace: submitter
     chart: ../charts/clingen-clinvar-submitter
+    labels:
+      chart: clingen-clinvar-submitter
     values:
       - ../values/clinvar-submitter/values-stage.yaml
   - name: genegraph
     namespace: default
     chart: ../charts/clingen-genegraph
+    labels:
+      chart: clingen-genegraph
     values:
     - ../values/genegraph/values-stage.yaml
   - name: genegraph-stage-clinvar
     namespace: default
     chart: ../charts/clingen-genegraph
+    labels:
+      chart: clingen-genegraph
     values:
     - ../values/genegraph-clinvar/values-stage.yaml
   - name: clingen-clinvar-ingest-updater
     namespace: clinvar-ingest-sync
     chart: ../charts/clingen-clinvar-ingest-updater
+    labels:
+      chart: clingen-clinvar-ingest-updater
