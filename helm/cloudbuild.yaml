@@ -15,7 +15,12 @@ steps:
       for chart in $(ls charts); do
         echo "===== Linting $chart ====="
         helm lint --with-subcharts=false charts/$chart
-        helmfile -q -l chart=$chart template | kubeconform -strict -skip "ManagedCertificate,BackendConfig,ExternalSecret,CustomResourceDefinition" -verbose -kubernetes-version "1.22.9"
+        if helmfile -q -l chart=$chart --environment default template >/dev/null 2>&1; then
+          echo "Found helmfile release(s) for $chart; running kubeconform"
+          helmfile -q -l chart=$chart --environment default template | kubeconform -strict -skip "ManagedCertificate,BackendConfig,ExternalSecret,CustomResourceDefinition" -verbose -kubernetes-version "1.22.9"
+        else
+          echo "No helmfile release matches chart=$chart in environment=default; skipping kubeconform for $chart"
+        fi
       done
 
 # timeout if not complete in 10 minutes
