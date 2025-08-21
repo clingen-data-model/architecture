@@ -1,8 +1,0 @@
-project_id: clingen-dev
-clinvar_streams_docker_image_name: gcr.io/clingen-dev/clinvar-streams
-clinvar_streams_docker_image_tag: dev-deploy
-clinvar_raw_input_topic: broad-dsp-clinvar
-clinvar_raw_output_topic: clinvar-raw
-clinvar_streams_kafka_group: clinvar-raw-dev
-clinvar_streams_container_args:
-  - clinvar-raw
