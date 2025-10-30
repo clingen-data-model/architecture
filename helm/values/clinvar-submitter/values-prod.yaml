@@ -5,7 +5,7 @@ ingress:
 image:
   repository: gcr.io/clingen-dx/clinvar-submitter
   pullPolicy: Always
-  tag: "eae07c2666c1a8bc656f6182df44feb738162958"
+  tag: "kyle-local"
 scv_service_url: "https://clinvarscv-wxzzxdssga-uc.a.run.app"
 resources:
   requests:
