@@ -51,6 +51,12 @@ resource "google_container_node_pool" "main-node-pool" {
   cluster    = module.prod-gke-cluster.gke-cluster-name
   node_count = 1
 
+  # Let GKE make changes to kubelet_config. Terraform will
+  # ignore those values instead of trying to revert them on each apply.
+  lifecycle {
+    ignore_changes = [node_config[0].kubelet_config]
+  }
+
   node_config {
     preemptible     = false
     machine_type    = "n2-standard-4"
