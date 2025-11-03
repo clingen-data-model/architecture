@@ -1,3 +1,12 @@
+####
+# Example of how to apply into the 'submitter' namespace using the prod values, updating/creating a deployment with the name 'prod-clingen-clinvar-submitter'
+#
+# helm template prod-clingen-clinvar-submitter \
+#   ./helm/charts/clingen-clinvar-submitter \
+#   -f ./helm/values/clinvar-submitter/values-prod.yaml \
+#   --namespace submitter |
+# kubectl apply -f - --namespace submitter
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
